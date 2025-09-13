@@ -764,7 +764,14 @@ class DeudaController{
                 <table class='tabla-datos' style='width: 100%; border-collapse: collapse;'>
                 <tr><td class='' colspan='7' style='text-align:center;'><h2 class='titulo-h2'>REPORTE DE MOVIMIENTOS</h2></td></tr>
                 <tr>
-                    <th class='th'>Fecha</th><th class='th'>Hora</th><th class='th'>Tipo Movimiento</th><th class='th'>Descripción</th><th class='th'>Cant.</th><th class='th'>V/Unit</th><th class='th'>V/Total</th>
+                    <th class='th'>Fecha</th>
+                    <th class='th'>Hora</th>
+                    <th class='th'>Tipo Movimiento</th>
+                    <th class='th'>Descripción</th>
+                    <th class='th'>Cant.</th>
+                    <th class='th'>V/Unit</th>
+                    <th class='th'>V/Total</th>
+                    <th class='th'>V/Saldo</th>
                 </tr>";
 
         if (isset($movimientos_deudor) && !empty($movimientos_deudor)){
@@ -784,6 +791,7 @@ class DeudaController{
                             <td class='cant size-tabla'>" . $deudor->cant . "</td>
                             <td class='vunit size-tabla'>" . number_format($deudor->valor_unit, 0, ',', '.') . "</td>
                             <td class='vtotal size-tabla'>" . number_format($deudor->valor_total, 0, ',', '.') . "</td>
+                            <td class='vtotal size-tabla'>" . number_format($deudor->saldo, 0, ',', '.') . "</td>
                         </tr>
                         ";
 
@@ -797,6 +805,7 @@ class DeudaController{
                             <td class='cant size-tabla abono'>" . $deudor->cant . "</td>
                             <td class='vunit size-tabla abono'>" . number_format($deudor->valor_unit, 0, ',', '.') . "</td>
                             <td class='vtotal size-tabla abono'>" . number_format($deudor->valor_total, 0, ',', '.') . "</td>
+                            <td class='vtotal size-tabla abono'>" . number_format($deudor->saldo, 0, ',', '.') . "</td>
                         </tr>
                     ";
 
@@ -810,6 +819,7 @@ class DeudaController{
                             <td class='cant size-tabla devolucion'>" . $deudor->cant . "</td>
                             <td class='vunit size-tabla devolucion'>" . number_format($deudor->valor_unit, 0, ',', '.') . "</td>
                             <td class='vtotal size-tabla devolucion'>" . number_format($deudor->valor_total, 0, ',', '.') . "</td>
+                            <td class='vtotal size-tabla devolucion'>" . number_format($deudor->saldo, 0, ',', '.') . "</td>
                         </tr>
                     ";
                 }
@@ -817,7 +827,7 @@ class DeudaController{
             }
                     
             $html .= "<tr>";
-            $html .= "<td colspan='6' class='titulo_total' style='background-color:$color_primario;'>TOTAL</td>";
+            $html .= "<td colspan='7' class='titulo_total' style='background-color:$color_primario;'>TOTAL</td>";
             $html .= "<td class='sumatotal' style='background-color:$color_primario;'>" . number_format($saldo, 0, ',', '.') . "</td>";
             $html .= "</tr>";
             $html .= "</table>";
