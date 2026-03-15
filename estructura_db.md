@@ -96,7 +96,7 @@
 | Campo | Descripción |
 |-------|-------------|
 | id_producto_precio | Identificador único del producto |
-| fk_producto | llav foránea del producto |
+| fk_producto | llave foránea del producto |
 | precio_venta_producto | Valor de venta por defecto del producto |
 | precio_compra_referencia | Valor de la compra para calcular la ganancia |
 | valor_descuento_producto | Valor de descuento aplicado durante temporadas especiales |
@@ -107,14 +107,28 @@
 | fecha_creacion | Fecha de creación del registro (Cuenta como fecha de inicio del precio y como creación del registro)|
 | fecha_actualizacion | Fecha de actualización del registro |
 
+## Tabla Promocion
+
+**Descripción:** Solo registra el nombre de las promociones según las temporadas de ventas.
+
+| Campo | Descripción |
+|-------|-------------|
+| id_promocion | Identificador único de la promoción |
+| nombre_promocion |  |
+| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
+| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
+| fecha_creacion | Fecha de creación del registro|
+| fecha_actualizacion | Fecha de actualización del registro |
+
 ## Tabla Producto_Promoción
 
-**Descripción:** Registra la información del histórico de precios de cada producto.
+**Descripción:** Se registra las promociones que existen tales como temporada escolar o descuento de comfaboy entre otras.
 
 | Campo | Descripción |
 |-------|-------------|
 | id_producto_promocion | Identificador único del producto |
-| fk_producto | llav foránea del producto |
+| fk_producto | llave foránea del producto |
+| fk_promocion | llave foránea de la promoción |
 | valor_descuento_producto | Valor de descuento aplicado durante temporadas especiales |
 | creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
 | actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
