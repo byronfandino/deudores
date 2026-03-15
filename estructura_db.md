@@ -45,6 +45,36 @@
 | fk_categoria | Referencia a la categoría principal |
 | status_subctg | Indica si la categoría está habilitada (1) o deshabilitada (0) |
 
+## Tabla Tag
+
+**Descripción:** Se registran las etiquetas que un producto que puede ser catalogado. Un producto puede tener muchas etiquetas.  
+**Ejemplo:** Lápiz, Mirado, HB
+
+| Campo | Descripción |
+|-------|-------------|
+| id_tag | Identificador único de la etiqueta |
+| nombre_tag | Nombre o descripción de la etiqueta |
+| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
+| fecha_creacion | Fecha de creación del registro |
+| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
+| fecha_actualizacion | Fecha de actualización del registro |
+| status_tag | Indica si la etiqueta está habilitada (1) o deshabilitada (0) |
+
+## Tabla Producto_Tag
+
+**Descripción:** Tabla pivote de la relación de muchos a muchos entre las tablas producto y tag. Por tal motivo solo se colocarán los id de cada tabla.
+
+| Campo | Descripción |
+|-------|-------------|
+| id_producto_tag | Identificador único de la tabla |
+| id_producto | Identificador único del producto |
+| id_tag | Identificador único de la etiqueta |
+| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
+| fecha_creacion | Fecha de creación del registro |
+| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
+| fecha_actualizacion | Fecha de actualización del registro |
+
+
 ## Tabla Producto
 
 **Descripción:** Registra la información detallada de cada producto.
