@@ -67,8 +67,8 @@
 | Campo | Descripción |
 |-------|-------------|
 | id_producto_tag | Identificador único de la tabla |
-| id_producto | Identificador único del producto |
-| id_tag | Identificador único de la etiqueta |
+| fk_producto |Llave foránea del producto |
+| fk_tag | Llave foránea de la etiqueta |
 | creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
 | fecha_creacion | Fecha de creación del registro |
 | actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
@@ -84,16 +84,42 @@
 | id_producto | Identificador único del producto |
 | descripcion_producto | Nombre del producto |
 | observaciones_producto | Información funcional para uso interno sobre el producto |
-| valor_venta_producto | Valor de venta por defecto del producto |
-| valor_descuento_producto | Valor de descuento aplicado durante temporadas especiales |
 | stock_minimo | Cantidad mínima de stock para generar compras pendientes |
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_actualizacion | Fecha de actualización del registro |
 | fk_marca | Referencia a la marca del producto |
 | fk_subcategoria | Referencia a la subcategoría del producto |
 | status_producto | Indica si el producto está habilitado (1) o deshabilitado (0) |
+
+## Tabla Producto_Precio
+
+**Descripción:** Registra la información del histórico de precios de cada producto.
+
+| Campo | Descripción |
+|-------|-------------|
+| id_producto_precio | Identificador único del producto |
+| fk_producto | llav foránea del producto |
+| precio_venta_producto | Valor de venta por defecto del producto |
+| precio_compra_referencia | Valor de la compra para calcular la ganancia |
+| valor_descuento_producto | Valor de descuento aplicado durante temporadas especiales |
+| fecha_inicio | Fecha en la que se registra un nuevo precio (Se crea al mismo tiempo que la creación del registro)|
+| fecha_final | Fecha de duración del precio (Se actualiza de null a la nueva fecha cuando existe un nuevo precio del mismo producto y es el equivalente a la fecha de inicio de la siguiente creación del registro del precio)|
+| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
+| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
+| fecha_creacion | Fecha de creación del registro (Cuenta como fecha de inicio del precio y como creación del registro)|
+| fecha_actualizacion | Fecha de actualización del registro |
+
+## Tabla Producto_Promoción
+
+**Descripción:** Registra la información del histórico de precios de cada producto.
+
+| Campo | Descripción |
+|-------|-------------|
+| id_producto_promocion | Identificador único del producto |
+| fk_producto | llav foránea del producto |
+| valor_descuento_producto | Valor de descuento aplicado durante temporadas especiales |
+| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
+| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
+| fecha_creacion | Fecha de creación del registro (Cuenta como fecha de inicio del precio y como creación del registro)|
+| fecha_actualizacion | Fecha de actualización del registro |
 
 ## Tabla Pendiente_compra
 
