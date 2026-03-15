@@ -499,3 +499,7 @@
 | fecha_creacion | Fecha de creación del registro |
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
+
+## NOTAS:
+
+- Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
