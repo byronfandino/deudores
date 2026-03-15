@@ -389,7 +389,7 @@
 | fk_producto | Referencia al producto |
 | tipo_inventario | Tipo de movimiento (COMPRA (C), VENTA (V), DEVOLUCION_CLIENTE (DC), DEVOLUCION_PROVEEDOR (DP), AJUSTE_POSITIVO (AP), AJUSTE_NEGATIVO (AN), INVENTARIO_INICIAL (IN)) |
 | cant_inventario | Cantidad del movimiento |
-| valor_unit_inventario | Valor unitario (solo para entradas) |
+| valor_unit_inventario | Valor unitario (solo para entradas) para salidas se utiliza null, ya que se calcula de acuerdo al tipo de inv|
 | fecha_hora_inventario | Fecha y hora del movimiento |
 | fk_compra_detalle | Referencia al detalle de compra |
 | fk_venta_detalle | Referencia al detalle de venta |
