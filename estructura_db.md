@@ -437,6 +437,20 @@
 
 **Nota:** No se relaciona la llave foránea del usuario ya que es una tabla que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final.
 
+## Tabla Inventario_capas
+**Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
+
+| Campo | Descripción |
+|-------|-------------|
+| id_capa | Identificador del movimiento |
+| fk_producto | Llave foránea del producto |
+| fk_movimiento_inventario | Llave foránea del Movimiento_inventario |
+| cant_inicial | Total de productos ingresados al momento de la entrada ya sea Inventario Inicial o Compras |
+| cant_restante | Inicialmente inicia con el mismo valor que la cant_inicial y se irá restando (actualizando el registro) por cada salida que se presente |
+| costo_unitario | costo de la compra |
+| fecha_capa | Fecha de la entrada |
+| status_capa | Solo contendrá dos valores A=Activa o C=Cerrada, solo se cerrará cuando cant_restante sea igual a 0, para realizar filtros y operaciones más rápidas |
+
 ## Tabla Kardex_fifo
 **Descripción:** Mantiene actualizado el inventario FIFO
 
@@ -448,18 +462,7 @@
 | cant_salida | Cantidad que egresa |
 | cant_saldo | Cantidad restante |
 | valor_saldo | Valor actual del inventario |
-
-## Tabla Kardex_lifo
-**Descripción:** Mantiene actualizado el inventario FIFO
-
-| Campo | Descripción |
-|-------|-------------|
-| id_kardex_lifo | id de la tabla |
-| fk_inventario | Referencia al id del inventario para obtener datos de las otras entidades como producto, compra_detalle, venta_detalle |
-| cant_entrada | Cantidad que ingresa |
-| cant_salida | Cantidad que egresa |
-| cant_saldo | Cantidad restante |
-| valor_saldo | Valor actual del inventario |
+| fecha_movimiento | Fecha del movimiento |
 
 ## Tabla Kardex_ponderado
 **Descripción:** Mantiene actualizado el inventario FIFO
@@ -472,6 +475,7 @@
 | cant_salida | Cantidad que egresa |
 | cant_saldo | Cantidad restante |
 | valor_saldo | Valor actual del inventario |
+| fecha_movimiento | Fecha del movimiento |
 
 ## Tabla Snapshot_inventario
 **Descripción:** Registra el corte mensual de cada uno de los inventarios de los productos para evitar consultas lentas en la tabla *Inventario_Movimiento*
@@ -482,7 +486,6 @@
 | fecha_corte_snapshot | Fecha del corte es la misma fecha de creación |
 | fk_producto_snapshot | Referencia del producto |
 | cant_final_snapshot | cantidad final del producto |
-| costo_fifo_snapshot | Costo final del inventario FIFO |
 | costo_lifo_snapshot | Costo final del inventario LIFO |
 | costo_ponderado_snapshot | Costo final del inventario Ponderado |
 
