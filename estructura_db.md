@@ -401,7 +401,7 @@
 | Campo | Descripción |
 |-------|-------------|
 | id_devolucion_venta | Identificador de la devolución |
-| fk_devolucion_venta | Llave foránea de la factura Venta Detalle para obtener datos no solo del producto, si no datos adicionales de la venta master
+| fk_venta_detalle | Llave foránea de la factura Venta Detalle para obtener datos no solo del producto, si no datos adicionales de la venta master
 | fecha_hora_devolucion_venta | Fecha de la devolución |
 | cant_devolucion_venta | Cantidad devuelta del producto |
 | observaciones_devolucion_venta | Justificación de la devolución |
@@ -540,6 +540,79 @@
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
 
-## NOTAS:
+# Faltantes:
+1. Creación de índices propuestos:
+   
+   ### Movimiento de Inventario:
+   **Descripción:** Esto acelera consultas como movimientos de un producto ordenados por fecha
+   
+   ```SQL
+   CREATE INDEX idx_mov_producto_fecha
+   ON movimiento_inventario (fk_producto, fecha_hora_inventario);
+   ```
 
-- Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
+   ### Capas de inventario:
+   **Descripción:** Esto permite buscar rápidamente capas activas del producto.
+   
+   ```SQL
+   CREATE INDEX idx_capas_producto_fecha
+   ON inventario_capas (fk_producto, fecha_capa);
+   ```
+   
+   ### Venta Detalle:
+   **Descripción:** Para consultar el historial de ventas de un proeucto
+   
+   ```SQL
+   CREATE INDEX idx_venta_producto
+   ON venta_detalle (fk_producto);
+   ```
+   
+   ### Compra Detalle:
+   **Descripción:** Para consultar el historial de compras de un proeucto
+   
+   ```SQL
+   CREATE INDEX idx_compra_producto
+   ON compra_detalle (fk_producto);
+   ```
+   
+   ### Producto Código Barras:
+    
+   ```SQL
+   CREATE INDEX idx_codigo_barras
+   ON producto_codigo (codigo_barras);
+   
+   CREATE INDEX idx_codigo_manual
+   ON producto_codigo (codigo_manual);
+   ```
+   
+   ### Producto_tag:
+   **Descripción:** Para acelerar búsquedas por etiqueta
+   
+   ```SQL
+   CREATE INDEX idx_producto_tag_producto
+   ON producto_tag (fk_producto);
+
+   CREATE INDEX idx_producto_tag_tag
+   ON producto_tag (fk_tag);
+   ```
+   
+   ### Inventario_capas:
+   **Descripción:** Para acelerar búsquedas por etiqueta
+   
+   ```SQL
+   CREATE INDEX idx_capa_producto
+   ON inventario_capas (fk_producto, status_capa);
+
+   CREATE INDEX idx_produb_producto
+   ON producto_ubicacion (fk_producto);
+
+   CREATE INDEX idx_produb_ubicacion
+   ON producto_ubicacion (fk_ubicacion);
+
+   CREATE INDEX idx_producto_nombre
+   ON producto (descripcion_producto);
+
+   CREATE INDEX idx_venta_fecha
+   ON venta_master (fecha_hora_venta_master);
+   ```
+1. Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
