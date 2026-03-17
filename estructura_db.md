@@ -91,7 +91,7 @@
 
 >[!NOTE]
 >
->El campo tipo es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. No obstante solamente en las ventas es importante hacer el seguimiento.
+>El campo **tipo** es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. No obstante solamente en las ventas es importante hacer el seguimiento.
 
 ## Tabla Producto_Precio
 
