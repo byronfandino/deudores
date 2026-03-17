@@ -89,7 +89,7 @@
 | fk_subcategoria | Referencia a la subcategoría del producto |
 | status_producto | Indica si el producto está habilitado (1) o deshabilitado (0) |
 
->[!INFO]
+>[!IMPORTANT]
 >
 >El campo tipo es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. No obstante solamente en las ventas es importante hacer el seguimiento.
 
