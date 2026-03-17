@@ -539,8 +539,8 @@
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
 
-# Faltantes:
-1. Creación de índices propuestos:
+# Recomendaciones para crear la base de datos:
+* Creación de índices propuestos:
    
    ### Movimiento_inventario:
    **Objetivo:** Esto acelera consultas como movimientos de un producto ordenados por fecha
@@ -628,4 +628,4 @@
    CREATE INDEX idx_venta_fecha
    ON venta_master (fecha_hora_venta_master);
    ```
-1. Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
+* Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
