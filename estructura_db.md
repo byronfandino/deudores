@@ -628,4 +628,20 @@
    CREATE INDEX idx_venta_fecha
    ON venta_master (fecha_hora_venta_master);
    ```
+   ## Resultado de Indexes:
+
+   | Tabla                 | Índice             |
+   | --------------------- | ------------------ |
+   | movimiento_inventario | fk_producto, fecha |
+   | venta_detalle         | fk_producto        |
+   | compra_detalle        | fk_producto        |
+   | producto_codigo       | codigo_barras      |
+   | producto_codigo       | codigo_manual      |
+   | producto_tag          | fk_producto        |
+   | producto_tag          | fk_tag             |
+   | inventario_capas      | fk_producto,status |
+   | producto_ubicacion    | fk_producto        |
+   | producto_ubicacion    | fk_ubicacion       |
+   | venta_master          | fecha              |
+  
 * Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
