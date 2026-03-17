@@ -183,7 +183,7 @@
 | status_oferta | Indica si la oferta está habilitada (1) o deshabilitada (0) |
 
 ## Tabla Ubicacion
-**Descripción:** El mismo tipo de producto puede estar almacenados en diferentes lugares.   
+**Descripción:** Se registra el nombre de las ubicaciones con las que cuenta la empresa para almacenar los productos.  
 **Ejemplo:** Bodega 1, Bodega 2, Almacén
 
 | Campo | Descripción |
@@ -196,8 +196,8 @@
 | fecha_actualizacion | Fecha de actualización del registro |
 | status_ubicacion | Indica si la ubicación está habilitada (1) o deshabilitada (0) |
 
-## Tabla Producto_ubicacion
-**Descripción:** Relaciona el tipo de producto y en cuantas ubicaciones se encuentra así como la cantidad almacenada.  
+## Tabla Snapshot_ubicacion
+**Descripción:** Es una tabla caché para almacenar y actualizar en un mismo registro la cantidad existente de un producto en cierta ubicación, va de la mano con la tabla Movimiento_inventario 
 **Ejemplo:** 200 Lapices Mirado en Bodega 1, 25 Lapices Mirado en Almacén  
 
 | Campo | Descripción |
@@ -431,15 +431,21 @@
 |-------|-------------|
 | id_inventario | Identificador del movimiento |
 | fk_producto | Referencia al producto |
-| tipo_inventario | Tipo de movimiento (COMPRA (C), VENTA (V), DEVOLUCION_CLIENTE (DC), DEVOLUCION_PROVEEDOR (DP), AJUSTE_POSITIVO (AP), AJUSTE_NEGATIVO (AN), INVENTARIO_INICIAL (IN)) |
+| tipo_inventario | será de tipo enum (COMPRA (C), VENTA (V), DEVOLUCION_CLIENTE (DC), DEVOLUCION_PROVEEDOR (DP), AJUSTE_POSITIVO (AP), AJUSTE_NEGATIVO (AN), INVENTARIO_INICIAL (IN)) |
 | cant_inventario | Cantidad del movimiento |
 | valor_unit_inventario | Valor unitario (solo para entradas) para salidas se utiliza null, ya que se calcula de acuerdo al tipo de inv|
 | fecha_hora_inventario | Fecha y hora del movimiento |
-| fk_compra_detalle | Referencia al detalle de compra |
-| fk_venta_detalle | Referencia al detalle de venta |
-| observaciones | En caso de haber devoluciones o ajustes, se debe especificar la razón por la que se dió este movimiento|
+| fk_compra_detalle | Referencia al detalle de compra, debe permitir valores null|
+| fk_venta_detalle | Referencia al detalle de venta, debe permitir valores null|
+| fk_ubicación | Referencia al detalle de venta, debe permitir valores null|
+| id_grupo_movimiento | id único sobre todo para agrupar movimientos de traslado de mercancia|
+| observaciones | En caso de haber devoluciones, ajustes, traslados, se debe especificar la razón por la que se dió este movimiento|
 
-**Nota:** No se relaciona la llave foránea del usuario ya que es una tabla que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final.
+>[!NOTE]
+>
+>No se relaciona la llave foránea del usuario ya que es una tabla que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final.
+>Las opciones ajuste positivo (AP) y ajuste negativo (AN) se utilizará para dos fines, ya sea por encontrar productos o perdida de de los mismos, O para traslados de mercancia entre dos ubicaiones, esa especificación ira en el campo observaciones, en el cual se deben mostrar sugerencias de llenado.
+>id_grupo_movimiento es un número incremental que se repetirá unicamente entre traslados
 
 ## Tabla Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
