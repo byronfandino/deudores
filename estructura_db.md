@@ -444,7 +444,9 @@
 >[!NOTE]
 >
 >No se relaciona la llave foránea del usuario ya que es una tabla que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final.
+>
 >Las opciones ajuste positivo (AP) y ajuste negativo (AN) se utilizará para dos fines, ya sea por encontrar productos o perdida de de los mismos, O para traslados de mercancia entre dos ubicaiones, esa especificación ira en el campo observaciones, en el cual se deben mostrar sugerencias de llenado.
+>
 >id_grupo_movimiento es un número incremental que se repetirá unicamente entre traslados
 
 ## Tabla Inventario_capas
