@@ -84,9 +84,14 @@
 | descripcion_producto | Nombre del producto |
 | observaciones_producto | Información funcional para uso interno sobre el producto |
 | stock_minimo | Cantidad mínima de stock para generar compras pendientes |
+| tipo | Solo puede contener dos valores P = Producto o S = Servicio |
 | fk_marca | Referencia a la marca del producto |
 | fk_subcategoria | Referencia a la subcategoría del producto |
 | status_producto | Indica si el producto está habilitado (1) o deshabilitado (0) |
+
+>[!INFO]
+>
+>El campo tipo es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. No obstante solamente en las ventas es importante hacer el seguimiento.
 
 ## Tabla Producto_Precio
 
