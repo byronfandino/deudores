@@ -74,7 +74,6 @@
 | actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
 | fecha_actualizacion | Fecha de actualización del registro |
 
-
 ## Tabla Producto
 
 **Descripción:** Registra la información detallada de cada producto.
@@ -543,39 +542,39 @@
 # Faltantes:
 1. Creación de índices propuestos:
    
-   ### Movimiento de Inventario:
-   **Descripción:** Esto acelera consultas como movimientos de un producto ordenados por fecha
+   ### Movimiento_inventario:
+   **Objetivo:** Esto acelera consultas como movimientos de un producto ordenados por fecha
    
    ```SQL
    CREATE INDEX idx_mov_producto_fecha
    ON movimiento_inventario (fk_producto, fecha_hora_inventario);
    ```
 
-   ### Capas de inventario:
-   **Descripción:** Esto permite buscar rápidamente capas activas del producto.
+   ### Inventario_capas:
+   **Objetivo:** Esto permite buscar rápidamente capas activas del producto.
    
    ```SQL
    CREATE INDEX idx_capas_producto_fecha
    ON inventario_capas (fk_producto, fecha_capa);
    ```
    
-   ### Venta Detalle:
-   **Descripción:** Para consultar el historial de ventas de un proeucto
+   ### Venta_detalle:
+   **Objetivo:** Para consultar el historial de ventas de un proeucto
    
    ```SQL
    CREATE INDEX idx_venta_producto
    ON venta_detalle (fk_producto);
    ```
    
-   ### Compra Detalle:
-   **Descripción:** Para consultar el historial de compras de un proeucto
+   ### Compra_detalle:
+   **Objetivo:** Para consultar el historial de compras de un proeucto
    
    ```SQL
    CREATE INDEX idx_compra_producto
    ON compra_detalle (fk_producto);
    ```
    
-   ### Producto Código Barras:
+   ### Producto_codigo:
     
    ```SQL
    CREATE INDEX idx_codigo_barras
@@ -586,7 +585,7 @@
    ```
    
    ### Producto_tag:
-   **Descripción:** Para acelerar búsquedas por etiqueta
+   **Objetivo:** Para acelerar búsquedas por etiqueta
    
    ```SQL
    CREATE INDEX idx_producto_tag_producto
@@ -597,21 +596,35 @@
    ```
    
    ### Inventario_capas:
-   **Descripción:** Para acelerar búsquedas por etiqueta
+   **Objetivo:** Permite buscar capas activas del producto
    
    ```SQL
    CREATE INDEX idx_capa_producto
    ON inventario_capas (fk_producto, status_capa);
-
+   ```
+   
+   ### Producto_ubicacion:
+   
+   ```SQL
    CREATE INDEX idx_produb_producto
    ON producto_ubicacion (fk_producto);
 
    CREATE INDEX idx_produb_ubicacion
    ON producto_ubicacion (fk_ubicacion);
-
+   ```
+   
+   ### Producto:
+   **Objetivo:** Buscar productos por nombre
+   
+   ```SQL
    CREATE INDEX idx_producto_nombre
    ON producto (descripcion_producto);
-
+   ```
+   
+   ### Venta_master:
+   **Objetivo:** Indice para reportes
+   
+   ```SQL
    CREATE INDEX idx_venta_fecha
    ON venta_master (fecha_hora_venta_master);
    ```
