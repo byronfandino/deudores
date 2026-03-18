@@ -83,7 +83,7 @@
 | id_producto | Identificador único del producto |
 | descripcion_producto | Nombre del producto |
 | observaciones_producto | Información funcional para uso interno sobre el producto |
-| stock_minimo | Cantidad mínima de stock para generar compras pendientes |
+| stock_minimo | Cantidad mínima de stock para generar compras s |
 | tipo | Solo puede contener dos valores P = Producto o S = Servicio |
 | fk_marca | Referencia a la marca del producto |
 | fk_subcategoria | Referencia a la subcategoría del producto |
@@ -143,14 +143,35 @@
 
 ## Tabla Pendiente_compra
 
-**Descripción:** Guarda las compras pendientes generadas por bajo stock.
+**Descripción:** Guarda las compras pendientes generadas por bajo stock o por solicitud de ampliar el stock
+
+| Campo | Descripción |
+|-------|-------------|
+| id_pendiente | Identificador único de la compra pendiente |
+| fk_producto | Referencia al producto pendiente (FK a producto.id_prod) |
+| fecha_pendiente | Fecha desde la cual está pendiente la compra |
+| cant_pendiente | Cantidad que se debe comprar al proveedor |
+| estado_pendiente | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
+| origen_pendiente | ENUM('STOCK_MINIMO','MANUAL') |
+| observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
+>[!NOTE]
+>El campo origen_pend se utiliza para especificar si el pendiente de la compra se originó por bajo stock o sencillamente se decidió solicitar más producto teniendo sufieciente stock
+
+## Tabla Solicitud_producto
+
+**Descripción:** Hace referencia a la anotación de nuevos productos que no existen en el inventario y que se desea traer.
 
 | Campo | Descripción |
 |-------|-------------|
 | id_pend | Identificador único de la compra pendiente |
-| fk_producto | Referencia al producto pendiente (FK a producto.id_prod) |
-| fecha_pend | Fecha desde la cual está pendiente la compra |
-| cant_pend | Cantidad que se debe comprar al proveedor |
+| descripcion_producto |  |
+| cant_solicitud | Cantidad que se debe comprar al proveedor |
+| estado_pend | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
+| observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
+| creado_por | llave foránea del usuario |
+| actualizado_por | llave foránea del usuario |
+| fecha_creación |  |
+| fecha_actualización |  |
 
 ## Tabla Producto_img_video
 **Descripción:** Guarda los nombres de las imágenes y videos del producto.
