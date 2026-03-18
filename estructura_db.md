@@ -418,12 +418,14 @@
 | id_venta_master | Identificador de la venta |
 | numero_venta_master | Número consecutivo de venta al expedir un recibo |
 | fk_cliente | Referencia al cliente |
-| fecha_hora_venta_master | Fecha de la factura |
-| subtotal_venta_master | Suma total de los registros vendidos |
-| total_descuento_venta_master | Suma total de descuentos |
-| total_venta_venta_master | Valor total después del descuento |
-| observaciones_venta_master | Observaciones de la venta |
-| creado_por | Usuario que creó el registro |
+| fecha_hora | Fecha de la factura |
+| subtotal | Suma total de los registros vendidos |
+| total_descuento | Suma total de descuentos |
+| total_venta | Valor total después del descuento |
+| saldo_pendiente | es distinto a 0 en caso de no pagar la totalidad de la factura |
+| observaciones | Observaciones de la venta |
+| estado_factura | ENUM('PENDIENTE','PAGADA','ANULADA') |
+| creado_por | Usuario que actualizó el registro |
 | fecha_creacion | Fecha de creación del registro |
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
@@ -464,9 +466,11 @@
 | Campo | Descripción |
 |-------|-------------|
 | id_abono_venta | Identificador del pago |
-| movimiento_abono_venta | Estado del pago (Abonó(A) - Devolución(D) - Cancelado(C)) Se presenta cuando el cliente devuelve el producto y se devuelve el pago o abono realizado|
-| valor_abono_venta | Valor abonado o pagado por el cliente |
-| comprobante_abono_venta | Nombre del comprobante de pago (.jpg)|
+| movimiento_abono_venta | ENUM('PAGO','DEVOLUCION') La Devolución implica cuando el cliente devuelve el producto y se devuelve el pago o abono realizado|
+| valor_recibido | Dinero recibido por parte del cliente |
+| valor_aplicado | puede ser tanto el valor recibido si es menor o igual al saldo de la venta total, o el valor del saldo restante cuando el valor recibido es mayor a al saldo |
+| valor_cambio | Dinero entregado al cliente |
+| comprobante_abono_venta | Nombre del comprobante de pago (.jpg o .pdf)|
 | fecha_hora_abono_venta | Fecha y hora del pago |
 | fk_metodo_pago | Referencia al método de pago |
 | fk_venta_master | Referencia a la venta master |
@@ -545,6 +549,29 @@
 | costo_unitario | costo de la compra |
 | fecha_capa | Fecha de la entrada |
 | status_capa | Solo contendrá dos valores A=Activa o C=Cerrada, solo se cerrará cuando cant_restante sea igual a 0, para realizar filtros y operaciones más rápidas |
+
+## Tabla Inventario_salida_detalle
+**Descripción:** Registra el detalle del consumo de inventario por capas para cada venta, 
+permitiendo identificar el costo real de los productos vendidos según el método de costeo (FIFO, o Ponderado).
+| Campo | Descripción |
+|-------|-------------|
+| id_salida_detalle | Identificador de la salida|
+| fk_venta_detalle  | Llave foránea de la tabla venta_detalle |
+| fk_capa           | Llave foránea de la tabla inventario_capas |
+| fk_producto       | Llave foránea de la tabla producto (para agilizar consultas) |
+| cantidad_salida   | cantidad vendida |
+| costo_unitario    | costo unitario proveniente de la capa |
+| subtotal_costo    | multiplicación de la cantidad_salida x costo_unitario |
+| fecha_registro    | Tipo de dato: TIMESTAMP DEFAULT CURRENT_TIMESTAMP |
+
+>[!NOTE]
+>APLICAR LAS SIGUIENTES REGLAS DE INTEGRIDAD
+>```SQL
+>CHECK (cantidad_salida > 0),
+>CHECK (costo_unitario >= 0),
+>CHECK (subtotal_costo = cantidad_salida * costo_unitario)
+>```
+>
 
 ## Tabla Kardex_fifo
 **Descripción:** Mantiene actualizado el inventario FIFO
@@ -725,20 +752,48 @@
    CREATE INDEX idx_venta_fecha
    ON venta_master (fecha_hora_venta_master);
    ```
+
+   ### Abono_venta:
+   ```SQL
+   CREATE INDEX idx_abono_venta_master
+   ON abono_venta (fk_venta_master);
+   ```
+   
+   ### Inventario_salida_detalle:
+   ```SQL
+   CREATE INDEX idx_salida_venta
+   ON inventario_salida_detalle (fk_venta_detalle);
+
+   CREATE INDEX idx_salida_capa
+   ON inventario_salida_detalle (fk_capa);
+
+   CREATE INDEX idx_salida_producto
+   ON inventario_salida_detalle (fk_producto);
+   
+   /*ventas por producto y utilidad por día*/
+   CREATE INDEX idx_salida_producto_fecha
+   ON inventario_salida_detalle (fk_producto, fecha_registro);
+   ```
+      
    ## Resultado de Indexes:
 
-   | Tabla                 | Índice             |
-   | --------------------- | ------------------ |
-   | movimiento_inventario | fk_producto, fecha |
-   | venta_detalle         | fk_producto        |
-   | compra_detalle        | fk_producto        |
-   | producto_codigo       | codigo_barras      |
-   | producto_codigo       | codigo_manual      |
-   | producto_tag          | fk_producto        |
-   | producto_tag          | fk_tag             |
-   | inventario_capas      | fk_producto,status |
-   | producto_ubicacion    | fk_producto        |
-   | producto_ubicacion    | fk_ubicacion       |
-   | venta_master          | fecha              |
+   | Tabla                     | Índice                             |
+   | ------------------------- | ---------------------------------- |
+   | movimiento_inventario     | fk_producto, fecha_hora_inventario |
+   | inventario_salida_detalle | fk_venta_detalle                   |
+   | inventario_salida_detalle | fk_capa                            |
+   | inventario_salida_detalle | fk_producto                        |
+   | inventario_salida_detalle | fk_producto, fecha_registro        |
+   | venta_detalle             | fk_producto                        |
+   | abono_venta               | fk_venta_master                    |
+   | compra_detalle            | fk_producto                        |
+   | producto_codigo           | codigo_barras                      |
+   | producto_codigo           | codigo_manual                      |
+   | producto_tag              | fk_producto                        |
+   | producto_tag              | fk_tag                             |
+   | inventario_capas          | fk_producto,status                 |
+   | producto_ubicacion        | fk_producto                        |
+   | producto_ubicacion        | fk_ubicacion                       |
+   | venta_master              | fecha                              |
   
 * Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
