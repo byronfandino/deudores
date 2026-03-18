@@ -91,7 +91,9 @@
 
 >[!NOTE]
 >
->El campo **tipo** es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. No obstante solamente en las ventas es importante hacer el seguimiento.
+>El campo **tipo** es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. Nunca generará registros en movimiento_inventario, inventario_capas. No obstante solamente en las ventas es importante hacer el seguimiento.
+>El campo tipo se debe restringir de tipo check así:
+>CHECK (tipo IN ('P','S'))
 
 ## Tabla Producto_Precio
 
@@ -189,7 +191,7 @@
 | Campo | Descripción |
 |-------|-------------|
 | id_ubicacion | Identificador único de ubicación |
-| nombre_ubicacion | Nombre del lugar donde se almacena el producto |
+| nombre_ubicacion | Nombre del lugar donde se almacena el producto [unique]|
 | creado_por | Usuario que creó el registro |
 | fecha_creacion | Fecha de creación del registro |
 | actualizado_por | Usuario que actualizó el registro |
@@ -197,7 +199,7 @@
 | status_ubicacion | Indica si la ubicación está habilitada (1) o deshabilitada (0) |
 
 ## Tabla Snapshot_ubicacion
-**Descripción:** Es una tabla caché para almacenar y actualizar en un mismo registro la cantidad existente de un producto en cierta ubicación, va de la mano con la tabla Movimiento_inventario 
+**Descripción:** Es una tabla caché para almacenar y actualizar en un mismo registro la cantidad existente de un producto en cierta ubicación, va de la mano con la tabla Movimiento_inventario. Se actualiza en cada movimiento. 
 **Ejemplo:** 200 Lapices Mirado en Bodega 1, 25 Lapices Mirado en Almacén  
 
 | Campo | Descripción |
@@ -206,6 +208,13 @@
 | fk_producto | Referencia al producto |
 | fk_ubicacion | Referencia al lugar de ubicación |
 | cant_produb | Cantidad del producto en esa ubicación |
+
+>[!NOTE]
+>Se debe evitar duplicadosen los que se repiten llaves foráneas en el mismo registro:
+>
+>ALTER TABLE snapshot_ubicacion
+>ADD CONSTRAINT unique_producto_ubicacion
+>UNIQUE (fk_producto, fk_ubicacion);
 
 ## Tabla Departamento
 **Descripción:** Almacena los nombres de los departamentos de Colombia
@@ -437,17 +446,32 @@
 | fecha_hora_inventario | Fecha y hora del movimiento |
 | fk_compra_detalle | Referencia al detalle de compra, debe permitir valores null|
 | fk_venta_detalle | Referencia al detalle de venta, debe permitir valores null|
-| fk_ubicación | Referencia al detalle de venta, debe permitir valores null|
-| id_grupo_movimiento | id único sobre todo para agrupar movimientos de traslado de mercancia|
+| fk_ubicacion | Referencia a la tabla ubicación|
+| id_grupo_movimiento | Se usa para agrupar movimientos que pertenecen a una misma operación (compra distribuida, venta, traslado, ajuste, etc.) |
 | observaciones | En caso de haber devoluciones, ajustes, traslados, se debe especificar la razón por la que se dió este movimiento|
 
 >[!NOTE]
 >
->No se relaciona la llave foránea del usuario ya que es una tabla que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final.
+>No se relaciona la llave foránea del usuario ya que es una tabla que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final, sin embargo es el corazón del software.
 >
->Las opciones ajuste positivo (AP) y ajuste negativo (AN) se utilizará para dos fines, ya sea por encontrar productos o perdida de de los mismos, O para traslados de mercancia entre dos ubicaiones, esa especificación ira en el campo observaciones, en el cual se deben mostrar sugerencias de llenado.
+>Las opciones ajuste positivo (AP) y ajuste negativo (AN) se utilizará para dos fines, ya sea por encontrar productos o pérdida de de los mismos, O para traslados de mercancia entre dos ubicaciones, esa especificación irá en el campo observaciones, en el cual se deben mostrar sugerencias de llenado.
 >
 >id_grupo_movimiento es un número incremental que se repetirá unicamente entre traslados
+>
+>tipo_inventario se debe restringir con *check* así:
+>ALTER TABLE movimiento_inventario
+>ADD CONSTRAINT chk_tipo_inventario
+>CHECK (tipo_inventario IN ('C','V','DC','DP','AP','AN','IN'));
+>
+>El campo valor_unit_inventario debe cumplir las siguientes reglas:
+>| Tipo               | valor_unit |
+>| ------------------ | ---------- |
+>| Compra             | ✔          |
+>| Inventario inicial | ✔          |
+>| Devolución cliente | ✔          |
+>| Venta              | ❌ NULL     |
+>| Salida traslado    | ❌ NULL     |
+>
 
 ## Tabla Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
@@ -477,7 +501,7 @@
 | fecha_movimiento | Fecha del movimiento |
 
 ## Tabla Kardex_ponderado
-**Descripción:** Mantiene actualizado el inventario FIFO
+**Descripción:** Mantiene actualizado el inventario PONDERADO
 
 | Campo | Descripción |
 |-------|-------------|
@@ -561,6 +585,9 @@
    ```SQL
    CREATE INDEX idx_mov_producto_fecha
    ON movimiento_inventario (fk_producto, fecha_hora_inventario);
+
+   CREATE INDEX idx_mov_grupo
+   ON movimiento_inventario (id_grupo_movimiento);
    ```
 
    ### Inventario_capas:
@@ -569,6 +596,9 @@
    ```SQL
    CREATE INDEX idx_capas_producto_fecha
    ON inventario_capas (fk_producto, fecha_capa);
+
+   CREATE INDEX idx_capa_producto
+   ON inventario_capas (fk_producto, status_capa);
    ```
    
    ### Venta_detalle:
@@ -608,22 +638,17 @@
    ON producto_tag (fk_tag);
    ```
    
-   ### Inventario_capas:
-   **Objetivo:** Permite buscar capas activas del producto
+   ### Snapshot_ubicacion:
    
    ```SQL
-   CREATE INDEX idx_capa_producto
-   ON inventario_capas (fk_producto, status_capa);
-   ```
-   
-   ### Producto_ubicacion:
-   
-   ```SQL
-   CREATE INDEX idx_produb_producto
-   ON producto_ubicacion (fk_producto);
+   CREATE INDEX idx_snapshot_producto
+   ON snapshot_ubicacion (fk_producto);
 
-   CREATE INDEX idx_produb_ubicacion
-   ON producto_ubicacion (fk_ubicacion);
+   CREATE INDEX idx_snapshot_ubicacion
+   ON snapshot_ubicacion (fk_ubicacion);
+
+   CREATE INDEX idx_snapshot_lookup
+   ON snapshot_ubicacion (fk_producto, fk_ubicacion);
    ```
    
    ### Producto:
