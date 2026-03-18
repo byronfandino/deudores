@@ -149,13 +149,19 @@
 |-------|-------------|
 | id_pendiente | Identificador único de la compra pendiente |
 | fk_producto | Referencia al producto pendiente (FK a producto.id_prod) |
+| fk_proveedor | Referencia al proveedor que se desea solicitar, puede ser null |
 | fecha_pendiente | Fecha desde la cual está pendiente la compra |
 | cant_pendiente | Cantidad que se debe comprar al proveedor |
-| estado_pendiente | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
+| estado_solicitud | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
 | origen_pendiente | ENUM('STOCK_MINIMO','MANUAL') |
 | observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
 >[!NOTE]
 >El campo origen_pend se utiliza para especificar si el pendiente de la compra se originó por bajo stock o sencillamente se decidió solicitar más producto teniendo sufieciente stock
+>
+>Se deben evitar la duplicidad de la misma solicitud del producto que se encuentre en PENDIENTE o EN PROCESO, según el estado, ya que si se puede duplicar cuando el estado es COMPRADO o CANCELADO
+>CREATE UNIQUE INDEX unique_pendiente_activo
+>ON pendiente_compra (fk_producto)
+>WHERE estado_pendiente IN ('PENDIENTE','EN_PROCESO');
 
 ## Tabla Solicitud_producto
 
@@ -163,23 +169,30 @@
 
 | Campo | Descripción |
 |-------|-------------|
-| id_pend | Identificador único de la compra pendiente |
+| id_solicitud | Identificador único de la solicitud|
+| fk_proveedor | Llave foránea del proveedor, puede ser null|
 | descripcion_producto |  |
 | cant_solicitud | Cantidad que se debe comprar al proveedor |
-| estado_pend | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
+| estado_solicitud | ENUM('PENDIENTE','APROBADO','COMPRADO','RECHAZADO') |
+| fk_producto | llave foránea del producto, puede ser null |
+| fk_proveedor | llave foránea del proveedor, puede ser null |
+| prioridad | ENUM(A=ALTA, M=MEDIA, B=BAJA) |
 | observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
 | creado_por | llave foránea del usuario |
-| actualizado_por | llave foránea del usuario |
 | fecha_creación |  |
+| actualizado_por | llave foránea del usuario |
 | fecha_actualización |  |
+
+>[!NOTE]
+>Teniendo en cuenta que la primera vez que se genera el registro no se ha creado el producto en la base de datos, una vez sea COMPRADO se debe Actualizar el id del producto, junto con el id del proveedor.
 
 ## Tabla Producto_img_video
 **Descripción:** Guarda los nombres de las imágenes y videos del producto.
 
 | Campo | Descripción |
 |-------|-------------|
-| id_prodiv | Identificador único del registro |
-| nombre_prodiv | Nombre del archivo multimedia |
+| id_archivo | Identificador único del registro |
+| nombre_archivo | Nombre del archivo multimedia |
 | tipo_archivo_prodiv | Tipo de archivo (imagen o video) |
 | fk_producto | Referencia al producto relacionado |
 
