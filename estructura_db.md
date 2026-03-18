@@ -472,6 +472,17 @@
 >| Venta              | ❌ NULL     |
 >| Salida traslado    | ❌ NULL     |
 >
+>El campo id_grupo_movimiento es obligatorio en los siguientes movimientos:
+>| Tipo de operación                            | ¿Usa grupo? |
+>| -------------------------------------------- | ----------- |
+>| Compra simple (1 ubicación)                  | ❌           |
+>| Compra distribuida                           | ✅           |
+>| Venta simple                                 | ❌           |
+>| Venta desde varias ubicaciones               | ✅           |
+>| Traslado                                     | ✅           |
+>| Ajuste simple                                | ❌           |
+>| Ajuste masivo (varias ubicaciones/productos) | ✅           |
+>
 
 ## Tabla Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
