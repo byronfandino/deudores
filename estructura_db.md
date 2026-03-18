@@ -113,6 +113,10 @@
 | fecha_creacion | Fecha de creación del registro (Cuenta como fecha de inicio del precio y como creación del registro)|
 | fecha_actualizacion | Fecha de actualización del registro |
 
+>[!NOTE]
+>Se debe garantizar la fecha_final se igual o superior a la fecha_inicio así:
+>CHECK (fecha_final IS NULL OR fecha_final > fecha_inicio)
+
 ## Tabla Promocion
 
 **Descripción:** Solo registra el nombre de las promociones según las temporadas de ventas.
@@ -152,7 +156,7 @@
 | fk_proveedor | Referencia al proveedor que se desea solicitar, puede ser null |
 | fecha_pendiente | Fecha desde la cual está pendiente la compra |
 | cant_pendiente | Cantidad que se debe comprar al proveedor |
-| estado_solicitud | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
+| estado_pendiente | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
 | origen_pendiente | ENUM('STOCK_MINIMO','MANUAL') |
 | observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
 >[!NOTE]
@@ -161,7 +165,7 @@
 >Se deben evitar la duplicidad de la misma solicitud del producto que se encuentre en PENDIENTE o EN PROCESO, según el estado, ya que si se puede duplicar cuando el estado es COMPRADO o CANCELADO
 >CREATE UNIQUE INDEX unique_pendiente_activo
 >ON pendiente_compra (fk_producto)
->WHERE estado_pendiente IN ('PENDIENTE','EN_PROCESO');
+>WHERE estado_solicitud IN ('PENDIENTE','EN_PROCESO');
 
 ## Tabla Solicitud_producto
 
@@ -175,11 +179,12 @@
 | cant_solicitud | Cantidad que se debe comprar al proveedor |
 | estado_solicitud | ENUM('PENDIENTE','APROBADO','COMPRADO','RECHAZADO') |
 | fk_producto | llave foránea del producto, puede ser null |
-| fk_proveedor | llave foránea del proveedor, puede ser null |
-| prioridad | ENUM(A=ALTA, M=MEDIA, B=BAJA) |
+| prioridad | ENUM(ALTA, MEDIA, BAJA) |
 | observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
 | creado_por | llave foránea del usuario |
-| fecha_creación |  |
+| fecha_creacion |  |
+| aprobado_por | llave foránea del usuario |
+| fecha_abprobacion |  |
 | actualizado_por | llave foránea del usuario |
 | fecha_actualización |  |
 
@@ -517,6 +522,15 @@
 >| Ajuste simple                                | ❌           |
 >| Ajuste masivo (varias ubicaciones/productos) | ✅           |
 >
+>Otro ajuste necesario es la restricción de los valores que se aceptan en el tipo_movimiento y las llaves foráneas así:
+>CHECK (
+>  (tipo_inventario = 'C' AND fk_compra_detalle IS NOT NULL)
+>  OR
+>  (tipo_inventario = 'V' AND fk_venta_detalle IS NOT NULL)
+>  OR
+>  (tipo_inventario IN ('DC','DP','AP','AN','IN'))
+>)
+>Si es una compra (C), debe venir de compra_detalle, pero si es una venta (V), debe venir de venta_detalle
 
 ## Tabla Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
