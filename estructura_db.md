@@ -95,6 +95,59 @@
 >El campo tipo se debe restringir de tipo check así:
 >CHECK (tipo IN ('P','S'))
 
+## Tabla Tipo_presentacion
+
+**Descripción:** Almacena el catálogo de los tipos de presentación disponibles en el sistema (como Unidad, Caja, Paquete), permitiendo estandarizar y clasificar las distintas formas en que se pueden agrupar o comercializar los productos.
+
+| Campo                | Descripción                                                               |
+| -------------------- | ------------------------------------------------------------------------- |
+| id_tipo_presentacion | Identificador único del tipo de presentación                              |
+| nombre_tipo          | Nombre del tipo de presentación (Ej: Unidad, Caja, Paquete)               |
+| status_tipo          | Indica si el tipo de presentación está habilitado (1) o deshabilitado (0) |
+| creado_por           | Usuario que creó el registro (FK a usuario)                               |
+| fecha_creacion       | Fecha en la que se creó el registro                                       |
+| actualizado_por      | Usuario que realizó la última actualización (FK a usuario)                |
+| fecha_actualizacion  | Fecha en la que se actualizó el registro                                  |
+
+>[!NOTE]
+>Es necesario evitar la duplicación de la misma presentación para un producto con el siguie nte constraint
+>```SQL
+>UNIQUE (fk_producto, fk_presentacion)
+>```
+
+## Tabla Presentacion
+
+**Descripción:** Define las presentaciones específicas basadas en un tipo de presentación, indicando la cantidad de unidades que contiene cada una (por ejemplo, Caja x 12, Paquete x 60). Permite reutilizar configuraciones estándar de empaques y asociarlas posteriormente a múltiples productos.
+
+| Campo                | Descripción                                                          |
+| -------------------- | -------------------------------------------------------------------- |
+| id_presentacion      | Identificador único de la presentación                               |
+| fk_tipo_presentacion | Referencia al tipo de presentación (FK a Tipo_presentacion)          |
+| nombre_presentacion  | Nombre descriptivo de la presentación (Ej: Caja x 12, Paquete x 60)  |
+| cantidad_unidades    | Cantidad de unidades que contiene la presentación (Ej: 12, 60)       |
+| status_presentacion  | Indica si la presentación está habilitada (1) o deshabilitada (0)    |
+| creado_por           | Usuario que creó el registro (opcional, FK a usuario)                |
+| fecha_creacion       | Fecha en la que se creó el registro                                  |
+| actualizado_por      | Usuario que realizó la última actualización (opcional, FK a usuario) |
+| fecha_actualizacion  | Fecha en la que se actualizó el registro                             |
+
+## Tabla Producto_presentacion
+
+**Descripción:** Relaciona cada producto con sus diferentes presentaciones disponibles, estableciendo el precio de venta y configuraciones específicas para cada una. Permite definir cómo se comercializa un producto en distintas cantidades o empaques dentro del sistema.
+
+| Campo                        | Descripción                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| id_producto_presentacion     | Identificador único del registro                                               |
+| fk_producto                  | Referencia al producto (FK a producto)                                         |
+| fk_presentacion              | Referencia a la presentación (FK a Presentacion)                               |
+| precio_venta                 | Precio de venta para esa presentación específica                               |
+| presentacion_default         | Indica si es la presentación principal del producto (1 = sí, 0 = no)           |
+| status_producto_presentacion | Indica si la presentación del producto está habilitada (1) o deshabilitada (0) |
+| creado_por                   | Usuario que creó el registro (opcional, FK a usuario)                          |
+| fecha_creacion               | Fecha en la que se creó el registro                                            |
+| actualizado_por              | Usuario que realizó la última actualización (opcional, FK a usuario)           |
+| fecha_actualizacion          | Fecha en la que se actualizó el registro                                       |
+
 ## Tabla Producto_Precio
 
 **Descripción:** Registra la información del histórico de precios de cada producto.
@@ -230,7 +283,8 @@
 | Campo | Descripción |
 |-------|-------------|
 | id_ubicacion | Identificador único de ubicación |
-| nombre_ubicacion | Nombre del lugar donde se almacena el producto [unique]|
+| nombre_ubicacion | Nombre del lugar donde se almacena el producto (unique) |
+| ubicacion_default | Indica si es la ubicación que cargará por defecto en el formulario |
 | creado_por | Usuario que creó el registro |
 | fecha_creacion | Fecha de creación del registro |
 | actualizado_por | Usuario que actualizó el registro |
