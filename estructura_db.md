@@ -493,14 +493,14 @@
 | id_venta_detalle | Identificador del detalle de venta |
 | fk_venta_master | Referencia a venta_master |
 | fk_producto | Referencia al producto vendido |
-| fk_empleado_cliente | Referencia al empleado del cliente |
+| fk_producto_presentacion | Referencia de la presentacion del producto |
+| cant_venta_detalle | Cantidad vendida |
+| valor_unit_venta_detalle | Valor unitario vendido |
+| total_venta_detalle | Total del detalle |
 | creado_por | Usuario que creó el registro |
 | fecha_creacion | Fecha de creación del registro |
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
-| cant_venta_detalle | Cantidad vendida |
-| valor_unit_venta_detalle | Valor unitario vendido |
-| total_venta_detalle | Total del detalle |
 
 ## Tabla Devolucion_venta
 
