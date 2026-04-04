@@ -674,6 +674,129 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 | fk_producto | Referencia al producto |
 | cant_stock | Cantidad actual del producto |
 
+## Tabla Cotizacion_master
+
+**Descripción:** Al igual que la tabla *Compra_master*, almacena los datos generales de la Cotización
+
+| Campo | Descripción |
+|-------|-------------|
+| id_cotizacion_master | Identificador de la cotización |
+| numero_cotizacion | Número consecutivo de la cotización |
+| fk_cliente | Referencia al cliente |
+| fecha_hora | Fecha de la factura |
+| subtotal | Suma total de los registros vendidos |
+| total_descuento | Suma total de descuentos |
+| total_cotizacion | Valor total después del descuento |
+| observaciones | Observaciones de la venta |
+| estado_cotizacion | ENUM('BORRADOR','APROBADA','RECHAZADA','VENCIDA') |
+| creado_por | Usuario que actualizó el registro |
+| fecha_creacion | Fecha de creación del registro |
+| actualizado_por | Usuario que actualizó el registro |
+| fecha_actualizacion | Fecha de actualización del registro |
+
+>[!NOTE]
+>NOTAS SQL
+>```SQL
+> CREATE TABLE cotizacion_master (
+>    id_cotizacion_master SERIAL PRIMARY KEY,
+>    numero_cotizacion VARCHAR(50) NOT NULL UNIQUE,
+>
+>    fk_cliente INT NOT NULL,
+>
+>    fecha_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+>
+>    subtotal NUMERIC(14,2) NOT NULL DEFAULT 0,
+>    total_descuento NUMERIC(14,2) NOT NULL DEFAULT 0,
+>    total_cotizacion NUMERIC(14,2) NOT NULL DEFAULT 0,
+>
+>    observaciones TEXT,
+>
+>    creado_por INT,
+>    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+>    actualizado_por INT,
+>    fecha_actualizacion TIMESTAMP,
+>
+>    -- 🔗 Relaciones
+>    CONSTRAINT fk_cotizacion_cliente 
+>        FOREIGN KEY (fk_cliente) REFERENCES cliente(id_cliente),
+>
+>    CONSTRAINT fk_cotizacion_creado_por 
+>        FOREIGN KEY (creado_por) REFERENCES usuario(id_usuario_sistema),
+>
+>    CONSTRAINT fk_cotizacion_actualizado_por 
+>        FOREIGN KEY (actualizado_por) REFERENCES usuario(id_usuario_sistema),
+>
+>    -- 🔒 Validaciones
+>    CHECK (subtotal >= 0),
+>    CHECK (total_descuento >= 0),
+>    CHECK (total_cotizacion >= 0)
+> );
+>```
+
+## Tabla Cotizacion_Detalle
+
+**Descripción:** Se relaciona el detalle de cada producto cotizado al cliente.
+
+| Campo | Descripción |
+|-------|-------------|
+| id_cotizacion_detalle | Identificador del detalle de la cotización |
+| fk_cotizacion_master | Referencia a la cotizacion_master |
+| fk_producto | Referencia al producto vendido |
+| fk_producto_presentacion | Referencia de la presentacion del producto |
+| cant_cotizacion_detalle | Cantidad cotizada |
+| valor_unit_cotizacion_detalle | Valor unitario cotizado |
+| total_cotizacion_detalle | Total del detalle |
+| creado_por | Usuario que creó el registro |
+| fecha_creacion | Fecha de creación del registro |
+| actualizado_por | Usuario que actualizó el registro |
+| fecha_actualizacion | Fecha de actualización del registro |
+
+>[!NOTE]
+>Notas SQL
+>```SQL
+>CREATE TABLE cotizacion_detalle (
+>    id_cotizacion_detalle SERIAL PRIMARY KEY,
+>    
+>    fk_cotizacion_master INT NOT NULL,
+>    fk_producto INT NOT NULL,
+>    fk_producto_presentacion INT NOT NULL,
+>    
+>    cant_cotizacion_detalle NUMERIC(14,2) NOT NULL,
+>    valor_unit_cotizacion_detalle NUMERIC(14,2) NOT NULL,
+>    total_cotizacion_detalle NUMERIC(14,2) NOT NULL,
+>    
+>    creado_por INT,
+>    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+>    actualizado_por INT,
+>    fecha_actualizacion TIMESTAMP,
+>    
+>    -- 🔗 Relaciones
+>    CONSTRAINT fk_detalle_cotizacion 
+>        FOREIGN KEY (fk_cotizacion_master) 
+>        REFERENCES cotizacion_master(id_cotizacion_master)
+>        ON DELETE CASCADE,
+>
+>    CONSTRAINT fk_detalle_producto 
+>        FOREIGN KEY (fk_producto) 
+>        REFERENCES producto(id_producto),
+>
+>    CONSTRAINT fk_detalle_producto_presentacion 
+>        FOREIGN KEY (fk_producto_presentacion) 
+>        REFERENCES producto_presentacion(id_producto_presentacion),
+>
+>    CONSTRAINT fk_detalle_creado_por 
+>        FOREIGN KEY (creado_por) REFERENCES usuario(id_usuario_sistema),
+>
+>    CONSTRAINT fk_detalle_actualizado_por 
+>        FOREIGN KEY (actualizado_por) REFERENCES usuario(id_usuario_sistema),
+>
+>    -- 🔒 Validaciones
+>    CHECK (cant_cotizacion_detalle > 0),
+>    CHECK (valor_unit_cotizacion_detalle >= 0),
+>    CHECK (total_cotizacion_detalle = cant_cotizacion_detalle * valor_unit_cotizacion_detalle)
+>);
+>```
+
 ## Tabla Modulo
 **Descripción:** Almacena el nombre de cada uno de los módulos visibles para el usuario
 | Campo | Descripción |
@@ -828,6 +951,28 @@ permitiendo identificar el costo real de los productos vendidos según el métod
    CREATE INDEX idx_salida_producto_fecha
    ON inventario_salida_detalle (fk_producto, fecha_registro);
    ```
+   
+   ### Cotizacion_master
+   ```SQL
+   -- Consultas por cotización
+   CREATE INDEX idx_cotizacion_fecha
+   ON cotizacion_master (fecha_hora);
+   
+   -- Consultas por cliente
+   CREATE INDEX idx_cotizacion_cliente
+   ON cotizacion_master (fk_cliente);
+   ```
+   
+   ### Cotizacion_detalle
+   ```SQL
+   -- Detalle por cotización
+   CREATE INDEX idx_cotizacion_detalle_master
+   ON cotizacion_detalle (fk_cotizacion_master);
+   
+   -- Historial por producto
+   CREATE INDEX idx_cotizacion_detalle_producto
+   ON cotizacion_detalle (fk_producto);
+   ```
       
    ## Resultado de Indexes:
 
@@ -849,5 +994,9 @@ permitiendo identificar el costo real de los productos vendidos según el métod
    | producto_ubicacion        | fk_producto                        |
    | producto_ubicacion        | fk_ubicacion                       |
    | venta_master              | fecha                              |
+   | cotizacion_master         | fecha_hora                         |
+   | cotizacion_master         | fk_cliente                         |
+   | cotizacion_detalle        | fk_cotizacion_master               |
+   | cotizacion_detalle        | fk_producto                        |
   
 * Crear nuevo archivo markdown para los diagramas de flujo al momento de realizar una compra o venta de un producto. ya que este movimiento toca muchas tablas en secuencia
