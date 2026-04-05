@@ -30,7 +30,7 @@
 | is_active                | estado / activo     | Indica si la categoría está Activa (1) o Inactiva (0) <br> *Indicates whether the category is Active (1) or Inactive (0)* |
 
 
-## Subcategories | Subcategoría
+## Subcategories | Subcategorías
 
 **Descripción:** Contiene las subcategorías a la que pertenece cada producto.  
 **Ejemplo:** Lápiz, Tajalápiz, Borrador... 
@@ -46,49 +46,51 @@
 | updated_at               | fecha_actualizacion | Fecha en la que se actualizó el registro <br> *Date when the record was last updated*                                                     |
 | is_active                | estado / activo     | Indica si la subcategoría está Activo (1) o Inactivo (0) <br> *Indicates whether the subcategory is Active (1) or Inactive (0)* |
 
-## Tag
+## Tags | Etiquetas
 
 **Descripción:** Se registran las etiquetas que un producto que puede ser catalogado. Un producto puede tener muchas etiquetas.  
 **Ejemplo:** Lápiz, Mirado, HB
 
-| Campo | Descripción |
-|-------|-------------|
-| id_tag | Identificador único de la etiqueta |
-| nombre_tag | Nombre o descripción de la etiqueta |
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_actualizacion | Fecha de actualización del registro |
-| status_tag | Indica si la etiqueta está habilitada (1) o deshabilitada (0) |
+| Campo (Laravel / Inglés) | Traducción          | Descripción                                                                                                                   |
+| ------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id                  | Identificador único de la etiqueta <br> *Unique identifier of the tag*                                                        |
+| name                     | nombre              | Nombre de la etiqueta <br> *Name of the tag*                                                                                  |
+| created_by               | creado_por          | Usuario del sistema que creó el registro <br> *System user who created the record*                                            |
+| updated_by               | actualizado_por     | Usuario que realizó la última actualización <br> *User who performed the last update*                                         |
+| created_at               | fecha_creacion      | Fecha en la que se creó el registro <br> *Date when the record was created*                                                   |
+| updated_at               | fecha_actualizacion | Fecha en la que se actualizó el registro <br> *Date when the record was last updated*                                         |
+| is_active                | estado / activo     | Indica si la etiqueta está Activo (1) o Inactivo (0) <br> *Indicates whether the tag is Active (1) or Inactive (0)* |
 
-## Producto_Tag
+## product_tag | Etiqueta del producto
 
 **Descripción:** pivote de la relación de muchos a muchos entre las tablas producto y tag. Por tal motivo solo se colocarán los id de cada tabla.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_producto_tag | Identificador único de la |
-| fk_producto |Llave foránea del producto |
-| fk_tag | Llave foránea de la etiqueta |
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_actualizacion | Fecha de actualización del registro |
+| Campo (Laravel / Inglés) | Traducción          | Descripción                                                           |
+| ------------------------ | ------------------- | ----------------------------------------------------------------------|
+| product_id               | fk_producto         | Llave foránea del producto <br> *Foreign key referencing the product* |
+| tag_id                   | fk_tag              | Llave foránea de la etiqueta <br> *Foreign key referencing the tag*   |
 
-## Producto
+>[!NOTE]
+> La tabla *product_tag* es una tabla pivote, por lo tanto No necesita id propio, por lo tanto se usa la clave compuesta product_id + tag_id
+
+## Products | Productos
 
 **Descripción:** Registra la información detallada de cada producto.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_producto | Identificador único del producto |
-| descripcion_producto | Nombre del producto |
-| observaciones_producto | Información funcional para uso interno sobre el producto |
-| stock_minimo | Cantidad mínima de stock para generar compras s |
-| tipo | Solo puede contener dos valores P = Producto o S = Servicio |
-| fk_marca | Referencia a la marca del producto |
-| fk_subcategoria | Referencia a la subcategoría del producto |
-| status_producto | Indica si el producto está habilitado (1) o deshabilitado (0) |
+| Campo (Laravel / Inglés) | Traducción          | Descripción                                                                                                             |
+| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------|
+| id                       | id                  | Identificador único del producto <br> *Unique identifier of the product*                                                |
+| name                     | nombre              | Nombre del producto <br> *Product name*                                                                                 |
+| internal_notes           | observaciones       | Información interna sobre el producto <br> *Internal notes about the product*                                           |
+| minimum_stock            | stock_minimo        | Cantidad mínima de stock para generar compras <br> *Minimum stock level to trigger purchases*                           |
+| type                     | tipo                | Tipo de producto: producto o servicio <br> *Product type: product or service*                                           |
+| brand_id                 | fk_marca            | Referencia a la marca del producto <br> *Reference to the product's brand*                                              |
+| subcategory_id           | fk_subcategoria     | Referencia a la subcategoría del producto <br> *Reference to the product's subcategory*                                 |
+| is_active                | estado / activo     | Indica si el producto está Activo (1) o Inactivo (0) <br> *Indicates whether the product is Active (1) or Inactive (0)* |
+| created_by               | credo por           | Usuario del sistema que creó el registro <br> *System user who created the record*                                      |
+| updated_by               | actualizado por     | Usuario que realizó la última actualización <br> *User who performed the last update*                                   |
+| created_at               | fecha_creacion      | Fecha en la que se creó el registro <br> *Date when the record was created*                                             |
+| updated_at               | fecha_actualizacion | Fecha en la que se actualizó el registro <br> *Date when the record was last updated*                                   |
 
 >[!NOTE]
 >
