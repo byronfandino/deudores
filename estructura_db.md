@@ -1,51 +1,52 @@
 # 🧱 Estructura de Base de Datos SACINV
 
-## Tabla Marca
+## Brands | Marcas
 
 **Descripción:** Almacena las marcas de los productos.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_marca | Identificador único de la marca |
-| descripcion_marca | Nombre o descripción de la marca |
-| creado_por | Usuario del sistema que creó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha en la que se creó el registro |
-| actualizado_por | Usuario que realizó la última actualización (FK a usuario_sistema.id_us) |
-| fecha_actualizacion | Fecha en que se actualizó el registro |
-| status_marca | Indica si la marca está habilitada (1) o deshabilitada (0) |
+| Campo                    | Traducción          | Descripción                                                                                                                   |
+| ------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id                  | Identificador único de la marca  <br> *Unique identifier of the brand*                                                        |
+| name                     | nombre              | Nombre o descripción de la marca  <br> *Name or description of the brand*                                                     |
+| created_by               | creado_por          | Usuario del sistema que creó el registro  <br> *System user who created the record*                                           |
+| updated_by               | actualizado_por     | Usuario que realizó la última actualización  <br> *User who performed the last update*                                        |
+| created_at               | fecha_creacion      | Fecha en la que se creó el registro  <br> *Date when the record was created*                                                  |
+| updated_at               | fecha_actualizacion | Fecha en la que se actualizó el registro  <br> *Date when the record was last updated*                                        |
+| is_active                | estado / activo     | Indica si la marca está Activo (1) o Inactivo (0)  <br> *Indicates whether the brand is Active (1) or Inactive (0)* |
 
-## Tabla Categoría
+## Categories | Categorías
 
 **Descripción:** Contiene las categorías generales para clasificar las subcategorias.  
 **Ejemplo:** Tecnología, Belleza, Papeleria...
 
-| Campo | Descripción |
-|-------|-------------|
-| id_categoria | Identificador único de la categoría |
-| descripcion_categoria | Nombre o descripción de la categoría |
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_actualizacion | Fecha de actualización del registro |
-| status_categoria | Indica si la categoría está habilitada (1) o deshabilitada (0) |
+| Campo                    | Traducción          | Descripción                                                                                                                         |
+| ------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id                  | Identificador único de la categoría <br> *Unique identifier of the category*                                                        |
+| name                     | nombre              | Nombre o descripción de la categoría <br> *Name or description of the category*                                                     |
+| created_by               | creado_por          | Usuario del sistema que creó el registro <br> *System user who created the record*                                                  |
+| updated_by               | actualizado_por     | Usuario que realizó la última actualización <br> *User who performed the last update*                                               |
+| created_at               | fecha_creacion      | Fecha en la que se creó el registro <br> *Date when the record was created*                                                         |
+| updated_at               | fecha_actualizacion | Fecha en la que se actualizó el registro <br> *Date when the record was last updated*                                               |
+| is_active                | estado / activo     | Indica si la categoría está Activa (1) o Inactiva (0) <br> *Indicates whether the category is Active (1) or Inactive (0)* |
 
-## Tabla Subcategoría
+
+## Subcategories | Subcategoría
 
 **Descripción:** Contiene las subcategorías a la que pertenece cada producto.  
 **Ejemplo:** Lápiz, Tajalápiz, Borrador... 
 
-| Campo | Descripción |
-|-------|-------------|
-| id_subctg | Identificador único de la subcategoría |
-| descripcion_subctg | Nombre o descripción de la subcategoría |
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_actualizacion | Fecha de actualización del registro |
-| fk_categoria | Referencia a la categoría principal |
-| status_subctg | Indica si la categoría está habilitada (1) o deshabilitada (0) |
+| Campo                    | Traducción          | Descripción                                                                                                                               |
+| ------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id                  | Identificador único de la subcategoría <br> *Unique identifier of the subcategory*                                                        |
+| name                     | nombre              | Nombre o descripción de la subcategoría <br> *Name or description of the subcategory*                                                     |
+| category_id              | fk_categoria        | Referencia a la categoría principal <br> *Reference to the parent category*                                                               |
+| created_by               | creado_por          | Usuario del sistema que creó el registro <br> *System user who created the record*                                                        |
+| updated_by               | actualizado_por     | Usuario que realizó la última actualización <br> *User who performed the last update*                                                     |
+| created_at               | fecha_creacion      | Fecha en la que se creó el registro <br> *Date when the record was created*                                                               |
+| updated_at               | fecha_actualizacion | Fecha en la que se actualizó el registro <br> *Date when the record was last updated*                                                     |
+| is_active                | estado / activo     | Indica si la subcategoría está Activo (1) o Inactivo (0) <br> *Indicates whether the subcategory is Active (1) or Inactive (0)* |
 
-## Tabla Tag
+## Tag
 
 **Descripción:** Se registran las etiquetas que un producto que puede ser catalogado. Un producto puede tener muchas etiquetas.  
 **Ejemplo:** Lápiz, Mirado, HB
@@ -60,13 +61,13 @@
 | fecha_actualizacion | Fecha de actualización del registro |
 | status_tag | Indica si la etiqueta está habilitada (1) o deshabilitada (0) |
 
-## Tabla Producto_Tag
+## Producto_Tag
 
-**Descripción:** Tabla pivote de la relación de muchos a muchos entre las tablas producto y tag. Por tal motivo solo se colocarán los id de cada tabla.
+**Descripción:** pivote de la relación de muchos a muchos entre las tablas producto y tag. Por tal motivo solo se colocarán los id de cada tabla.
 
 | Campo | Descripción |
 |-------|-------------|
-| id_producto_tag | Identificador único de la tabla |
+| id_producto_tag | Identificador único de la |
 | fk_producto |Llave foránea del producto |
 | fk_tag | Llave foránea de la etiqueta |
 | creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
@@ -74,7 +75,7 @@
 | actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
 | fecha_actualizacion | Fecha de actualización del registro |
 
-## Tabla Producto
+## Producto
 
 **Descripción:** Registra la información detallada de cada producto.
 
@@ -95,7 +96,7 @@
 >El campo tipo se debe restringir de tipo check así:
 >CHECK (tipo IN ('P','S'))
 
-## Tabla Tipo_presentacion
+## Tipo_presentacion
 
 **Descripción:** Almacena el catálogo de los tipos de presentación disponibles en el sistema (como Unidad, Caja, Paquete), permitiendo estandarizar y clasificar las distintas formas en que se pueden agrupar o comercializar los productos.
 
@@ -115,7 +116,7 @@
 >UNIQUE (fk_producto, fk_presentacion)
 >```
 
-## Tabla Presentacion
+## Presentacion
 
 **Descripción:** Define las presentaciones específicas basadas en un tipo de presentación, indicando la cantidad de unidades que contiene cada una (por ejemplo, Caja x 12, Paquete x 60). Permite reutilizar configuraciones estándar de empaques y asociarlas posteriormente a múltiples productos.
 
@@ -131,7 +132,7 @@
 | actualizado_por      | Usuario que realizó la última actualización (opcional, FK a usuario) |
 | fecha_actualizacion  | Fecha en la que se actualizó el registro                             |
 
-## Tabla Producto_presentacion
+## Producto_presentacion
 
 **Descripción:** Relaciona cada producto con sus diferentes presentaciones disponibles, estableciendo el precio de venta y configuraciones específicas para cada una. Permite definir cómo se comercializa un producto en distintas cantidades o empaques dentro del sistema.
 
@@ -148,7 +149,7 @@
 | actualizado_por              | Usuario que realizó la última actualización (opcional, FK a usuario)           |
 | fecha_actualizacion          | Fecha en la que se actualizó el registro                                       |
 
-## Tabla Producto_Precio
+## Producto_Precio
 
 **Descripción:** Registra la información del histórico de precios de cada producto.
 
@@ -170,7 +171,7 @@
 >Se debe garantizar la fecha_final se igual o superior a la fecha_inicio así:
 >CHECK (fecha_final IS NULL OR fecha_final > fecha_inicio)
 
-## Tabla Promocion
+## Promocion
 
 **Descripción:** Solo registra el nombre de las promociones según las temporadas de ventas.
 
@@ -183,7 +184,7 @@
 | fecha_creacion | Fecha de creación del registro|
 | fecha_actualizacion | Fecha de actualización del registro |
 
-## Tabla Producto_Promoción
+## Producto_Promoción
 
 **Descripción:** Se registra las promociones que existen tales como temporada escolar o descuento de comfaboy entre otras.
 
@@ -198,7 +199,7 @@
 | fecha_creacion | Fecha de creación del registro (Cuenta como fecha de inicio del precio y como creación del registro)|
 | fecha_actualizacion | Fecha de actualización del registro |
 
-## Tabla Pendiente_compra
+## Pendiente_compra
 
 **Descripción:** Guarda las compras pendientes generadas por bajo stock o por solicitud de ampliar el stock
 
@@ -220,7 +221,7 @@
 >ON pendiente_compra (fk_producto)
 >WHERE estado_solicitud IN ('PENDIENTE','EN_PROCESO');
 
-## Tabla Solicitud_producto
+## Solicitud_producto
 
 **Descripción:** Hace referencia a la anotación de nuevos productos que no existen en el inventario y que se desea traer.
 
@@ -244,7 +245,7 @@
 >[!NOTE]
 >Teniendo en cuenta que la primera vez que se genera el registro no se ha creado el producto en la base de datos, una vez sea COMPRADO se debe Actualizar el id del producto, junto con el id del proveedor.
 
-## Tabla Producto_img_video
+## Producto_img_video
 **Descripción:** Guarda los nombres de las imágenes y videos del producto.
 
 | Campo | Descripción |
@@ -254,7 +255,7 @@
 | tipo_archivo_prodiv | Tipo de archivo (imagen o video) |
 | fk_producto | Referencia al producto relacionado |
 
-## Tabla Producto_codigo
+## Producto_codigo
 **Descripción:** Un mismo tipo de producto puede tener varios códigos de barra y por ende varios códigos manuales, sobretodo marcas blancas. El software mostrará en pantalla las opciones encontradas con el mismo código en caso de repetirse con la de algún otro producto. Ya que varios proveedores manejan su propio sistema de códigos de barra.
 
 | Campo | Descripción |
@@ -264,7 +265,7 @@
 | codigo_manual | Últimos 6 caracteres del código de barras (usado como identificación manual) |
 | fk_producto | Referencia al producto |
 
-## Tabla Producto_oferta
+## Producto_oferta
 **Descripción:** Las ofertas son aquellas que representan un valor menor del producto a partir de una cantidad mínima de venta.    
 **Ejemplo:** 12 lápices normalmente se vendería en $12.000, sin embargo por la cantidad se puede realizar un pequeño descuento, y cuya venta puede darse en $10.000.
 
@@ -276,7 +277,7 @@
 | valor_venta_oferta | Precio de venta unitario durante la oferta |
 | status_oferta | Indica si la oferta está habilitada (1) o deshabilitada (0) |
 
-## Tabla Ubicacion
+## Ubicacion
 **Descripción:** Se registra el nombre de las ubicaciones con las que cuenta la empresa para almacenar los productos.  
 **Ejemplo:** Bodega 1, Bodega 2, Almacén
 
@@ -291,8 +292,8 @@
 | fecha_actualizacion | Fecha de actualización del registro |
 | status_ubicacion | Indica si la ubicación está habilitada (1) o deshabilitada (0) |
 
-## Tabla Snapshot_ubicacion
-**Descripción:** Es una tabla caché para almacenar y actualizar en un mismo registro la cantidad existente de un producto en cierta ubicación, va de la mano con la tabla Movimiento_inventario. Se actualiza en cada movimiento. 
+## Snapshot_ubicacion
+**Descripción:** Es una caché para almacenar y actualizar en un mismo registro la cantidad existente de un producto en cierta ubicación, va de la mano con la Movimiento_inventario. Se actualiza en cada movimiento. 
 **Ejemplo:** 200 Lapices Mirado en Bodega 1, 25 Lapices Mirado en Almacén  
 
 | Campo | Descripción |
@@ -309,7 +310,7 @@
 >ADD CONSTRAINT unique_producto_ubicacion
 >UNIQUE (fk_producto, fk_ubicacion);
 
-## Tabla Departamento
+## Departamento
 **Descripción:** Almacena los nombres de los departamentos de Colombia
 
 | Campo | Descripción |
@@ -317,7 +318,7 @@
 | id_depart | Identificador del departamento |
 | nombre_depart | Nombre del departamento |
 
-## Tabla Ciudad
+## Ciudad
 **Descripción:** Almacena los nombres de los municipios y ciudades que pertenencen a los departamentos de Colombia.
 
 | Campo | Descripción |
@@ -326,7 +327,7 @@
 | nombre_ciudad | Nombre de la ciudad |
 | fk_depart | Referencia al departamento |
 
-## Tabla Proveedor
+## Proveedor
 
 | Campo | Descripción |
 |-------|-------------|
@@ -338,7 +339,7 @@
 | status_proveedor | Indica si el proveedor está habilitado (1) o deshabilitado (0) |
 | fk_ciudad | Referencia a la ciudad del proveedor |
 
-## Tabla Telefono_proveedor
+## Telefono_proveedor
 
 **Descripción:** Por lo general un proveedor tiene varios teléfonos y es necesario guardarlos todos
 
@@ -350,7 +351,7 @@
 | fk_proveedor | Referencia a proveedor |
 | status_tel_proveedor | Indica si el numero teléfónico está habilitado (1) o deshabilitado (0) |
 
-## Tabla Metodo_pago
+## Metodo_pago
 
 | Campo | Descripción |
 |-------|-------------|
@@ -358,9 +359,9 @@
 | descipcion_metodo_pago | Descripción del método de pago |
 | status_metodo_pago | Indica si el método está habilitado (1) o deshabilitado (0) |
 
-## Tabla Compra_master
+## Compra_master
 
-**Descripción:** Almacena los datos generales de una compra, pero la relación de productos comprados, se realiza en otra tabla llamada *Compra_detalle*
+**Descripción:** Almacena los datos generales de una compra, pero la relación de productos comprados, se realiza en otra llamada *Compra_detalle*
 
 | Campo | Descripción |
 |-------|-------------|
@@ -377,9 +378,9 @@
 | fecha_actualizacion | Fecha de actualización de la compra |
 | estado_compra_master | Estado de la compra (Registrada, Pagada, Anulada) |
 
-## Tabla Compra_detalle
+## Compra_detalle
 
-**Descripción:** Relaciona todos los productos comprados que pertenezcan a la tabla *Compra_Master*
+**Descripción:** Relaciona todos los productos comprados que pertenezcan a la *Compra_Master*
 
 | Campo | Descripción |
 |-------|-------------|
@@ -394,9 +395,9 @@
 | valor_venta_compra_detalle | Valor de venta calculado del producto |
 | fecha_vencimiento_compra_detalle | Fecha de vencimiento del producto (si aplica) |
 
-## Tabla Abono_compra
+## Abono_compra
 
-**Descripción:** Esta tabla almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta tabla se puede saber la cantidad de veces que ha abonado al proveedor sobre la misma factura 
+**Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado al proveedor sobre la misma factura 
 
 | Campo | Descripción |
 |-------|-------------|
@@ -409,9 +410,9 @@
 | fk_compra_master | Referencia a la compra_master |
 | observaciones_abono_compra | Observaciones |
 
-## Tabla Devolucion_compra
+## Devolucion_compra
 
-**Descripción:** Esta tabla relaciona los productos que se devuelven al proveedor con su respectiva justificación.
+**Descripción:** Esta relaciona los productos que se devuelven al proveedor con su respectiva justificación.
 
 | Campo | Descripción |
 |-------|-------------|
@@ -422,7 +423,7 @@
 | estado_devolucion_compra | (0) Si está pendiente (1) si ya se realizó la devolución |
 | observaciones_devolucion_compra | Justificación de la devolución |
 
-## Tabla Usuario
+## Usuario
 
 | Campo | Descripción |
 |-------|-------------|
@@ -437,7 +438,7 @@
 | fk_ciudad | Ciudad del usuario |
 | status_usuario_sistema | Indica si el usuario está habilitado (1) o deshabilitado (0) |
 
-## Tabla Cliente
+## Cliente
 **Descripción:** Almacena clientes tanto corporativos como particulares
 
 | Campo | Descripción |
@@ -449,9 +450,9 @@
 | direccion_cliente | Dirección del cliente |
 | email_cliente | Correo electrónico del cliente |
 | tipo_cliente | Es un cliente Particular(P) o Corporativo(C) |
-| fk_ciudad | Referencia a la tabla Ciudad |
+| fk_ciudad | Referencia a la Ciudad |
 
-## Tabla Empleado_cliente
+## Empleado_cliente
 
 **Descripción:** Registra los nombres de los empleados que trabajan para los clientes corporativos que solicitan los productos. Pensado en la trazabilidad de las solicitudes en compras a cŕedito.
 
@@ -463,9 +464,9 @@
 | nombre_empleado_cliente | Nombre del empleado |
 | tel_empleado_cliente | Teléfono del empleado |
 
-## Tabla Venta_master
+## Venta_master
 
-**Descripción:** Al igual que la tabla *Compra_master*, almacena los datos generales de la Venta
+**Descripción:** Al igual que la *Compra_master*, almacena los datos generales de la Venta
 
 | Campo | Descripción |
 |-------|-------------|
@@ -484,9 +485,9 @@
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
 
-## Tabla Venta_detalle
+## Venta_detalle
 
-**Descripción:** Se relaciona el detalle de cada producto vendido al cliente, la razón por la cual se relaciona el usuario en esta tabla se debe a las ventas a *crédito* que se pueden realizar a un cliente en diferentes fechas, y por lo tanto, pudo venderse el producto por empleados diferentes.
+**Descripción:** Se relaciona el detalle de cada producto vendido al cliente, la razón por la cual se relaciona el usuario en esta se debe a las ventas a *crédito* que se pueden realizar a un cliente en diferentes fechas, y por lo tanto, pudo venderse el producto por empleados diferentes.
 
 | Campo | Descripción |
 |-------|-------------|
@@ -502,9 +503,9 @@
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
 
-## Tabla Devolucion_venta
+## Devolucion_venta
 
-**Descripción:** Esta tabla relaciona los productos que se devuelven por parte del cliente con su respectiva justificación.
+**Descripción:** Esta relaciona los productos que se devuelven por parte del cliente con su respectiva justificación.
 
 | Campo | Descripción |
 |-------|-------------|
@@ -514,8 +515,8 @@
 | cant_devolucion_venta | Cantidad devuelta del producto |
 | observaciones_devolucion_venta | Justificación de la devolución |
 
-## Tabla Abono_venta
-**Descripción:** Esta tabla almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta tabla se puede saber la cantidad de veces que ha abonado un cliente a la misma factura 
+## Abono_venta
+**Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado un cliente a la misma factura 
 
 | Campo | Descripción |
 |-------|-------------|
@@ -530,7 +531,7 @@
 | fk_venta_master | Referencia a la venta master |
 | observaciones_abono_venta | Observaciones del pago |
 
-## Tabla Movimiento_inventario
+## Movimiento_inventario
 **Descripción:** Se realizarán los 3 inventarios LIFO FIFO Y PONDERADO
 
 | Campo | Descripción |
@@ -543,13 +544,13 @@
 | fecha_hora_inventario | Fecha y hora del movimiento |
 | fk_compra_detalle | Referencia al detalle de compra, debe permitir valores null|
 | fk_venta_detalle | Referencia al detalle de venta, debe permitir valores null|
-| fk_ubicacion | Referencia a la tabla ubicación|
+| fk_ubicacion | Referencia a la ubicación|
 | id_grupo_movimiento | Se usa para agrupar movimientos que pertenecen a una misma operación (compra distribuida, venta, traslado, ajuste, etc.) |
 | observaciones | En caso de haber devoluciones, ajustes, traslados, se debe especificar la razón por la que se dió este movimiento|
 
 >[!NOTE]
 >
->No se relaciona la llave foránea del usuario ya que es una tabla que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final, sin embargo es el corazón del software.
+>No se relaciona la llave foránea del usuario ya que es una que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final, sin embargo es el corazón del software.
 >
 >Las opciones ajuste positivo (AP) y ajuste negativo (AN) se utilizará para dos fines, ya sea por encontrar productos o pérdida de de los mismos, O para traslados de mercancia entre dos ubicaciones, esa especificación irá en el campo observaciones, en el cual se deben mostrar sugerencias de llenado.
 >
@@ -590,7 +591,7 @@
 >)
 >Si es una compra (C), debe venir de compra_detalle, pero si es una venta (V), debe venir de venta_detalle
 
-## Tabla Inventario_capas
+## Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
 
 | Campo | Descripción |
@@ -604,15 +605,15 @@
 | fecha_capa | Fecha de la entrada |
 | status_capa | Solo contendrá dos valores A=Activa o C=Cerrada, solo se cerrará cuando cant_restante sea igual a 0, para realizar filtros y operaciones más rápidas |
 
-## Tabla Inventario_salida_detalle
+## Inventario_salida_detalle
 **Descripción:** Registra el detalle del consumo de inventario por capas para cada venta, 
 permitiendo identificar el costo real de los productos vendidos según el método de costeo (FIFO, o Ponderado).
 | Campo | Descripción |
 |-------|-------------|
 | id_salida_detalle | Identificador de la salida|
-| fk_venta_detalle  | Llave foránea de la tabla venta_detalle |
-| fk_capa           | Llave foránea de la tabla inventario_capas |
-| fk_producto       | Llave foránea de la tabla producto (para agilizar consultas) |
+| fk_venta_detalle  | Llave foránea de la venta_detalle |
+| fk_capa           | Llave foránea de la inventario_capas |
+| fk_producto       | Llave foránea de la producto (para agilizar consultas) |
 | cantidad_salida   | cantidad vendida |
 | costo_unitario    | costo unitario proveniente de la capa |
 | subtotal_costo    | multiplicación de la cantidad_salida x costo_unitario |
@@ -627,12 +628,12 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 >```
 >
 
-## Tabla Kardex_fifo
+## Kardex_fifo
 **Descripción:** Mantiene actualizado el inventario FIFO
 
 | Campo | Descripción |
 |-------|-------------|
-| id_kardex_fifo | id de la tabla |
+| id_kardex_fifo | id de la |
 | fk_inventario | Referencia al id del inventario para obtener datos de las otras entidades como producto, compra_detalle, venta_detalle |
 | cant_entrada | Cantidad que ingresa |
 | cant_salida | Cantidad que egresa |
@@ -640,12 +641,12 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 | valor_saldo | Valor actual del inventario |
 | fecha_movimiento | Fecha del movimiento |
 
-## Tabla Kardex_ponderado
+## Kardex_ponderado
 **Descripción:** Mantiene actualizado el inventario PONDERADO
 
 | Campo | Descripción |
 |-------|-------------|
-| id_kardex_ponderado | id de la tabla |
+| id_kardex_ponderado | id de la |
 | fk_inventario | Referencia al id del inventario para obtener datos de las otras entidades como producto, compra_detalle, venta_detalle |
 | cant_entrada | Cantidad que ingresa |
 | cant_salida | Cantidad que egresa |
@@ -653,8 +654,8 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 | valor_saldo | Valor actual del inventario |
 | fecha_movimiento | Fecha del movimiento |
 
-## Tabla Snapshot_inventario
-**Descripción:** Registra el corte mensual de cada uno de los inventarios de los productos para evitar consultas lentas en la tabla *Inventario_Movimiento*
+## Snapshot_inventario
+**Descripción:** Registra el corte mensual de cada uno de los inventarios de los productos para evitar consultas lentas en la *Inventario_Movimiento*
 
 | Campo | Descripción |
 |-------|-------------|
@@ -665,8 +666,8 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 | costo_lifo_snapshot | Costo final del inventario LIFO |
 | costo_ponderado_snapshot | Costo final del inventario Ponderado |
 
-## Tabla Stock_actual
-**Descripción:** Se basa en la cantidad del stock actual de cada producto basado en la tabla llamada Movimiento_inventario, con el fin de obtener el saldo de cada producto en tiempo real
+## Stock_actual
+**Descripción:** Se basa en la cantidad del stock actual de cada producto basado en la llamada Movimiento_inventario, con el fin de obtener el saldo de cada producto en tiempo real
 
 | Campo | Descripción |
 |-------|-------------|
@@ -674,9 +675,9 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 | fk_producto | Referencia al producto |
 | cant_stock | Cantidad actual del producto |
 
-## Tabla Cotizacion_master
+## Cotizacion_master
 
-**Descripción:** Al igual que la tabla *Compra_master*, almacena los datos generales de la Cotización
+**Descripción:** Al igual que la *Compra_master*, almacena los datos generales de la Cotización
 
 | Campo | Descripción |
 |-------|-------------|
@@ -733,7 +734,7 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 > );
 >```
 
-## Tabla Cotizacion_Detalle
+## Cotizacion_Detalle
 
 **Descripción:** Se relaciona el detalle de cada producto cotizado al cliente.
 
@@ -797,14 +798,14 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 >);
 >```
 
-## Tabla Modulo
+## Modulo
 **Descripción:** Almacena el nombre de cada uno de los módulos visibles para el usuario
 | Campo | Descripción |
 |-------|-------------|
 | id_modulo | Identificador del módulo |
 | nombre_modulo | Nombre del módulo |
 
-## Tabla Permisos_Usuario_Modulo
+## Permisos_Usuario_Modulo
 **Descripción:** Almacena la relación de los permisos de tiene cada usuario con respecto a cada uno de los módulos visible en el software web
 
 | Campo | Descripción |
@@ -817,7 +818,7 @@ permitiendo identificar el costo real de los productos vendidos según el métod
 | actualizar_registro | Permiso para actualizar registros |
 | eliminar_registro | Permiso para eliminar registros |
 
-## Tabla Datos_empresa
+## Datos_empresa
 **Descripción:** Almacena los datos de la empresa que hace uso del software para mostrarlo en los reportes.
 
 | Campo | Descripción |
@@ -976,7 +977,7 @@ permitiendo identificar el costo real de los productos vendidos según el métod
       
    ## Resultado de Indexes:
 
-   | Tabla                     | Índice                             |
+   |                     | Índice                             |
    | ------------------------- | ---------------------------------- |
    | movimiento_inventario     | fk_producto, fecha_hora_inventario |
    | inventario_salida_detalle | fk_venta_detalle                   |
