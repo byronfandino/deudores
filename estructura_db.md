@@ -112,12 +112,6 @@
 | created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*                                            |
 | updated_at               | fecha_actualizacion | Fecha de actualización del registro <br> *Date when the record was last updated*                                  |
 
->[!NOTE]
->Es necesario evitar la duplicación de la misma presentación para un producto con el siguie nte constraint
->```SQL
-> UNIQUE (fk_producto, fk_presentacion)
->```
-
 ## Presentations | Presentaciones
 
 **Descripción:** Define las presentaciones específicas basadas en un tipo de presentación, indicando la cantidad de unidades que contiene cada una (por ejemplo, Caja x 12, Paquete x 60). Permite reutilizar configuraciones estándar de empaques y asociarlas posteriormente a múltiples productos.
@@ -134,138 +128,169 @@
 | created_at               | fecha_creacion       | Fecha de creación del registro <br> *Date when the record was created*                                      |
 | updated_at               | fecha_actualizacion  | Fecha de actualización del registro <br> *Date when the record was last updated*                            |
 
-## Presentations_product | Producto_presentacion
+## Product_presentations | Presentaciones de producto
 
 **Descripción:** Relaciona cada producto con sus diferentes presentaciones disponibles, estableciendo el precio de venta y configuraciones específicas para cada una. Permite definir cómo se comercializa un producto en distintas cantidades o empaques dentro del sistema.
 
-| Campo                        | Descripción                                                                    |
-| ---------------------------- | ------------------------------------------------------------------------------ |
-| id_producto_presentacion     | Identificador único del registro                                               |
-| fk_producto                  | Referencia al producto (FK a producto)                                         |
-| fk_presentacion              | Referencia a la presentación (FK a Presentacion)                               |
-| precio_venta                 | Precio de venta para esa presentación específica                               |
-| presentacion_default         | Indica si es la presentación principal del producto (1 = sí, 0 = no)           |
-| status_producto_presentacion | Indica si la presentación del producto está habilitada (1) o deshabilitada (0) |
-| creado_por                   | Usuario que creó el registro (opcional, FK a usuario)                          |
-| fecha_creacion               | Fecha en la que se creó el registro                                            |
-| actualizado_por              | Usuario que realizó la última actualización (opcional, FK a usuario)           |
-| fecha_actualizacion          | Fecha en la que se actualizó el registro                                       |
+| Campo (Laravel / Inglés) | Traducción           | Descripción                                                                                                                  |
+| ------------------------ | -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id                   | Identificador único del registro <br> *Unique identifier of the record*                                                      |
+| product_id               | fk_producto          | Referencia al producto <br> *Reference to the product*                                                                       |
+| presentation_id          | fk_presentacion      | Referencia a la presentación <br> *Reference to the presentation*                                                            |
+| sale_price               | precio_venta         | Precio de venta para esa presentación <br> *Sale price for this specific presentation*                                       |
+| is_default               | presentacion_default | Indica si es la presentación principal del producto <br> *Indicates whether this is the default presentation of the product* |
+| is_active                | estado / activo      | Indica si la presentación del producto está habilitada <br> *Indicates whether the product presentation is enabled*          |
+| created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                                                              |
+| updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*                                                         |
+| created_at               | fecha_creacion       | Fecha de creación del registro <br> *Date when the record was created*                                                       |
+| updated_at               | fecha_actualizacion  | Fecha de actualización del registro <br> *Date when the record was last updated*                                             |
 
-## Producto_Precio
+>[!NOTE]
+>Es necesario evitar la duplicación de la misma presentación para un producto con el siguie nte constraint
+>```SQL
+> UNIQUE (product_id, presentation_id)
+>```
+>
+>El campo *is_default* se debe especificar como tipo boolean, donde 1 indica que es el campo por defecto.
+
+## product_prices | Producto_Precio
 
 **Descripción:** Registra la información del histórico de precios de cada producto.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_producto_precio | Identificador único del producto |
-| fk_producto | llave foránea del producto |
-| precio_venta_producto | Valor de venta por defecto del producto |
-| precio_compra_referencia | Valor de la compra para calcular la ganancia |
-| valor_descuento_producto | Valor de descuento aplicado durante temporadas especiales |
-| fecha_inicio | Fecha en la que se registra un nuevo precio (Se crea al mismo tiempo que la creación del registro)|
-| fecha_final | Fecha de duración del precio (Se actualiza de null a la nueva fecha cuando existe un nuevo precio del mismo producto y es el equivalente a la fecha de inicio de la siguiente creación del registro del precio)|
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro (Cuenta como fecha de inicio del precio y como creación del registro)|
-| fecha_actualizacion | Fecha de actualización del registro |
+| Campo (Laravel / Inglés) | Traducción               | Descripción                                                                      |
+| ------------------------ | ------------------------ | -------------------------------------------------------------------------------- |
+| id                       | id                       | Identificador único del registro <br> *Unique identifier of the record*          |
+| product_id               | fk_producto              | Referencia al producto <br> *Reference to the product*                           |
+| sale_price               | precio_venta_producto    | Precio de venta del producto <br> *Sale price of the product*                    |
+| purchase_reference_price | precio_compra_referencia | Precio de compra de referencia <br> *Reference purchase price*                   |
+| discount_value           | valor_descuento_producto | Valor de descuento aplicado <br> *Discount value applied*                        |
+| start_date               | fecha_inicio             | Fecha de inicio del precio <br> *Start date of the price validity*               |
+| end_date                 | fecha_final              | Fecha de finalización del precio <br> *End date of the price validity*           |
+| created_by               | creado_por               | Usuario que creó el registro <br> *User who created the record*                  |
+| updated_by               | actualizado_por          | Usuario que actualizó el registro <br> *User who updated the record*             |
+| created_at               | fecha_creacion           | Fecha de creación del registro <br> *Date when the record was created*           |
+| updated_at               | fecha_actualizacion      | Fecha de actualización del registro <br> *Date when the record was last updated* |
 
 >[!NOTE]
->Se debe garantizar la fecha_final se igual o superior a la fecha_inicio así:
->CHECK (fecha_final IS NULL OR fecha_final > fecha_inicio)
+>Se debe garantizar la *end_date* (fecha_final) sea igual o superior a la *start_date* (fecha_inicio) así:
+>```SQL
+>  CHECK (end_date IS NULL OR end_date > start_date)
+>```
+>En el campo *start_date* se registra un nuevo precio (Se crea al mismo tiempo que la creación del registro)
+>En el campo *end_date* se registra la duración del precio (Se actualiza de null a la nueva fecha cuando existe un nuevo precio del mismo producto y es el equivalente a la fecha de inicio de la siguiente creación del registro del precio)
 
-## Promocion
+## promotions | Promocion
 
-**Descripción:** Solo registra el nombre de las promociones según las temporadas de ventas.
+**Descripción:** Solo registra el nombre de las promociones según las temporadas de ventas. <br> *Ejemplo:* Temporada escolar, Comfaboy, ...
 
-| Campo | Descripción |
-|-------|-------------|
-| id_promocion | Identificador único de la promoción |
-| nombre_promocion |  |
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro|
-| fecha_actualizacion | Fecha de actualización del registro |
+| Campo (Laravel / Inglés) | Traducción          | Descripción                                                                      |
+| ------------------------ | ------------------- | -------------------------------------------------------------------------------- |
+| id                       | id                  | Identificador único de la promoción <br> *Unique identifier of the promotion*    |
+| name                     | nombre_promocion    | Nombre de la promoción <br> *Name of the promotion*                              |
+| created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                  |
+| updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*             |
+| created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*           |
+| updated_at               | fecha_actualizacion | Fecha de actualización del registro <br> *Date when the record was last updated* |
 
-## Producto_Promoción
+## product_promotions | Producto_Promoción
 
 **Descripción:** Se registra las promociones que existen tales como temporada escolar o descuento de comfaboy entre otras.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_producto_promocion | Identificador único del producto |
-| fk_producto | llave foránea del producto |
-| fk_promocion | llave foránea de la promoción |
-| valor_descuento_producto | Valor de descuento aplicado durante temporadas especiales |
-| creado_por | Usuario que creó el registro (FK a usuario_sistema.id_us) |
-| actualizado_por | Usuario que actualizó el registro (FK a usuario_sistema.id_us) |
-| fecha_creacion | Fecha de creación del registro (Cuenta como fecha de inicio del precio y como creación del registro)|
-| fecha_actualizacion | Fecha de actualización del registro |
+| Campo (Laravel / Inglés) | Traducción               | Descripción                                                                      |
+| ------------------------ | ------------------------ | -------------------------------------------------------------------------------- |
+| id                       | id                       | Identificador único del registro <br> *Unique identifier of the record*          |
+| product_id               | fk_producto              | Referencia al producto <br> *Reference to the product*                           |
+| promotion_id             | fk_promocion             | Referencia a la promoción <br> *Reference to the promotion*                      |
+| discount_value           | valor_descuento_producto | Valor de descuento aplicado <br> *Discount value applied to the product*         |
+| created_by               | creado_por               | Usuario que creó el registro <br> *User who created the record*                  |
+| updated_by               | actualizado_por          | Usuario que actualizó el registro <br> *User who updated the record*             |
+| created_at               | fecha_creacion           | Fecha de creación del registro <br> *Date when the record was created*           |
+| updated_at               | fecha_actualizacion      | Fecha de actualización del registro <br> *Date when the record was last updated* |
 
-## Pendiente_compra
+>[!NOTE]
+>Evitar duplicados
+>```SQL
+>  $table->unique(['product_id', 'promotion_id']);
+>```
+
+## pending_purchases | Pendiente_compra
 
 **Descripción:** Guarda las compras pendientes generadas por bajo stock o por solicitud de ampliar el stock
 
-| Campo | Descripción |
-|-------|-------------|
-| id_pendiente | Identificador único de la compra pendiente |
-| fk_producto | Referencia al producto pendiente (FK a producto.id_prod) |
-| fk_proveedor | Referencia al proveedor que se desea solicitar, puede ser null |
-| fecha_pendiente | Fecha desde la cual está pendiente la compra |
-| cant_pendiente | Cantidad que se debe comprar al proveedor |
-| estado_pendiente | ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
-| origen_pendiente | ENUM('STOCK_MINIMO','MANUAL') |
-| observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
+| Campo (Laravel / Inglés) | Traducción          | Descripción                                                                                                                                                  |
+|--------------------------|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id                       | id                  | Identificador único del pendiente de compra Unique identifier of the pending purchase                                                                        |
+| product_id               | fk_producto         | Referencia al producto Reference to the product                                                                                                              |
+| supplier_id              | fk_proveedor        | Referencia al proveedor (puede ser nulo) Reference to the supplier (nullable)                                                                                |
+| pending_date             | fecha_pendiente     | Fecha desde la cual está pendiente la compra Date since the purchase is pending                                                                              |
+| quantity                 | cant_pendiente      | Cantidad que se debe comprar Quantity to be purchased                                                                                                        |
+| status                   | estado_pendiente    | Estado del pendiente ('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') <br> Status of the pending purchase ('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO') |
+| source                   | origen_pendiente    | Origen del pendiente (stock mínimo o manual) <br> Origin of the pending request (minimum stock or manual)                                                    |
+| notes                    | observaciones       | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo                                        |
+| created_at               | fecha_creacion      | Fecha de creación del registro Date when the record was created                                                                                              |
+| updated_at               | fecha_actualizacion | Fecha de actualización del registro Date when the record was last updated                                                                                    |
+
 >[!NOTE]
 >El campo origen_pend se utiliza para especificar si el pendiente de la compra se originó por bajo stock o sencillamente se decidió solicitar más producto teniendo sufieciente stock
 >
 >Se deben evitar la duplicidad de la misma solicitud del producto que se encuentre en PENDIENTE o EN PROCESO, según el estado, ya que si se puede duplicar cuando el estado es COMPRADO o CANCELADO
->CREATE UNIQUE INDEX unique_pendiente_activo
->ON pendiente_compra (fk_producto)
->WHERE estado_solicitud IN ('PENDIENTE','EN_PROCESO');
+>```SQL
+>  CREATE UNIQUE INDEX unique_active_pending
+>  ON pending_purchases (product_id)
+>  WHERE status IN ('pending','in_progress');
+>```
+>En el campo *status* solo acepta los siguientes valores:
+>```SQL
+>  ENUM('PENDIENTE','EN_PROCESO','COMPRADO','CANCELADO')
+>```
+>En el campo *source* solo acepta los siguientes valores:
+>```SQL
+>  ENUM('STOCK_MINIMO','MANUAL')
+>```
 
-## Solicitud_producto
+## product_requests | Solicitud_producto
 
 **Descripción:** Hace referencia a la anotación de nuevos productos que no existen en el inventario y que se desea traer.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_solicitud | Identificador único de la solicitud|
-| fk_proveedor | Llave foránea del proveedor, puede ser null|
-| descripcion_producto |  |
-| cant_solicitud | Cantidad que se debe comprar al proveedor |
-| estado_solicitud | ENUM('PENDIENTE','APROBADO','COMPRADO','RECHAZADO') |
-| fk_producto | llave foránea del producto, puede ser null |
-| prioridad | ENUM(ALTA, MEDIA, BAJA) |
-| observaciones | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
-| creado_por | llave foránea del usuario |
-| fecha_creacion |  |
-| aprobado_por | llave foránea del usuario |
-| fecha_abprobacion |  |
-| actualizado_por | llave foránea del usuario |
-| fecha_actualización |  |
+| Campo (Laravel / Inglés) | Traducción           | Descripción                                                                                                           |
+|--------------------------|----------------------|-----------------------------------------------------------------------------------------------------------------------|
+| id                       | id                   | Identificador único de la solicitud Unique identifier of the request                                                  |
+| product_id               | fk_producto          | Referencia al producto (puede ser nulo) Reference to the product (nullable)                                           |
+| supplier_id              | fk_proveedor         | Proveedor asociado (puede ser nulo) Associated supplier (nullable)                                                    |
+| product_description      | descripcion_producto | Descripción del producto solicitado Description of the requested product                                              |
+| quantity                 | cant_solicitud       | Cantidad solicitada Requested quantity                                                                                |
+| status                   | estado_solicitud     | ENUM('PENDIENTE','APROBADO','COMPRADO','RECHAZADO')                                                                   |
+| priority                 | prioridad            | ENUM(ALTA, MEDIA, BAJA)                                                                                               |
+| notes                    | observaciones        | Se especifica el motivo del estado del producto a solicitar ya que es posible generar el pendiente y luego cancelarlo |
+| created_by               | creado_por           | Usuario que creó la solicitud User who created the request                                                            |
+| approved_by              | aprobado_por         | Usuario que aprobó la solicitud User who approved the request                                                         |
+| created_at               | fecha_creacion       | Fecha de creación Creation date                                                                                       |
+| approved_at              | fecha_aprobacion     | Fecha de aprobación Approval date                                                                                     |
+| updated_by               | actualizado_por      | Usuario que actualizó User who updated the record                                                                     |
+| updated_at               | fecha_actualizacion  | Fecha de actualización Last update date                                                                               |
 
 >[!NOTE]
 >Teniendo en cuenta que la primera vez que se genera el registro no se ha creado el producto en la base de datos, una vez sea COMPRADO se debe Actualizar el id del producto, junto con el id del proveedor.
 
-## Producto_img_video
+## product_files | Archivos adjuntos del producto
 **Descripción:** Guarda los nombres de las imágenes y videos del producto.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_archivo | Identificador único del registro |
-| nombre_archivo | Nombre del archivo multimedia |
-| tipo_archivo_prodiv | Tipo de archivo (imagen o video) |
-| fk_producto | Referencia al producto relacionado |
+| Campo (Laravel / Inglés) | Traducción          | Descripción                                                                |
+| ------------------------ | ------------------- | -------------------------------------------------------------------------- |
+| id                       | id_archivo          | Identificador único del registro <br> *Unique identifier of the record*    |
+| file_name                | nombre_archivo      | Nombre del archivo multimedia <br> *Name of the multimedia file*           |
+| file_type                | tipo_archivo_prodiv | Tipo de archivo (imagen o video) <br> *Type of file (image or video)*      |
+| product_id               | fk_producto         | Referencia al producto relacionado <br> *Reference to the related product* |
 
-## Producto_codigo
+## product_codes | Producto_codigo
 **Descripción:** Un mismo tipo de producto puede tener varios códigos de barra y por ende varios códigos manuales, sobretodo marcas blancas. El software mostrará en pantalla las opciones encontradas con el mismo código en caso de repetirse con la de algún otro producto. Ya que varios proveedores manejan su propio sistema de códigos de barra.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_codigo | Identificador único del código |
-| codigo_barras | Código de barras del producto (pueden existir varios) |
-| codigo_manual | Últimos 6 caracteres del código de barras (usado como identificación manual) |
-| fk_producto | Referencia al producto |
+| Campo (Laravel / Inglés) | Traducción    | Descripción                                                                                                                                      |
+| ------------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| id                       | id_codigo     | Identificador único del código <br> *Unique identifier of the code*                                                                              |
+| barcode                  | codigo_barras | Código de barras del producto (pueden existir varios) <br> *Product barcode (multiple values can exist)*                                         |
+| manual_code              | codigo_manual | Últimos 6 caracteres del código de barras (usado como identificación manual) <br> *Last 6 characters of the barcode (used as manual identifier)* |
+| product_id               | fk_producto   | Referencia al producto <br> *Reference to the product*                                                                                           |
 
 ## Producto_oferta
 **Descripción:** Las ofertas son aquellas que representan un valor menor del producto a partir de una cantidad mínima de venta.    
