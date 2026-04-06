@@ -130,7 +130,7 @@
 
 ## Product_presentations | Presentaciones de producto
 
-**Descripción:** Relaciona cada producto con sus diferentes presentaciones disponibles, estableciendo el precio de venta y configuraciones específicas para cada una. Permite definir cómo se comercializa un producto en distintas cantidades o empaques dentro del sistema.
+**Descripción:** Relaciona cada producto con sus diferentes presentaciones disponibles, estableciendo el precio de venta y configuraciones específicas para cada una. Permite definir cómo se comercializa un producto en distintas cantidades o empaques dentro del sistema. Ojo pero no guarda el histórico de precios, solo se actualiza el precio actual de acuerdo a la presentación
 
 | Campo (Laravel / Inglés) | Traducción           | Descripción                                                                                                                  |
 | ------------------------ | -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
@@ -139,31 +139,37 @@
 | presentation_id          | fk_presentacion      | Referencia a la presentación <br> *Reference to the presentation*                                                            |
 | sale_price               | precio_venta         | Precio de venta para esa presentación <br> *Sale price for this specific presentation*                                       |
 | is_default               | presentacion_default | Indica si es la presentación principal del producto <br> *Indicates whether this is the default presentation of the product* |
-| is_active                | estado / activo      | Indica si la presentación del producto está habilitada <br> *Indicates whether the product presentation is enabled*          |
+| is_active                | estado / activo      | Indica si la presentación del producto está Activa <br> *Indicates whether the product presentation is Active*               |
 | created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                                                              |
 | updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*                                                         |
 | created_at               | fecha_creacion       | Fecha de creación del registro <br> *Date when the record was created*                                                       |
 | updated_at               | fecha_actualizacion  | Fecha de actualización del registro <br> *Date when the record was last updated*                                             |
 
 >[!NOTE]
->Es necesario evitar la duplicación de la misma presentación para un producto con el siguie nte constraint
+>Es necesario evitar la duplicación de la misma presentación para un producto con el siguiente constraint
 >```SQL
-> UNIQUE (product_id, presentation_id)
+>  UNIQUE (product_id, presentation_id)
 >```
->
->El campo *is_default* se debe especificar como tipo boolean, donde 1 indica que es el campo por defecto.
+>También se debe garantizar que el mismo producto no pueda tener más de 1 is_default = true
+>```SQL
+>  CREATE UNIQUE INDEX unique_default_presentation
+>  ON product_presentations (product_id)
+>  WHERE is_default = true;
+>```
+>>El campo *is_default* se debe especificar como tipo boolean, donde 1 indica que es el campo por defecto.
 
 ## product_prices | Producto_Precio
 
-**Descripción:** Registra la información del histórico de precios de cada producto.
+**Descripción:** Registra la información del histórico de precios de cada producto. Pero solo se usará como tabla de consulta de históricos, para estadísticas porque el valor del producto como tal se obtiene de la tabla product_presentations.
 
 | Campo (Laravel / Inglés) | Traducción               | Descripción                                                                      |
 | ------------------------ | ------------------------ | -------------------------------------------------------------------------------- |
 | id                       | id                       | Identificador único del registro <br> *Unique identifier of the record*          |
 | product_id               | fk_producto              | Referencia al producto <br> *Reference to the product*                           |
+| product_presentation_id  | fk_producto_presentacion | Referencia a product_presentations <br> *Reference to the product_presentations* |
 | sale_price               | precio_venta_producto    | Precio de venta del producto <br> *Sale price of the product*                    |
 | purchase_reference_price | precio_compra_referencia | Precio de compra de referencia <br> *Reference purchase price*                   |
-| discount_value           | valor_descuento_producto | Valor de descuento aplicado <br> *Discount value applied*                        |
+| discount_value           | valor_descuento_producto | Guarda el histórico de los descuentos del producto                               |
 | start_date               | fecha_inicio             | Fecha de inicio del precio <br> *Start date of the price validity*               |
 | end_date                 | fecha_final              | Fecha de finalización del precio <br> *End date of the price validity*           |
 | created_by               | creado_por               | Usuario que creó el registro <br> *User who created the record*                  |
