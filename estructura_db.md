@@ -94,47 +94,47 @@
 
 >[!NOTE]
 >
->El campo **tipo** es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. Nunca generará registros en movimiento_inventario, inventario_capas. No obstante solamente en las ventas es importante hacer el seguimiento.
+>El campo *type* es de suma importancia ya que si es un servcio, este solo se tendrá en cuenta en las ventas, pero no tendrá ninguna implicación en los inventarios y compras. Nunca generará registros en movimiento_inventario, inventario_capas. No obstante solamente en las ventas es importante hacer el seguimiento.
 >El campo tipo se debe restringir de tipo check así:
 >CHECK (tipo IN ('P','S'))
 
-## Tipo_presentacion
+## presentation_types | Tipos de presentacion
 
 **Descripción:** Almacena el catálogo de los tipos de presentación disponibles en el sistema (como Unidad, Caja, Paquete), permitiendo estandarizar y clasificar las distintas formas en que se pueden agrupar o comercializar los productos.
 
-| Campo                | Descripción                                                               |
-| -------------------- | ------------------------------------------------------------------------- |
-| id_tipo_presentacion | Identificador único del tipo de presentación                              |
-| nombre_tipo          | Nombre del tipo de presentación (Ej: Unidad, Caja, Paquete)               |
-| status_tipo          | Indica si el tipo de presentación está habilitado (1) o deshabilitado (0) |
-| creado_por           | Usuario que creó el registro (FK a usuario)                               |
-| fecha_creacion       | Fecha en la que se creó el registro                                       |
-| actualizado_por      | Usuario que realizó la última actualización (FK a usuario)                |
-| fecha_actualizacion  | Fecha en la que se actualizó el registro                                  |
+| Campo (Laravel / Inglés) | Traducción          | Descripción                                                                                                       |
+| ------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| id                       | id                  | Identificador único del tipo de presentación <br> *Unique identifier of the presentation type*                    |
+| name                     | nombre              | Nombre del tipo de presentación (Unidad, Caja, Paquete) <br> *Name of the presentation type (Unit, Box, Package)* |
+| is_active                | estado / activo     | Indica si el tipo de presentación está habilitado <br> *Indicates whether the presentation type is enabled*       |
+| created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                                                   |
+| updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*                                              |
+| created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*                                            |
+| updated_at               | fecha_actualizacion | Fecha de actualización del registro <br> *Date when the record was last updated*                                  |
 
 >[!NOTE]
 >Es necesario evitar la duplicación de la misma presentación para un producto con el siguie nte constraint
 >```SQL
->UNIQUE (fk_producto, fk_presentacion)
+> UNIQUE (fk_producto, fk_presentacion)
 >```
 
-## Presentacion
+## Presentations | Presentaciones
 
 **Descripción:** Define las presentaciones específicas basadas en un tipo de presentación, indicando la cantidad de unidades que contiene cada una (por ejemplo, Caja x 12, Paquete x 60). Permite reutilizar configuraciones estándar de empaques y asociarlas posteriormente a múltiples productos.
 
-| Campo                | Descripción                                                          |
-| -------------------- | -------------------------------------------------------------------- |
-| id_presentacion      | Identificador único de la presentación                               |
-| fk_tipo_presentacion | Referencia al tipo de presentación (FK a Tipo_presentacion)          |
-| nombre_presentacion  | Nombre descriptivo de la presentación (Ej: Caja x 12, Paquete x 60)  |
-| cantidad_unidades    | Cantidad de unidades que contiene la presentación (Ej: 12, 60)       |
-| status_presentacion  | Indica si la presentación está habilitada (1) o deshabilitada (0)    |
-| creado_por           | Usuario que creó el registro (opcional, FK a usuario)                |
-| fecha_creacion       | Fecha en la que se creó el registro                                  |
-| actualizado_por      | Usuario que realizó la última actualización (opcional, FK a usuario) |
-| fecha_actualizacion  | Fecha en la que se actualizó el registro                             |
+| Campo (Laravel / Inglés) | Traducción           | Descripción                                                                                                 |
+| ------------------------ | -------------------- | ----------------------------------------------------------------------------------------------------------- |
+| id                       | id                   | Identificador único de la presentación <br> *Unique identifier of the presentation*                         |
+| presentation_type_id     | fk_tipo_presentacion | Referencia al tipo de presentación <br> *Reference to the presentation type*                                |
+| name                     | nombre               | Nombre de la presentación (Caja x 12, Paquete x 60) <br> *Name of the presentation (Box of 12, Pack of 60)* |
+| unit_quantity            | cantidad_unidades    | Cantidad de unidades que contiene <br> *Number of units contained in the presentation*                      |
+| is_active                | estado / activo      | Indica si la presentación está Activa <br> *Indicates whether the presentation is Active*                   |
+| created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                                             |
+| updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*                                        |
+| created_at               | fecha_creacion       | Fecha de creación del registro <br> *Date when the record was created*                                      |
+| updated_at               | fecha_actualizacion  | Fecha de actualización del registro <br> *Date when the record was last updated*                            |
 
-## Producto_presentacion
+## Presentations_product | Producto_presentacion
 
 **Descripción:** Relaciona cada producto con sus diferentes presentaciones disponibles, estableciendo el precio de venta y configuraciones específicas para cada una. Permite definir cómo se comercializa un producto en distintas cantidades o empaques dentro del sistema.
 
