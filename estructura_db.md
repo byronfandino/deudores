@@ -169,7 +169,6 @@
 | product_presentation_id  | fk_producto_presentacion | Referencia a product_presentations <br> *Reference to the product_presentations* |
 | sale_price               | precio_venta_producto    | Precio de venta del producto <br> *Sale price of the product*                    |
 | purchase_reference_price | precio_compra_referencia | Precio de compra de referencia <br> *Reference purchase price*                   |
-| discount_value           | valor_descuento_producto | Guarda el histórico de los descuentos del producto                               |
 | start_date               | fecha_inicio             | Fecha de inicio del precio <br> *Start date of the price validity*               |
 | end_date                 | fecha_final              | Fecha de finalización del precio <br> *End date of the price validity*           |
 | created_by               | creado_por               | Usuario que creó el registro <br> *User who created the record*                  |
@@ -526,10 +525,11 @@
 |-------|-------------|
 | id_venta_detalle | Identificador del detalle de venta |
 | fk_venta_master | Referencia a venta_master |
-| fk_producto | Referencia al producto vendido |
-| fk_producto_presentacion | Referencia de la presentacion del producto |
+| fk_producto_presentation | Referencia a las tablas producto y a la presentación del mismo |
+| fk_presentacion_types | Se requiere una columna para indicar la presentacion |
 | cant_venta_detalle | Cantidad vendida |
 | valor_unit_venta_detalle | Valor unitario vendido |
+| discount_value| valor_descuento_producto | Descuento únicamente del producto |
 | total_venta_detalle | Total del detalle |
 | creado_por | Usuario que creó el registro |
 | fecha_creacion | Fecha de creación del registro |
