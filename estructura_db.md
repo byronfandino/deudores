@@ -296,19 +296,6 @@
 | barcode                  | codigo_barras | Código de barras del producto (pueden existir varios) <br> *Product barcode (multiple values can exist)*                                         |
 | manual_code              | codigo_manual | Últimos 6 caracteres del código de barras (usado como identificación manual) <br> *Last 6 characters of the barcode (used as manual identifier)* |
 | product_id               | fk_producto   | Referencia al producto <br> *Reference to the product*                                                                                           |
-
-## Producto_oferta
-**Descripción:** Las ofertas son aquellas que representan un valor menor del producto a partir de una cantidad mínima de venta.    
-**Ejemplo:** 12 lápices normalmente se vendería en $12.000, sin embargo por la cantidad se puede realizar un pequeño descuento, y cuya venta puede darse en $10.000.
-
-| Campo | Descripción |
-|-------|-------------|
-| id_oferta | Identificador único de la oferta |
-| fk_producto | Referencia al producto |
-| cant_oferta | Cantidad mínima para aplicar el precio en oferta |
-| valor_venta_oferta | Precio de venta unitario durante la oferta |
-| status_oferta | Indica si la oferta está habilitada (1) o deshabilitada (0) |
-
 ## Ubicacion
 **Descripción:** Se registra el nombre de las ubicaciones con las que cuenta la empresa para almacenar los productos.  
 **Ejemplo:** Bodega 1, Bodega 2, Almacén
