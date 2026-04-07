@@ -201,16 +201,22 @@
 
 **Descripción:** Se registra las promociones que existen tales como temporada escolar o descuento de comfaboy entre otras.
 
-| Campo (Laravel / Inglés) | Traducción               | Descripción                                                                      |
-| ------------------------ | ------------------------ | -------------------------------------------------------------------------------- |
-| id                       | id                       | Identificador único del registro <br> *Unique identifier of the record*          |
-| product_id               | fk_producto              | Referencia al producto <br> *Reference to the product*                           |
-| promotion_id             | fk_promocion             | Referencia a la promoción <br> *Reference to the promotion*                      |
-| discount_value           | valor_descuento_producto | Valor de descuento aplicado <br> *Discount value applied to the product*         |
-| created_by               | creado_por               | Usuario que creó el registro <br> *User who created the record*                  |
-| updated_by               | actualizado_por          | Usuario que actualizó el registro <br> *User who updated the record*             |
-| created_at               | fecha_creacion           | Fecha de creación del registro <br> *Date when the record was created*           |
-| updated_at               | fecha_actualizacion      | Fecha de actualización del registro <br> *Date when the record was last updated* |
+| Campo (Laravel / Inglés) | Traducción               | Justificación                                                                                                         | Valores permitidos                            |
+| ------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| id                       | id                       | Identificador único del registro. Necesario para integridad y relaciones.                                             | Entero autoincremental                        |
+| season_id                | fk_temporada             | Relaciona el precio con una temporada específica (Escolar, Comfaboy).                                                 | Entero (FK válida de `seasons`)               |
+| product_presentation_id  | fk_producto_presentacion | Define exactamente a qué presentación del producto aplica el precio.                                                  | Entero (FK válida de `product_presentations`) |
+| pricing_type             | tipo_precio              | Define si el precio se **reemplaza** o se **ajusta**. Es la decisión principal del sistema.                           | `FIJO`, `AJUSTADO`                            |
+| override_price           | precio_fijo              | Se usa cuando el precio es manual (ej: temporada escolar). Ignora el precio base.                                     | Número ≥ 0 (NULL si no aplica)                |
+| adjustment_type          | tipo_ajuste              | Indica si el precio **sube o baja**. Solo aplica cuando hay ajuste.                                                   | `DISCOUNT`, `SURCHARGE` (NULL si no aplica)   |
+| adjustment_mode          | modo_ajuste              | Define cómo se calcula el ajuste (porcentaje o valor fijo).                                                           | `PERCENTAGE`, `FIXED` (NULL si no aplica)     |
+| adjustment_value         | valor_ajuste             | Valor del ajuste (ej: 10% o 500 pesos). Es el dato que se usa en el cálculo.                                          | Número ≥ 0 (NULL si no aplica)                |
+| is_active                | estado_activo            | Permite activar o desactivar el registro sin eliminarlo.                                                              | `true`, `false`                               |
+| created_by               | creado_por               | Usuario que creó el registro. Importante para auditoría.                                                              | Entero (FK a usuarios, opcional)              |
+| updated_by               | actualizado_por          | Usuario que modificó el registro.                                                                                     | Entero (FK a usuarios, opcional)              |
+| created_at               | fecha_creacion           | Fecha de creación del registro.                                                                                       | Timestamp                                     |
+| updated_at               | fecha_actualizacion      | Fecha de última actualización.                                                                                        | Timestamp                                     |
+
 
 >[!NOTE]
 >Evitar duplicados
