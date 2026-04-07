@@ -184,14 +184,14 @@
 >En el campo *start_date* se registra un nuevo precio (Se crea al mismo tiempo que la creación del registro)
 >En el campo *end_date* se registra la duración del precio (Se actualiza de null a la nueva fecha cuando existe un nuevo precio del mismo producto y es el equivalente a la fecha de inicio de la siguiente creación del registro del precio)
 
-## promotions | Promocion
+## season | Temporada
 
-**Descripción:** Solo registra el nombre de las promociones según las temporadas de ventas. <br> *Ejemplo:* Temporada escolar, Comfaboy, ...
+**Descripción:** Solo registra el nombre de las temporadas de ventas. <br> *Ejemplo:* Temporada escolar, Comfaboy, ...
 
 | Campo (Laravel / Inglés) | Traducción          | Descripción                                                                      |
 | ------------------------ | ------------------- | -------------------------------------------------------------------------------- |
-| id                       | id                  | Identificador único de la promoción <br> *Unique identifier of the promotion*    |
-| name                     | nombre_promocion    | Nombre de la promoción <br> *Name of the promotion*                              |
+| id                       | id                  | Identificador único de la temporada <br> *Unique identifier of the season*       |
+| name                     | nombre_temporada    | Nombre de la temporada <br> *Name of the season*                                 |
 | created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                  |
 | updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*             |
 | created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*           |
