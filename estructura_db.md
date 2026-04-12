@@ -208,7 +208,7 @@
 > adjustment_type (tipo_ajuste_global)
 > adjustment_value (valor_ajuste_global)
 >```
->Con el fin de asignar datos globales sobre el incremento o descuento de todos los productos por defecto siempre y cuando en la tabla *season_product_pricing* no se haya especificado algún valor en particular
+>Con el fin de asignar datos globales sobre el incremento o descuento de todos los productos por defecto, siempre y cuando en la tabla *season_product_pricing* no se haya especificado algún valor en particular
 
 ## season_product_pricing | Precios de productos según temporada
 
