@@ -188,14 +188,27 @@
 
 **Descripción:** Solo registra el nombre de las temporadas de ventas. <br> *Ejemplo:* Temporada escolar, Comfaboy, ...
 
-| Campo (Laravel / Inglés) | Traducción          | Descripción                                                                      |
-| ------------------------ | ------------------- | -------------------------------------------------------------------------------- |
-| id                       | id                  | Identificador único de la temporada <br> *Unique identifier of the season*       |
-| name                     | nombre_temporada    | Nombre de la temporada <br> *Name of the season*                                 |
-| created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                  |
-| updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*             |
-| created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*           |
-| updated_at               | fecha_actualizacion | Fecha de actualización del registro <br> *Date when the record was last updated* |
+| Campo (Laravel / Inglés) | Traducción           | Descripción                                                                      |
+| ------------------------ | -------------------- | -------------------------------------------------------------------------------- |
+| id                       | id                   | Identificador único de la temporada <br> *Unique identifier of the season*       |
+| name                     | nombre_temporada     | Nombre de la temporada <br> *Name of the season*                                 |
+| has_global_pricing       | aplica_precio_global | `true`, `false`                                                                  |
+| adjustment_type          | tipo_ajuste_global   | `DESCUENTO`, `RECARGO`                                                           |
+| adjustment_mode          | modo_ajuste_global   | `PORCENTAJE`, `VALOR`                                                            |
+| adjustment_value         | valor_ajuste_global  | Número ≥ 0                                                                       |
+| created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                  |
+| updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*             |
+| created_at               | fecha_creacion       | Fecha de creación del registro <br> *Date when the record was created*           |
+| updated_at               | fecha_actualizacion  | Fecha de actualización del registro <br> *Date when the record was last updated* |
+
+>[!NOTE]
+>A esta tabla se agregan los campos:
+>```
+> has_global_pricing (aplica_precio_global)
+> adjustment_type (tipo_ajuste_global)
+> adjustment_value (valor_ajuste_global)
+>```
+>Con el fin de asignar datos globales sobre el incremento o descuento de todos los productos por defecto siempre y cuando en la tabla *season_product_pricing* no se haya especificado algún valor en particular
 
 ## season_product_pricing | Precios de productos según temporada
 
@@ -229,7 +242,7 @@
 > modo_ajuste → NULL
 > valor_ajuste → NULL
 >```
->**Ejemplo de Temporada Escolar:**
+>>**Ejemplo de Temporada Escolar:**
 >```
 > tipo_precio = FIJO
 > precio_fijo = 1800
@@ -252,6 +265,11 @@
 > modo_ajuste = PORCENTAJE
 > valor_ajuste = 5
 >```
+>
+>*Regla de prioridad (IMPORTANTÍSIMA)*
+> 1. Si existe configuración por producto → usar esa
+> 2. Si NO → usar configuración global de la temporada
+> 3. Si no hay nada → usar precio base
 
 ## pending_purchases | Pendiente_compra
 
@@ -331,6 +349,7 @@
 | barcode                  | codigo_barras | Código de barras del producto (pueden existir varios) <br> *Product barcode (multiple values can exist)*                                         |
 | manual_code              | codigo_manual | Últimos 6 caracteres del código de barras (usado como identificación manual) <br> *Last 6 characters of the barcode (used as manual identifier)* |
 | product_id               | fk_producto   | Referencia al producto <br> *Reference to the product*                                                                                           |
+
 ## Ubicacion
 **Descripción:** Se registra el nombre de las ubicaciones con las que cuenta la empresa para almacenar los productos.  
 **Ejemplo:** Bodega 1, Bodega 2, Almacén
