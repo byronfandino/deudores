@@ -197,31 +197,60 @@
 | created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*           |
 | updated_at               | fecha_actualizacion | Fecha de actualización del registro <br> *Date when the record was last updated* |
 
-## product_promotions | Producto_Promoción
+## season_product_pricing | Precios de productos según temporada
 
-**Descripción:** Se registra las promociones que existen tales como temporada escolar o descuento de comfaboy entre otras.
+**Descripción:** Define cómo se calcula o reemplaza el precio de un producto (por presentación) dentro de una temporada.
 
-| Campo (Laravel / Inglés) | Traducción               | Justificación                                                                                                         | Valores permitidos                            |
-| ------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| id                       | id                       | Identificador único del registro. Necesario para integridad y relaciones.                                             | Entero autoincremental                        |
-| season_id                | fk_temporada             | Relaciona el precio con una temporada específica (Escolar, Comfaboy).                                                 | Entero (FK válida de `seasons`)               |
-| product_presentation_id  | fk_producto_presentacion | Define exactamente a qué presentación del producto aplica el precio.                                                  | Entero (FK válida de `product_presentations`) |
-| pricing_type             | tipo_precio              | Define si el precio se **reemplaza** o se **ajusta**. Es la decisión principal del sistema.                           | `FIJO`, `AJUSTADO`                            |
-| override_price           | precio_fijo              | Se usa cuando el precio es manual (ej: temporada escolar). Ignora el precio base.                                     | Número ≥ 0 (NULL si no aplica)                |
-| adjustment_type          | tipo_ajuste              | Indica si el precio **sube o baja**. Solo aplica cuando hay ajuste.                                                   | `DISCOUNT`, `SURCHARGE` (NULL si no aplica)   |
-| adjustment_mode          | modo_ajuste              | Define cómo se calcula el ajuste (porcentaje o valor fijo).                                                           | `PERCENTAGE`, `FIXED` (NULL si no aplica)     |
-| adjustment_value         | valor_ajuste             | Valor del ajuste (ej: 10% o 500 pesos). Es el dato que se usa en el cálculo.                                          | Número ≥ 0 (NULL si no aplica)                |
-| is_active                | estado_activo            | Permite activar o desactivar el registro sin eliminarlo.                                                              | `true`, `false`                               |
-| created_by               | creado_por               | Usuario que creó el registro. Importante para auditoría.                                                              | Entero (FK a usuarios, opcional)              |
-| updated_by               | actualizado_por          | Usuario que modificó el registro.                                                                                     | Entero (FK a usuarios, opcional)              |
-| created_at               | fecha_creacion           | Fecha de creación del registro.                                                                                       | Timestamp                                     |
-| updated_at               | fecha_actualizacion      | Fecha de última actualización.                                                                                        | Timestamp                                     |
-
+| Campo (Laravel / Inglés) | Traducción               | Justificación                                              | Valores permitidos                             |
+| ------------------------ | ------------------------ | ---------------------------------------------------------- | ---------------------------------------------- |
+| id                       | id                       | Identificador único del registro.                          | Entero autoincremental                         |
+| season_id                | fk_temporada             | Relaciona el precio con una temporada (Escolar, Comfaboy). | Entero (FK válida)                             |
+| product_presentation_id  | fk_producto_presentacion | Define a qué presentación del producto aplica el precio.   | Entero (FK válida)                             |
+| pricing_type             | tipo_precio              | Define si el precio se reemplaza o se calcula.             | **FIJO**, **AJUSTE**                           |
+| override_price           | precio_fijo              | Se usa cuando el precio es manual (ignora el precio base). | Número ≥ 0 (NULL si no aplica)                 |
+| adjustment_type          | tipo_ajuste              | Indica si el precio sube o baja.                           | **DESCUENTO**, **RECARGO** (NULL si no aplica) |
+| adjustment_mode          | modo_ajuste              | Define cómo se calcula el ajuste.                          | **PORCENTAJE**, **VALOR** (NULL si no aplica)  |
+| adjustment_value         | valor_ajuste             | Valor del ajuste (porcentaje o monto).                     | Número ≥ 0 (NULL si no aplica)                 |
+| is_active                | estado_activo            | Permite activar o desactivar el registro.                  | **true**, **false**                            |
+| created_by               | creado_por               | Usuario que creó el registro.                              | Entero (FK opcional)                           |
+| updated_by               | actualizado_por          | Usuario que modificó el registro.                          | Entero (FK opcional)                           |
+| created_at               | fecha_creacion           | Fecha de creación del registro.                            | Timestamp                                      |
+| updated_at               | fecha_actualizacion      | Fecha de actualización del registro.                       | Timestamp                                      |
 
 >[!NOTE]
->Evitar duplicados
->```SQL
->  $table->unique(['product_id', 'promotion_id']);
+>**Caso 1: Precio FIJO**
+>```
+> pricing_type = FIJO
+>```
+>Debe cumplir:
+>```
+> precio_fijo → obligatorio
+> tipo_ajuste → NULL
+> modo_ajuste → NULL
+> valor_ajuste → NULL
+>```
+>**Ejemplo de Temporada Escolar:**
+>```
+> tipo_precio = FIJO
+> precio_fijo = 1800
+>```
+>**Caso 2: AJUSTE**
+>```
+> pricing_type = AJUSTE
+>```
+>Debe cumplir:
+>```
+> precio_fijo → NULL
+> tipo_ajuste → obligatorio (DESCUENTO o RECARGO)
+> modo_ajuste → obligatorio (PORCENTAJE o VALOR)
+> valor_ajuste → obligatorio
+>```
+>>**Ejemplo de Comfaboy:**
+>```
+> tipo_precio = AJUSTE
+> tipo_ajuste = RECARGO
+> modo_ajuste = PORCENTAJE
+> valor_ajuste = 5
 >```
 
 ## pending_purchases | Pendiente_compra
