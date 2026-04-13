@@ -359,7 +359,7 @@
 | id                       | id_ubicacion        | Identificador único de ubicación <br> *Unique identifier of the location*                                                            |
 | name                     | nombre_ubicacion    | Nombre del lugar donde se almacena el producto (unique) <br> *Name of the place where the product is stored (unique)*                |
 | is_default               | ubicacion_default   | Indica si es la ubicación que cargará por defecto en el formulario <br> *Indicates whether this is the default location in the form* |
-| is_active                | status_ubicacion    | Indica si la ubicación está habilitada (1) o deshabilitada (0) <br> *Indicates whether the location is enabled (1) or disabled (0)*  |
+| is_active                | status_ubicacion    | Indica si la ubicación está Activa (1) o Inactiva (0) <br> *Indicates whether the location is Active (1) or Inactive (0)*            |
 | created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                                                                      |
 | created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*                                                               |
 | updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*                                                                 |
@@ -375,64 +375,100 @@
 >  WHERE is_default = true;
 >```
 
-## Snapshot_ubicacion
+## Location_snapshots | Snapshot_ubicacion
 **Descripción:** Es una caché para almacenar y actualizar en un mismo registro la cantidad existente de un producto en cierta ubicación, va de la mano con la Movimiento_inventario. Se actualiza en cada movimiento. 
 **Ejemplo:** 200 Lapices Mirado en Bodega 1, 25 Lapices Mirado en Almacén  
 
-| Campo | Descripción |
-|-------|-------------|
-| id_produb | Identificador único |
-| fk_producto | Referencia al producto |
-| fk_ubicacion | Referencia al lugar de ubicación |
-| cant_produb | Cantidad del producto en esa ubicación |
+| Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                                |
+| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------ |
+| id                       | id_produb           | Identificador único <br> *Unique identifier of the record*                                 |
+| product_id               | fk_producto         | Referencia al producto <br> *Reference to the product*                                     |
+| location_id              | fk_ubicacion        | Referencia al lugar de ubicación <br> *Reference to the location*                          |
+| quantity                 | cant_produb         | Cantidad del producto en esa ubicación <br> *Quantity of the product in that location*     |
+| updated_at               | fecha_actualizacion | Fecha de la última actualización del registro <br> *Date when the record was last updated* |
 
 >[!NOTE]
 >Se debe evitar duplicadosen los que se repiten llaves foráneas en el mismo registro:
 >
->ALTER TABLE snapshot_ubicacion
->ADD CONSTRAINT unique_producto_ubicacion
->UNIQUE (fk_producto, fk_ubicacion);
+>ALTER TABLE location_snapshots
+>ADD CONSTRAINT unique_product_location
+>UNIQUE (product_id, location_id);
 
-## Departamento
+## Departments | Departamento
 **Descripción:** Almacena los nombres de los departamentos de Colombia
 
-| Campo | Descripción |
-|-------|-------------|
-| id_depart | Identificador del departamento |
-| nombre_depart | Nombre del departamento |
+| Campo (Laravel / Inglés) | Tu campo original | Descripción                                                 |
+| ------------------------ | ----------------- | ----------------------------------------------------------- |
+| id                       | id_depart         | Identificador del departamento <br> *Department identifier* |
+| name                     | nombre_depart     | Nombre del departamento <br> *Department name*              |
+| dane_code                | codigo_dane       | Código otorgado por el DANE <br> *DANE code*                |
 
-## Ciudad
+>[!NOTE]
+>Se debe agregar restricción única al nombre:
+>```SQL
+> CREATE UNIQUE INDEX unique_department_name
+> ON departments (name);
+>```
+
+## Cities | Ciudad
 **Descripción:** Almacena los nombres de los municipios y ciudades que pertenencen a los departamentos de Colombia.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_ciudad | Identificador de la ciudad |
-| nombre_ciudad | Nombre de la ciudad |
-| fk_depart | Referencia al departamento |
+| Campo (Laravel / Inglés) | Tu campo original | Descripción                                                                  |
+| ------------------------ | ----------------- | ---------------------------------------------------------------------------- |
+| id                       | id_ciudad         | Identificador de la ciudad <br> *City identifier*                            |
+| name                     | nombre_ciudad     | Nombre de la ciudad <br> *City name*                                         |
+| department_id            | fk_depart         | Referencia al departamento <br> *Reference to the department*                |
+| dane_code                | —                 | Código DANE de la ciudad (5 dígitos) <br> *DANE code of the city (5 digits)* |
 
-## Proveedor
+>[!NOTE]
+>Se debe evitar ciudades duplicadas dentro del mismo departamento:
+>```SQL
+>  CREATE UNIQUE INDEX unique_city_per_department
+>  ON cities (name, department_id);
+>```
 
-| Campo | Descripción |
-|-------|-------------|
-| id_proveedor | Identificador del proveedor |
-| nit_proveedor | NIT del proveedor |
-| razon_social_proveedor | Razón social del proveedor |
-| email_proveedor | Correo electrónico del proveedor |
-| direccion_proveedor | Dirección del proveedor |
-| status_proveedor | Indica si el proveedor está habilitado (1) o deshabilitado (0) |
-| fk_ciudad | Referencia a la ciudad del proveedor |
+## Suppliers | Proveedor
+
+| Campo (Laravel / Inglés) | Tu campo original      | Descripción                                                                                                                        |
+| ------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_proveedor           | Identificador del proveedor <br> *Supplier identifier*                                                                             |
+| document_type            | —                      | Tipo de documento (NIT, CC, CE, etc.) <br> *Type of identification document (NIT, CC, CE, etc.)*                                   |
+| document_number          | number_documento       | Numero de documento <br> *identification number*                                                                                   |
+| business_name            | razon_social_proveedor | Razón social del proveedor <br> *Supplier business name*                                                                           |
+| contact_name             | —                      | Nombre de la persona de contacto principal <br> *Primary contact person's name*                                                    |
+| phone                    | —                      | Teléfono principal de contacto <br> *Primary contact phone number*                                                                 |
+| email                    | email_principal        | Correo electrónico del proveedor <br> *Supplier email address*                                                                     |
+| email_secondary          | email_secundario       | Correo electrónico secundario (*Null* si no aplica) <br> *Secondary email address*.                                                |
+| address                  | direccion_proveedor    | Dirección del proveedor <br> *Supplier address*                                                                                    |
+| city_id                  | fk_ciudad              | Referencia a la ciudad del proveedor <br> *Reference to the supplier's city*                                                       |
+| is_active                | status_proveedor       | Indica si el proveedor está habilitado (1) o deshabilitado (0) <br> *Indicates whether the supplier is active (1) or inactive (0)* |
+| created_by               | fk_usuario             | Usuario quien creó el registro <br> *User who created the record*                                                                  |
+| created_at               | fecha_creacion         | Fecha de creación del registro <br> *Date when the record was created*                                                             |
+| updated_by               | fk_usuario             | Usuario quien actualizó el registro <br> *DUser who created the record*                                                            |
+| updated_at               | fecha_actualizacion    | Fecha de actualización del registro <br> *Date when the record was last updated*                                                   |
+
+>[!NOTE]
+>No permitir que existan dos proveedores con el mismo NIT:
+>```SQL
+>  CREATE UNIQUE INDEX unique_supplier_tax_id  
+>  ON suppliers (tax_id);
+>```
+>Restricción del campo document_type
+>```SQL
+>  CHECK (document_type IN ('NIT','CC','CE'))
+>```
 
 ## Telefono_proveedor
 
 **Descripción:** Por lo general un proveedor tiene varios teléfonos y es necesario guardarlos todos
 
-| Campo | Descripción |
-|-------|-------------|
-| id_tel_proveedor | Identificador del telefono |
-| numero_tel_proveedor | Número de teléfono |
-| whatsapp_tel_proveedor | Si el número está registrado en whatsapp (1) sino (0) |
-| fk_proveedor | Referencia a proveedor |
-| status_tel_proveedor | Indica si el numero teléfónico está habilitado (1) o deshabilitado (0) |
+| Campo (Laravel / Inglés) | Tu campo original      | Descripción                                                                                                                                    |
+| ------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_tel_proveedor       | Identificador del teléfono <br> *Phone record identifier*                                                                                      |
+| phone                    | numero_tel_proveedor   | Número de teléfono <br> *Phone number*                                                                                                         |
+| is_whatsapp              | whatsapp_tel_proveedor | Indica si el número está registrado en WhatsApp (1) o no (0) <br> *Indicates whether the number is registered on WhatsApp (1) or not (0)*      |
+| supplier_id              | fk_proveedor           | Referencia al proveedor <br> *Reference to the supplier*                                                                                       |
+| is_active                | status_tel_proveedor   | Indica si el número telefónico está habilitado (1) o deshabilitado (0) <br> *Indicates whether the phone number is active (1) or inactive (0)* |
 
 ## Metodo_pago
 
