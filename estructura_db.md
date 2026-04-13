@@ -350,20 +350,30 @@
 | manual_code              | codigo_manual | Últimos 6 caracteres del código de barras (usado como identificación manual) <br> *Last 6 characters of the barcode (used as manual identifier)* |
 | product_id               | fk_producto   | Referencia al producto <br> *Reference to the product*                                                                                           |
 
-## Ubicacion
+## Locations | Ubicacion
 **Descripción:** Se registra el nombre de las ubicaciones con las que cuenta la empresa para almacenar los productos.  
 **Ejemplo:** Bodega 1, Bodega 2, Almacén
 
-| Campo | Descripción |
-|-------|-------------|
-| id_ubicacion | Identificador único de ubicación |
-| nombre_ubicacion | Nombre del lugar donde se almacena el producto (unique) |
-| ubicacion_default | Indica si es la ubicación que cargará por defecto en el formulario |
-| creado_por | Usuario que creó el registro |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro |
-| fecha_actualizacion | Fecha de actualización del registro |
-| status_ubicacion | Indica si la ubicación está habilitada (1) o deshabilitada (0) |
+| Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                                                                          |
+| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| id                       | id_ubicacion        | Identificador único de ubicación <br> *Unique identifier of the location*                                                            |
+| name                     | nombre_ubicacion    | Nombre del lugar donde se almacena el producto (unique) <br> *Name of the place where the product is stored (unique)*                |
+| is_default               | ubicacion_default   | Indica si es la ubicación que cargará por defecto en el formulario <br> *Indicates whether this is the default location in the form* |
+| is_active                | status_ubicacion    | Indica si la ubicación está habilitada (1) o deshabilitada (0) <br> *Indicates whether the location is enabled (1) or disabled (0)*  |
+| created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                                                                      |
+| created_at               | fecha_creacion      | Fecha de creación del registro <br> *Date when the record was created*                                                               |
+| updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*                                                                 |
+| updated_at               | fecha_actualizacion | Fecha de actualización del registro <br> *Date when the record was last updated*                                                     |
+
+>[!NOTE]
+>Es necesario asegurar que:
+>   - name tenga índice único
+>   - is_default tenga restricción (solo 1 true)
+>```SQL
+>  CREATE UNIQUE INDEX unique_default_location
+>  ON locations (is_default)
+>  WHERE is_default = true;
+>```
 
 ## Snapshot_ubicacion
 **Descripción:** Es una caché para almacenar y actualizar en un mismo registro la cantidad existente de un producto en cierta ubicación, va de la mano con la Movimiento_inventario. Se actualiza en cada movimiento. 
