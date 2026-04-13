@@ -458,14 +458,14 @@
 >  CHECK (document_type IN ('NIT','CC','CE'))
 >```
 
-## Telefono_proveedor
+## Supplier_phones | Telefono_proveedor
 
 **Descripción:** Por lo general un proveedor tiene varios teléfonos y es necesario guardarlos todos
 
 | Campo (Laravel / Inglés) | Tu campo original      | Descripción                                                                                                                                    |
 | ------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | id                       | id_tel_proveedor       | Identificador del teléfono <br> *Phone record identifier*                                                                                      |
-| phone                    | numero_tel_proveedor   | Número de teléfono <br> *Phone number*                                                                                                         |
+| phone                    | numero_tel_proveedor   | Número de teléfono (Tipo Unique) <br> *Phone number (Unque type)*                                                                              |
 | is_whatsapp              | whatsapp_tel_proveedor | Indica si el número está registrado en WhatsApp (1) o no (0) <br> *Indicates whether the number is registered on WhatsApp (1) or not (0)*      |
 | supplier_id              | fk_proveedor           | Referencia al proveedor <br> *Reference to the supplier*                                                                                       |
 | is_active                | status_tel_proveedor   | Indica si el número telefónico está habilitado (1) o deshabilitado (0) <br> *Indicates whether the phone number is active (1) or inactive (0)* |
