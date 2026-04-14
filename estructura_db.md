@@ -465,20 +465,44 @@
 | Campo (Laravel / Inglés) | Tu campo original      | Descripción                                                                                                                                    |
 | ------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | id                       | id_tel_proveedor       | Identificador del teléfono <br> *Phone record identifier*                                                                                      |
-| phone                    | numero_tel_proveedor   | Número de teléfono (Tipo Unique) <br> *Phone number (Unque type)*                                                                              |
+| phone                    | numero_tel_proveedor   | Número de teléfono <br> *Phone number*                                                                                                         |
 | is_whatsapp              | whatsapp_tel_proveedor | Indica si el número está registrado en WhatsApp (1) o no (0) <br> *Indicates whether the number is registered on WhatsApp (1) or not (0)*      |
+| is_telegram              | —                      | Indica si el número está registrado en Telegram (1) o no (0) <br> *Indicates whether the number is registered on Telegram (1) or not (0)*      |
+| is_signal                | —                      | Indica si el número está registrado en Signal (1) o no (0) <br> *Indicates whether the number is registered on Signal (1) or not (0)*          |
 | supplier_id              | fk_proveedor           | Referencia al proveedor <br> *Reference to the supplier*                                                                                       |
 | is_active                | status_tel_proveedor   | Indica si el número telefónico está habilitado (1) o deshabilitado (0) <br> *Indicates whether the phone number is active (1) or inactive (0)* |
+| created_by               | fk_usuario             | Usuario quien creó el registro <br> *User who created the record*                                                                              |
+| created_at               | fecha_creacion         | Fecha de creación del registro <br> *Date when the record was created*                                                                         |
+| updated_by               | fk_usuario             | Usuario quien actualizó el registro <br> *DUser who created the record*                                                                        |
+| updated_at               | fecha_actualizacion    | Fecha de actualización del registro <br> *Date when the record was last updated*                                                               |
 
-## Metodo_pago
+>[!NOTE]
+>Evitar el mismo número repetido para el mismo proveedor:
+>```SQL
+>  CREATE UNIQUE INDEX unique_supplier_phone
+>  ON supplier_phones (supplier_id, phone);
+>```
 
-| Campo | Descripción |
-|-------|-------------|
-| id_metodo_pago | Identificador del método de pago |
-| descipcion_metodo_pago | Descripción del método de pago |
-| status_metodo_pago | Indica si el método está habilitado (1) o deshabilitado (0) |
+## Payment_methods | Metodo_pago
 
-## Compra_master
+| Campo (Laravel / Inglés) | Tu campo original      | Descripción                                                                                                                           |
+| ------------------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_metodo_pago         | Identificador del método de pago <br> *Payment method identifier*                                                                     |
+| name                     | descipcion_metodo_pago | Nombre o descripción del método de pago <br> *Name or description of the payment method*                                              |
+| is_active                | status_metodo_pago     | Indica si el método está habilitado (1) o deshabilitado (0) <br> *Indicates whether the payment method is active (1) or inactive (0)* |
+| created_by               | fk_usuario             | Usuario quien creó el registro <br> *User who created the record*                                                                     |
+| created_at               | fecha_creacion         | Fecha de creación del registro <br> *Date when the record was created*                                                                |
+| updated_by               | fk_usuario             | Usuario quien actualizó el registro <br> *DUser who created the record*                                                               |
+| updated_at               | fecha_actualizacion    | Fecha de actualización del registro <br> *Date when the record was last updated*                                                      |
+
+>[!NOTE]
+>Evitar duplicados del nombre:
+>```SQL
+>  CREATE UNIQUE INDEX unique_payment_method_name
+>  ON payment_methods (name);
+>```
+
+## Purchase | Compra_master
 
 **Descripción:** Almacena los datos generales de una compra, pero la relación de productos comprados, se realiza en otra llamada *Compra_detalle*
 
