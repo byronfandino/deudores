@@ -532,7 +532,7 @@
 >```
 >Para la opción de anulada, se mostrará en la vista index la opciónde anular factura, junto con las opciones de editar e inactivar. 
 
-## Compra_detalle
+## Purchase_details | Compra_detalle
 
 **Descripción:** Relaciona todos los productos comprados que pertenezcan a la *Compra_Master*
 
@@ -559,20 +559,29 @@
 >  ON purchase_details (product_presentation_id);
 >```
 
-## Abono_compra
+## Purchase_payments | Abono_compra
 
 **Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado al proveedor sobre la misma factura 
 
-| Campo | Descripción |
-|-------|-------------|
-| id_abono_compra | Identificador del abono |
-| movimiento_abono_compra | Movimiento realizado (Abonó(A) - Devolución(D) - Cancelado(C)) |
-| monto_abono_compra | Valor abonado o pagado |
-| nombre_comprobante_abono_compra | Nombre del archivo de comprobante de pago (.jpg) |
-| fecha_hora_abono_compra | Fecha y hora (Diligenciado por el usuario, sin embargo el sistema le sugiere la fecha y hora actual del tiempo real)|
-| fk_metodo_pago | Referencia al método de pago |
-| fk_compra_master | Referencia a la compra_master |
-| observaciones_abono_compra | Observaciones |
+| Campo (Laravel / Inglés) | Tu campo original               | Descripción                                                                        |
+| ------------------------ | ------------------------------- | ---------------------------------------------------------------------------------- |
+| id                       | id_abono_compra                 | Identificador del abono <br> *Payment identifier*                                  |
+| purchase_id              | fk_compra_master                | Referencia a la compra <br> *Reference to the purchase*                            |
+| payment_method_id        | fk_metodo_pago                  | Referencia al método de pago <br> *Reference to the payment method*                |
+| transaction_type         | movimiento_abono_compra         | Tipo de movimiento (ABONO, DEVOLUCION) <br> *Transaction type (PAYMENT, REFUND)*   |
+| amount                   | monto_abono_compra              | Valor abonado o pagado <br> *Payment amount*                                       |
+| receipt_file             | nombre_comprobante_abono_compra | Nombre del archivo comprobante de pago <br> *Payment receipt file name*            |
+| payment_date             | fecha_hora_abono_compra         | Fecha y hora del pago <br> *Payment date and time*                                 |
+| notes                    | observaciones_abono_compra      | Observaciones del pago <br> *Payment notes*                                        |
+| created_by               | creado_por                      | Usuario que creó el registro <br> *User who created the record*                    |
+| created_at               | fecha_creacion                  | Fecha de creación de la compra <br> *Date when the purchase was created*           |
+| updated_by               | actualizado_por                 | Usuario que actualizó el registro <br> *User who updated the record*               |
+| updated_at               | fecha_actualizacion             | Fecha de actualización de la compra <br> *Date when the purchase was last updated* |
+
+>[!NOTE]
+>```SQL
+>  CHECK (transaction_type IN ('ABONO','DEVOLUCION'))
+>```
 
 ## Devolucion_compra
 
