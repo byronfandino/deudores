@@ -506,37 +506,58 @@
 
 **Descripción:** Almacena los datos generales de una compra, pero la relación de productos comprados, se realiza en otra llamada *Compra_detalle*
 
-| Campo | Descripción |
-|-------|-------------|
-| id_compra_master | Identificador de la compra |
-| fk_proveedor | Referencia al proveedor |
-| nombre_adjunto_compra_master | Nombre del archivo adjunto guardado (factura) |
-| fecha_compra_master | Fecha de la compra |
-| total_descuento | Monto total del descuento aplicable |
-| total_compra_master | Total general de la compra |
-| observaciones_compra_master | Observaciones sobre la compra |
-| creado_por | Usuario que creó el registro |
-| fecha_creacion | Fecha de creación de la compra |
-| actualizado_por | Usuario que actualizó el registro |
-| fecha_actualizacion | Fecha de actualización de la compra |
-| estado_compra_master | Estado de la compra (Registrada, Pagada, Anulada) |
+| Campo (Laravel / Inglés) | Tu campo original            | Descripción                                                                                                          |
+| ------------------------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_compra_master             | Identificador de la compra <br> *Purchase identifier*                                                                |
+| supplier_id              | fk_proveedor                 | Referencia al proveedor <br> *Reference to the supplier*                                                             |
+| attachment_path          | nombre_adjunto_compra_master | Ruta o nombre del archivo adjunto (factura) <br> *Path or name of the attached file (invoice)*                       |
+| purchase_date            | fecha_compra_master          | Fecha de la compra <br> *Purchase date*                                                                              |
+| subtotal                 | —                            | Suma de los valores de los productos antes de descuentos <br> *Sum of product values before discounts*               |
+| total_discount           | total_descuento              | Monto total del descuento aplicable <br> *Total discount amount*                                                     |
+| total_amount             | total_compra_master          | Total general de la compra <br> *Total purchase amount*                                                              |
+| notes                    | observaciones_compra_master  | Observaciones sobre la compra <br> *Purchase notes*                                                                  |
+| status                   | estado_compra_master         | Estado de la compra (PENDIENTE, ABONADA, PAGADA, ANULADA) <br> *Purchase status (PENDING, PARTIAL, PAID, CANCELLED)* |
+| created_by               | creado_por                   | Usuario que creó el registro <br> *User who created the record*                                                      |
+| created_at               | fecha_creacion               | Fecha de creación de la compra <br> *Date when the purchase was created*                                             |
+| updated_by               | actualizado_por              | Usuario que actualizó el registro <br> *User who updated the record*                                                 |
+| updated_at               | fecha_actualizacion          | Fecha de actualización de la compra <br> *Date when the purchase was last updated*                                   |
+
+>[!NOTE]
+>El campo *status (estado_compra_master)* se realizará de forma automática de acuerdo a lo reflejado en los pagos de la tabla abono_compra
+>>CASOS:
+>```
+>  saldo = total → PENDIENTE
+>  saldo > 0 → ABONADA
+>  saldo = 0 → PAGADA
+>```
+>Para la opción de anulada, se mostrará en la vista index la opciónde anular factura, junto con las opciones de editar e inactivar. 
 
 ## Compra_detalle
 
 **Descripción:** Relaciona todos los productos comprados que pertenezcan a la *Compra_Master*
 
-| Campo | Descripción |
-|-------|-------------|
-| id_compra_detalle | Identificador del detalle de compra |
-| fk_compra_master | Referencia a compra_master |
-| fk_producto | Referencia al producto comprado |
-| cant_compra_detalle | Cantidad de producto comprado |
-| valor_unit_compra_detalle | Valor unitario del producto |
-| xje_desc_compra_detalle | Porcentaje de descuento ofrecido por el proveedor |
-| descuento_unit_compra_detalle | Valor del descuento generado |
-| total_compra_detalle | Total del detalle (cant_compra_detalle * valor_unit_compra_detalle) |
-| valor_venta_compra_detalle | Valor de venta calculado del producto |
-| fecha_vencimiento_compra_detalle | Fecha de vencimiento del producto (si aplica) |
+| Campo (Laravel / Inglés) | Tu campo original                | Descripción                                                                                                      |
+| ------------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| id                       | id_compra_detalle                | Identificador del detalle de compra <br> *Purchase detail identifier*                                            |
+| purchase_id              | fk_compra_master                 | Referencia a la compra <br> *Reference to the purchase*                                                          |
+| product_presentation_id  | fk_producto_presentacion         | Referencia a la presentación del producto <br> *Reference to the purchased product presentation*                 |
+| quantity                 | cant_compra_detalle              | Cantidad de producto comprado <br> *Quantity purchased*                                                          |
+| unit_price               | valor_unit_compra_detalle        | Valor unitario del producto <br> *Unit price of the product*                                                     |
+| discount_percentage      | xje_desc_compra_detalle          | Porcentaje de descuento ofrecido por el proveedor <br> *Discount percentage offered by the supplier*             |
+| discount_amount          | descuento_unit_compra_detalle    | Valor del descuento aplicado <br> *Discount amount applied*                                                      |
+| total_amount             | total_compra_detalle             | Total del detalle (cantidad × valor unitario - descuento) <br> *Total amount (quantity × unit price - discount)* |
+| sale_price               | valor_venta_compra_detalle       | Precio de venta sugerido del producto <br> *Suggested sale price*                                                |
+| expiration_date          | fecha_vencimiento_compra_detalle | Fecha de vencimiento del producto (si aplica) <br> *Product expiration date (if applicable)*                     |
+
+>[!NOTE]
+>Indices a crear:
+>```SQL
+>  CREATE INDEX idx_purchase_detail_purchase
+>  ON purchase_details (purchase_id);
+>
+>  CREATE INDEX idx_purchase_detail_product
+>  ON purchase_details (product_presentation_id);
+>```
 
 ## Abono_compra
 
