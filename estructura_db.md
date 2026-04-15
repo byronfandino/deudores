@@ -583,33 +583,57 @@
 >  CHECK (transaction_type IN ('ABONO','DEVOLUCION'))
 >```
 
-## Devolucion_compra
+## Purchase_returns | Devolucion_compra
 
 **Descripción:** Esta relaciona los productos que se devuelven al proveedor con su respectiva justificación.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_devolucion_compra | Identificador de la devolución |
-| fk_compra_detalle | Llave foránea de la factura Compra Detalle para obtener datos no solo del producto, si no datos adicionales de la compra master
-| fecha_hora_devolucion_compra | Fecha de la devolución |
-| cant_devolucion_compra | Cantidad devuelta del producto |
-| estado_devolucion_compra | (0) Si está pendiente (1) si ya se realizó la devolución |
-| observaciones_devolucion_compra | Justificación de la devolución |
+| Campo (Laravel / Inglés) | Tu campo original               | Descripción                                                                                                                            |
+| ------------------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_devolucion_compra            | Identificador de la devolución <br> *Purchase return identifier*                                                                       |
+| purchase_detail_id       | fk_compra_detalle               | Referencia al detalle de compra <br> *Reference to the purchase detail*                                                                |
+| return_date              | fecha_hora_devolucion_compra    | Fecha de la devolución <br> *Return date*                                                                                              |
+| quantity                 | cant_devolucion_compra          | Cantidad devuelta del producto <br> *Returned quantity*                                                                                |
+| is_processed             | estado_devolucion_compra        | Indica si la devolución fue procesada (*pendiente*) (1) o no (0) <br> *Indicates whether the return has been processed (1) or not (0)* |
+| notes                    | observaciones_devolucion_compra | Justificación de la devolución <br> *Reason for the return*                                                                            |
 
-## Usuario
+>[!NOTE]
+>Verificar que la cantidad devuelta no sea inferior a la cantidad comprada
+>```SQL
+>   CHECK (quantity > 0)
+>```
+>Y a nivel de lógica
+>```SQL
+>   SUM(devoluciones) <= cantidad comprada
+>```
+> Es necesario verificar si la devolución del producto afecta el stock ya que pudo haberse ingresado y luego darse cuenta de alguna falla en el producto.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_usuario_sistema | Identificador del usuario |
-| nombre_usuario_sistema | Nombre del usuario |
-| nickname_usuario_sistema | Usuario de acceso |
-| password_usuario_sistema | Contraseña de acceso |
-| tel_usuario_sistema | Teléfono del usuario |
-| dir_usuario_sistema | Dirección del usuario |
-| email_usuario_sistema | Correo electrónico del usuario |
-| token_usuario_sistema | Token para activar la cuenta o recuperar la contraseña |
-| fk_ciudad | Ciudad del usuario |
-| status_usuario_sistema | Indica si el usuario está habilitado (1) o deshabilitado (0) |
+## Users | Usuario
+**Descripción:** Almacena la información de los usuarios del sistema.
+
+| Campo (Laravel / Inglés) | Tu campo original         | Descripción                                                                                                                  |
+| ------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_usuario_sistema        | Identificador del usuario <br> *User identifier*                                                                             |
+| name                     | nombre_usuario_sistema    | Nombre del usuario <br> *User full name*                                                                                     |
+| username                 | nickname_usuario_sistema  | Nombre de usuario para acceso <br> *Username for login*                                                                      |
+| password                 | password_usuario_sistema  | Contraseña de acceso (encriptada) <br> *Encrypted password*                                                                  |
+| phone                    | tel_usuario_sistema       | Teléfono del usuario <br> *User phone number*                                                                                |
+| address                  | dir_usuario_sistema       | Dirección del usuario <br> *User address*                                                                                    |
+| email                    | email_usuario_sistema     | Correo electrónico del usuario <br> *User email address*                                                                     |
+| email_verified_at        | fecha_email_verificado    | Guarda la fecha en la que el usuario verificó el correo                                                                      |
+| remember_token           | token_usuario_sistema     | Token para recordar sesión o recuperación <br> *Token for session persistence or recovery*                                   |
+| last_login_at            | ultima_sesion_iniciada    | Fecha de la última sesión iniciada <br> *date of the last session started*                                                   |
+| city_id                  | fk_ciudad                 | Referencia a la ciudad del usuario <br> *Reference to the user's city*                                                       |
+| is_active                | status_usuario_sistema    | Indica si el usuario está habilitado (1) o deshabilitado (0) <br> *Indicates whether the user is active (1) or inactive (0)* |
+| created_at               | fecha_registro_creado     | Fecha de creación del registro. <br> Record creation date                                                                    |
+| updated_at               | fecha_registro_actualizado| Fecha de actualización del registro. <br> Record update date                                                                 |
+
+>[!NOTE]
+> - Primero es necesario cotejar con los campos que crea laravel de forma automática
+> - Campos únicos (OBLIGATORIO):
+>```SQL
+> UNIQUE (username)
+> UNIQUE (email)
+>```
 
 ## Cliente
 **Descripción:** Almacena clientes tanto corporativos como particulares
