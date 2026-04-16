@@ -595,6 +595,10 @@
 | quantity                 | cant_devolucion_compra          | Cantidad devuelta del producto <br> *Returned quantity*                                                                                |
 | is_processed             | estado_devolucion_compra        | Indica si la devolución fue procesada (*pendiente*) (1) o no (0) <br> *Indicates whether the return has been processed (1) or not (0)* |
 | notes                    | observaciones_devolucion_compra | Justificación de la devolución <br> *Reason for the return*                                                                            |
+| created_by               | creado_por                      | Usuario que creó el registro <br> *User who created the record*                    |
+| created_at               | fecha_creacion                  | Fecha de creación de la compra <br> *Date when the purchase was created*           |
+| updated_by               | actualizado_por                 | Usuario que actualizó el registro <br> *User who updated the record*               |
+| updated_at               | fecha_actualizacion             | Fecha de actualización de la compra <br> *Date when the purchase was last updated* |
 
 >[!NOTE]
 >Verificar que la cantidad devuelta no sea inferior a la cantidad comprada
@@ -619,7 +623,7 @@
 | phone                    | tel_usuario_sistema       | Teléfono del usuario <br> *User phone number*                                                                                |
 | address                  | dir_usuario_sistema       | Dirección del usuario <br> *User address*                                                                                    |
 | email                    | email_usuario_sistema     | Correo electrónico del usuario <br> *User email address*                                                                     |
-| email_verified_at        | fecha_email_verificado    | Guarda la fecha en la que el usuario verificó el correo                                                                      |
+| email_verified_at        | fecha_email_verificado    | Guarda la fecha en la que el usuario verificó el correo, es decir inicialmente va a ser un campo nulo                        |
 | remember_token           | token_usuario_sistema     | Token para recordar sesión o recuperación <br> *Token for session persistence or recovery*                                   |
 | last_login_at            | ultima_sesion_iniciada    | Fecha de la última sesión iniciada <br> *date of the last session started*                                                   |
 | city_id                  | fk_ciudad                 | Referencia a la ciudad del usuario <br> *Reference to the user's city*                                                       |
@@ -649,6 +653,29 @@
 | tipo_cliente | Es un cliente Particular(P) o Corporativo(C) |
 | fk_ciudad | Referencia a la Ciudad |
 
+| Campo (Laravel / Inglés) | Tu campo original    | Descripción                                                                                                                         |
+| ------------------------ | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_cliente           | Identificador del cliente <br> *Customer identifier*                                                                                |
+| document_type            | tipo_documento       | Tipo de documento (CC, NIT, CE, etc.) <br> *Type of identification document*                                                        |
+| document_number          | cedula_nit_cliente   | Número de identificación del cliente <br> *Customer identification number*                                                          |
+| business_name            | razon_social_cliente | Nombre o razón social del cliente <br> *Customer name or business name*                                                             |
+| phone                    | tel_cliente          | Teléfono del cliente. Puede ser nulo si es corporativo <br> *Customer phone number. Maybe null whether the costumer is corporative* |
+| address                  | direccion_cliente    | Dirección del cliente <br> *Customer address*                                                                                       |
+| email                    | email_cliente        | Correo electrónico del cliente <br> *Customer email address*                                                                        |
+| is_company               | es_coporativo        | Guarda Verdadero o Falso <br> *It stores True or False, but default is False*                                                       |
+| city_id                  | fk_ciudad            | Referencia a la ciudad <br> *Reference to the city*                                                                                 |
+| created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                                                                     |
+| created_at               | fecha_creacion       | Fecha de creación de la compra <br> *Date when the purchase was created*                                                            |
+| updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*                                                                |
+| updated_at               | fecha_actualizacion  | Fecha de actualización de la compra <br> *Date when the purchase was last updated*                                                  |
+
+>[!NOTE]
+>Creación de índice
+>```SQL
+>  CREATE UNIQUE INDEX unique_customer_document
+>  ON customers (document_type, document_number);
+>```
+
 ## Empleado_cliente
 
 **Descripción:** Registra los nombres de los empleados que trabajan para los clientes corporativos que solicitan los productos. Pensado en la trazabilidad de las solicitudes en compras a cŕedito.
@@ -660,6 +687,10 @@
 | cedula_empleado_cliente | Cédula del empleado |
 | nombre_empleado_cliente | Nombre del empleado |
 | tel_empleado_cliente | Teléfono del empleado |
+| created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                                |
+| created_at               | fecha_creacion       | Fecha de creación de la compra <br> *Date when the purchase was created*                       |
+| updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*                           |
+| updated_at               | fecha_actualizacion  | Fecha de actualización de la compra <br> *Date when the purchase was last updated*             |
 
 ## Venta_master
 
