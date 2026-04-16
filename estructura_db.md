@@ -595,10 +595,10 @@
 | quantity                 | cant_devolucion_compra          | Cantidad devuelta del producto <br> *Returned quantity*                                                                                |
 | is_processed             | estado_devolucion_compra        | Indica si la devolución fue procesada (*pendiente*) (1) o no (0) <br> *Indicates whether the return has been processed (1) or not (0)* |
 | notes                    | observaciones_devolucion_compra | Justificación de la devolución <br> *Reason for the return*                                                                            |
-| created_by               | creado_por                      | Usuario que creó el registro <br> *User who created the record*                    |
-| created_at               | fecha_creacion                  | Fecha de creación de la compra <br> *Date when the purchase was created*           |
-| updated_by               | actualizado_por                 | Usuario que actualizó el registro <br> *User who updated the record*               |
-| updated_at               | fecha_actualizacion             | Fecha de actualización de la compra <br> *Date when the purchase was last updated* |
+| created_by               | creado_por                      | Usuario que creó el registro <br> *User who created the record*                                                                        |
+| created_at               | fecha_creacion                  | Fecha de creación de la compra <br> *Date when the purchase was created*                                                               |
+| updated_by               | actualizado_por                 | Usuario que actualizó el registro <br> *User who updated the record*                                                                   |
+| updated_at               | fecha_actualizacion             | Fecha de actualización de la compra <br> *Date when the purchase was last updated*                                                     |
 
 >[!NOTE]
 >Verificar que la cantidad devuelta no sea inferior a la cantidad comprada
@@ -639,19 +639,8 @@
 > UNIQUE (email)
 >```
 
-## Cliente
+## Customers | Cliente
 **Descripción:** Almacena clientes tanto corporativos como particulares
-
-| Campo | Descripción |
-|-------|-------------|
-| id_cliente | Identificador del cliente |
-| cedula_nit_cliente | Cédula o NIT del cliente |
-| razon_social_cliente | Nombre o razón social del cliente |
-| tel_cliente | Teléfono del cliente |
-| direccion_cliente | Dirección del cliente |
-| email_cliente | Correo electrónico del cliente |
-| tipo_cliente | Es un cliente Particular(P) o Corporativo(C) |
-| fk_ciudad | Referencia a la Ciudad |
 
 | Campo (Laravel / Inglés) | Tu campo original    | Descripción                                                                                                                         |
 | ------------------------ | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -670,27 +659,51 @@
 | updated_at               | fecha_actualizacion  | Fecha de actualización de la compra <br> *Date when the purchase was last updated*                                                  |
 
 >[!NOTE]
+>Restricción en *is_company*
+>```SQL
+>  is_company BOOLEAN NOT NULL DEFAULT false
+>```
 >Creación de índice
 >```SQL
 >  CREATE UNIQUE INDEX unique_customer_document
 >  ON customers (document_type, document_number);
 >```
 
-## Empleado_cliente
+## Customer_employees | Empleado_cliente
 
 **Descripción:** Registra los nombres de los empleados que trabajan para los clientes corporativos que solicitan los productos. Pensado en la trazabilidad de las solicitudes en compras a cŕedito.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_empleado_cliente | Identificador del empleado del cliente |
-| fk_cliente | Referencia al cliente corporativo |
-| cedula_empleado_cliente | Cédula del empleado |
-| nombre_empleado_cliente | Nombre del empleado |
-| tel_empleado_cliente | Teléfono del empleado |
-| created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                                |
-| created_at               | fecha_creacion       | Fecha de creación de la compra <br> *Date when the purchase was created*                       |
-| updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*                           |
-| updated_at               | fecha_actualizacion  | Fecha de actualización de la compra <br> *Date when the purchase was last updated*             |
+| Campo (Laravel / Inglés) | Tu campo original       | Descripción                                                                                                          |
+| ------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_empleado_cliente     | Identificador del empleado del cliente <br> *Customer employee identifier*                                           |
+| customer_id              | fk_cliente              | Referencia al cliente corporativo <br> *Reference to the customer (company)*                                         |
+| document_type            | tipo_documento_empleado | Tipo de Documento del empleado <br> *Employee document type*                                                         |
+| document_number          | cedula_empleado_cliente | Documento del empleado <br> *Employee identification number*                                                         |
+| name                     | nombre_empleado_cliente | Nombre del empleado <br> *Employee name*                                                                             |
+| job_title                | cargo_empleado          | Cargo en la empresa <br> *Job title*                                                                                 |
+| phone                    | tel_empleado_cliente    | Teléfono del empleado <br> *Employee phone number*                                                                   |
+| is_default               | valor_predeterminado    | Indica si es el contacto principal del cliente <br> *Indicates whether this is the default contact for the customer* |
+| created_by               | creado_por              | Usuario que creó el registro <br> *User who created the record*                                                      |
+| created_at               | fecha_creacion          | Fecha de creación de la compra <br> *Date when the purchase was created*                                             |
+| updated_by               | actualizado_por         | Usuario que actualizó el registro <br> *User who updated the record*                                                 |
+| updated_at               | fecha_actualizacion     | Fecha de actualización de la compra <br> *Date when the purchase was last updated*                                   |
+>[!NOTE]
+>  Solo un contacto principal por cliente
+>```SQL
+>  CREATE UNIQUE INDEX unique_default_employee_per_customer
+>  ON customer_employees (customer_id)
+>  WHERE is_default = true;
+>```
+>
+>Evitar la duplicación del mismo empleado
+>```SQL
+>  CREATE UNIQUE INDEX unique_employee_per_customer
+>  ON customer_employees (customer_id, document_number);
+>```
+>Tipo de dato
+>```SQL
+>  is_default BOOLEAN NOT NULL DEFAULT false
+>```
 
 ## Venta_master
 
