@@ -265,6 +265,8 @@
 > modo_ajuste = PORCENTAJE
 > valor_ajuste = 5
 >```
+>**Especificación Importante:**
+>El valor del campo *valor_ajuste* (*adjustment_value*) hace referencia al valor que se debe restar, según lo que represente, ya sea 100, 200, 350 pesos, pero no es para guardar un segundo valor del producto
 >
 >*Regla de prioridad (IMPORTANTÍSIMA)*
 > 1. Si existe configuración por producto → usar esa
@@ -550,6 +552,7 @@
 | expiration_date          | fecha_vencimiento_compra_detalle | Fecha de vencimiento del producto (si aplica) <br> *Product expiration date (if applicable)*                     |
 
 >[!NOTE]
+>En el campo *valor_descuento* (*discount_amount*) solo se debe guardar el valor que se debe restar ya sea 200,300,500, pero **NO** es para guardar un segundo valor del mismo producto.
 >Indices a crear:
 >```SQL
 >  CREATE INDEX idx_purchase_detail_purchase
@@ -705,7 +708,7 @@
 >  is_default BOOLEAN NOT NULL DEFAULT false
 >```
 
-## Venta_master
+## Sales | Venta_master
 
 **Descripción:** Al igual que la *Compra_master*, almacena los datos generales de la Venta
 
@@ -726,9 +729,68 @@
 | actualizado_por | Usuario que actualizó el registro |
 | fecha_actualizacion | Fecha de actualización del registro |
 
-## Venta_detalle
+| Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                                                     |
+| ------------------------ | ------------------- | --------------------------------------------------------------------------------------------------------------- |
+| id                       | id_venta_master     | Identificador de la venta <br> *Sale identifier*                                                                |
+| sale_number              | numero_venta_master | Número consecutivo de la venta <br> *Sequential sale number*                                                    |
+| customer_id              | fk_cliente          | Referencia al cliente <br> *Reference to the customer*                                                          |
+| customer_employee_id     | fk_empleado_cliente | Referencia al empleado del cliente corporativo que realizó el pago.                                             |
+| sale_date                | fecha_hora          | Fecha de la venta <br> *Sale date*                                                                              |
+| subtotal                 | subtotal            | Suma de los productos antes de descuentos <br> *Sum of items before discounts*                                  |
+| total_discount           | total_descuento     | Total de descuentos aplicados <br> *Total discount amount*                                                      |
+| total_amount             | total_venta         | Total final de la venta <br> *Final sale amount*                                                                |
+| balance_due              | saldo_pendiente     | Saldo pendiente por pagar <br> *Outstanding balance*                                                            |
+| notes                    | observaciones       | Observaciones de la venta <br> *Sale notes*                                                                     |
+| status                   | estado_factura      | Estado de la venta (PENDIENTE, ABONADA, PAGADA, ANULADA) <br> *Sale status (PENDING, PARTIAL, PAID, CANCELLED)* |
+| created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                                                 |
+| created_at               | fecha_creacion      | Fecha de creación <br> *Creation date*                                                                          |
+| updated_by               | actualizado_por     | Usuario que actualizó <br> *User who updated the record*                                                        |
+| updated_at               | fecha_actualizacion | Fecha de actualización <br> *Last update date*                                                                  |
+
+>[!NOTE]
+>sale_number debe ser único:
+>```SQL
+>  UNIQUE (sale_number)
+>```
+>El *estado* (status), cambia automáticamente de acuerdo a los abonos
+>```SQL
+>CHECK (status IN ('PENDIENTE','ABONADA','PAGADA','ANULADA'))
+>```
+>Índices recomendados:
+>```SQL
+>  CREATE INDEX idx_sales_customer
+>  ON sales (customer_id);
+>```
+>El campo customer_employee_id, debe permitir valores nulos, debido a que no todos los clientes tienen empleados, y la mayoría son personas naturales
+>```SQL
+>  customer_employee_id INTEGER NULL
+>```
+>Foreign Key con valores null. Porque si se elimina el empleado no se pierde la venta, y solo se pierde el contacto asociado
+>```SQL
+>  FOREIGN KEY (customer_employee_id)
+>  REFERENCES customer_employees(id)
+>  ON DELETE SET NULL;
+>```
+
+## Sale_details | Venta_detalle
 
 **Descripción:** Se relaciona el detalle de cada producto vendido al cliente, la razón por la cual se relaciona el usuario en esta se debe a las ventas a *crédito* que se pueden realizar a un cliente en diferentes fechas, y por lo tanto, pudo venderse el producto por empleados diferentes.
+
+| Campo (Laravel / Inglés) | Tu campo original        | Descripción                                                                                              |
+| ------------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| id                       | id_venta_detalle         | Identificador del detalle de venta <br> *Sale detail identifier*                                         |
+| sale_id                  | fk_venta_master          | Referencia a la venta <br> *Reference to the sale*                                                       |
+| product_presentation_id  | fk_producto_presentation | Referencia a la presentación del producto <br> *Reference to the product presentation*                   |
+| presentation_type_id     | fk_tipo_presentacion     | Referencia al tipo de presentación del producto <br> *Reference to the product presentation*             |
+| quantity                 | cant_venta_detalle       | Cantidad vendida <br> *Quantity sold*                                                                    |
+| unit_price               | valor_unit_venta_detalle | Precio unitario de venta <br> *Unit sale price*                                                          |
+| discount_percentage      | xje_descuento_producto   | Porcentaje de descuento del v/unit del producto                                                          |
+| discount_amount          | valor_descuento_producto | Descuento aplicado al producto <br> *Discount amount applied to the product*                             |
+| total_amount             | total_venta_detalle      | Total del detalle (cantidad × precio_unit) <br> *Total amount (quantity × unit price)* |
+| created_by               | creado_por               | Usuario que creó el registro <br> *User who created the record*                                          |
+| created_at               | fecha_creacion           | Fecha de creación <br> *Creation date*                                                                   |
+| updated_by               | actualizado_por          | Usuario que actualizó <br> *User who updated the record*                                                 |
+| updated_at               | fecha_actualizacion      | Fecha de actualización <br> *Last update date*                                                           |
 
 | Campo | Descripción |
 |-------|-------------|
