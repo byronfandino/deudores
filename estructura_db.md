@@ -766,7 +766,6 @@
 | id                       | id_venta_detalle         | Identificador del detalle de venta <br> *Sale detail identifier*                                         |
 | sale_id                  | fk_venta_master          | Referencia a la venta <br> *Reference to the sale*                                                       |
 | product_presentation_id  | fk_producto_presentation | Referencia a la presentación del producto <br> *Reference to the product presentation*                   |
-| presentation_type_id     | fk_tipo_presentacion     | Referencia al tipo de presentación del producto <br> *Reference to the product presentation*             |
 | quantity                 | cant_venta_detalle       | Cantidad vendida <br> *Quantity sold*                                                                    |
 | unit_price               | valor_unit_venta_detalle | Precio unitario de venta <br> *Unit sale price*                                                          |
 | discount_percentage      | xje_descuento_producto   | Porcentaje de descuento del v/unit del producto                                                          |
