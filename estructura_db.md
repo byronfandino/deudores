@@ -712,27 +712,12 @@
 
 **Descripción:** Al igual que la *Compra_master*, almacena los datos generales de la Venta
 
-| Campo | Descripción |
-|-------|-------------|
-| id_venta_master | Identificador de la venta |
-| numero_venta_master | Número consecutivo de venta al expedir un recibo |
-| fk_cliente | Referencia al cliente |
-| fecha_hora | Fecha de la factura |
-| subtotal | Suma total de los registros vendidos |
-| total_descuento | Suma total de descuentos |
-| total_venta | Valor total después del descuento |
-| saldo_pendiente | es distinto a 0 en caso de no pagar la totalidad de la factura |
-| observaciones | Observaciones de la venta |
-| estado_factura | ENUM('PENDIENTE','PAGADA','ANULADA') |
-| creado_por | Usuario que actualizó el registro |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro |
-| fecha_actualizacion | Fecha de actualización del registro |
-
 | Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                                                     |
 | ------------------------ | ------------------- | --------------------------------------------------------------------------------------------------------------- |
 | id                       | id_venta_master     | Identificador de la venta <br> *Sale identifier*                                                                |
 | sale_number              | numero_venta_master | Número consecutivo de la venta <br> *Sequential sale number*                                                    |
+| electronic_invoice_prefix| prefijo_fact_electr | Prefijo de la facturación electrónica (FE,NC,...). Permite valores null                                         |
+| electronic_invoice_number| numero_fact_elect   | Número de la facturación electrónica. Permite valores null                                                      |
 | customer_id              | fk_cliente          | Referencia al cliente <br> *Reference to the customer*                                                          |
 | customer_employee_id     | fk_empleado_cliente | Referencia al empleado del cliente corporativo que realizó el pago.                                             |
 | sale_date                | fecha_hora          | Fecha de la venta <br> *Sale date*                                                                              |
@@ -786,7 +771,7 @@
 | unit_price               | valor_unit_venta_detalle | Precio unitario de venta <br> *Unit sale price*                                                          |
 | discount_percentage      | xje_descuento_producto   | Porcentaje de descuento del v/unit del producto                                                          |
 | discount_amount          | valor_descuento_producto | Descuento aplicado al producto <br> *Discount amount applied to the product*                             |
-| total_amount             | total_venta_detalle      | Total del detalle (cantidad × precio_unit) <br> *Total amount (quantity × unit price)* |
+| total_amount             | total_venta_detalle      | Total del detalle (cantidad × precio_unit) <br> *Total amount (quantity × unit price)*                   |
 | created_by               | creado_por               | Usuario que creó el registro <br> *User who created the record*                                          |
 | created_at               | fecha_creacion           | Fecha de creación <br> *Creation date*                                                                   |
 | updated_by               | actualizado_por          | Usuario que actualizó <br> *User who updated the record*                                                 |
