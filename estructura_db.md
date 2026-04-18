@@ -776,24 +776,24 @@
 | updated_by               | actualizado_por          | Usuario que actualizó <br> *User who updated the record*                                                 |
 | updated_at               | fecha_actualizacion      | Fecha de actualización <br> *Last update date*                                                           |
 
-| Campo | Descripción |
-|-------|-------------|
-| id_venta_detalle | Identificador del detalle de venta |
-| fk_venta_master | Referencia a venta_master |
-| fk_producto_presentation | Referencia a las tablas producto y a la presentación del mismo |
-| fk_presentacion_types | Se requiere una columna para indicar la presentacion |
-| cant_venta_detalle | Cantidad vendida |
-| valor_unit_venta_detalle | Valor unitario vendido |
-| discount_value| valor_descuento_producto | Descuento únicamente del producto |
-| total_venta_detalle | Total del detalle |
-| creado_por | Usuario que creó el registro |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro |
-| fecha_actualizacion | Fecha de actualización del registro |
-
-## Devolucion_venta
+## Sale_returns | Devolucion_venta
 
 **Descripción:** Esta relaciona los productos que se devuelven por parte del cliente con su respectiva justificación.
+
+| Campo (Laravel / Inglés) | Tu campo original              | Descripción                                                                                                                             |
+| ------------------------ | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_devolucion_venta            | Identificador de la devolución <br> *Sale return identifier*                                                                            |
+| sale_detail_id           | fk_venta_detalle               | Referencia al detalle de la venta <br> *Reference to the sale detail*                                                                   |
+| return_date              | fecha_hora_devolucion_venta    | Fecha de la devolución <br> *Return date*                                                                                               |
+| quantity                 | cant_devolucion_venta          | Cantidad devuelta del producto <br> *Returned quantity*                                                                                 |
+| is_money_refund          | devolucion_dinero              | Indica si la devolución incluye reembolso de dinero (1) o no (0). *Indicates whether the return includes a money refund (1) or not (0)* |
+| notes                    | observaciones_devolucion_venta | Justificación de la devolución <br> *Reason for the return*                                                                             |
+| created_by               | creado_por                     | Usuario que creó el registro <br> *User who created the record*                                                                         |
+| created_at               | fecha_creacion                 | Fecha de creación <br> *Creation date*                                                                                                  |
+| updated_by               | actualizado_por                | Usuario que actualizó <br> *User who updated the record*                                                                                |
+| updated_at               | fecha_actualizacion            | Fecha de actualización <br> *Last update date*                                                                                          |
+
+
 
 | Campo | Descripción |
 |-------|-------------|
