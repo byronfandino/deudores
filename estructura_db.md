@@ -811,6 +811,38 @@
 >```SQL
 >  CHECK (total_amount >= 0)
 >```
+>**INDICES**
+>a. Índice por venta
+>```SQL
+>   CREATE INDEX idx_sale_details_sale
+>   ON sale_details (sale_id);
+>```
+>  Objetivo:
+>    - Cargar factura
+>    - Mostrar detalle de venta
+>
+>b. Índice por producto
+>```SQL
+>   CREATE INDEX idx_sale_details_product
+>   ON sale_details (product_presentation_id);
+>```
+>  Objetivo:
+>    - Reportes
+>    - Estadísticas
+>    - Kardex
+>c. Índice compuesto (muy potente)
+>```SQL
+>   CREATE INDEX idx_sale_details_sale_product
+>   ON sale_details (sale_id, product_presentation_id);
+>```
+>  Optimización:
+>    - Validaciones
+>    - Agrupaciones por producto dentro de una venta
+>d. Índice para auditoría por usuario
+>```SQL
+>   CREATE INDEX idx_sale_details_created_by
+>   ON sale_details (created_by);
+>```
 
 ## Sale_returns | Devolucion_venta
 
