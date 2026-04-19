@@ -716,7 +716,6 @@
 | ------------------------ | ------------------- | --------------------------------------------------------------------------------------------------------------- |
 | id                       | id_venta_master     | Identificador de la venta <br> *Sale identifier*                                                                |
 | sale_number              | numero_venta_master | Número consecutivo de la venta <br> *Sequential sale number*                                                    |
-| electronic_invoice_prefix| prefijo_fact_electr | Prefijo de la facturación electrónica (FE,NC,...). Permite valores null                                         |
 | electronic_invoice_number| numero_fact_elect   | Número de la facturación electrónica. Permite valores null                                                      |
 | customer_id              | fk_cliente          | Referencia al cliente <br> *Reference to the customer*                                                          |
 | customer_employee_id     | fk_empleado_cliente | Referencia al empleado del cliente corporativo que realizó el pago.                                             |
@@ -733,19 +732,50 @@
 | updated_at               | fecha_actualizacion | Fecha de actualización <br> *Last update date*                                                                  |
 
 >[!NOTE]
->sale_number debe ser único:
+>1. sale_number debe ser único:
 >```SQL
 >  UNIQUE (sale_number)
 >```
->El *estado* (status), cambia automáticamente de acuerdo a los abonos
+>2. El *estado* (status), cambia automáticamente de acuerdo a los abonos
 >```SQL
->CHECK (status IN ('PENDIENTE','ABONADA','PAGADA','ANULADA'))
+>   CHECK (status IN ('PENDIENTE','ABONADA','PAGADA','ANULADA'))
 >```
->Índices recomendados:
+>3. Índices recomendados (OPTIMIZACIÓN)
+> a. Índices básicos
+>```SQL
+>  CREATE UNIQUE INDEX idx_sales_sale_number
+>  ON sales (sale_number);
+>```
+> b. Índices de consulta frecuente 
 >```SQL
 >  CREATE INDEX idx_sales_customer
 >  ON sales (customer_id);
+>
+>  CREATE INDEX idx_sales_date
+>  ON sales (sale_date);
+>
+>  CREATE INDEX idx_sales_status
+>  ON sales (status);
 >```
+> c. Índice compuesto (MUY útil en dashboards)
+>```SQL
+>  CREATE INDEX idx_sales_customer_date
+>  ON sales (customer_id, sale_date);
+>```
+>     Esto optimiza:
+>        - Historial de ventas por cliente
+>        - Reportes tipo:
+>              “ventas de cliente X en rango de fechas”
+>  d. Índice para cartera (muy importante)
+>```SQL
+>  CREATE INDEX idx_sales_balance_due
+>  ON sales (balance_due)
+>  WHERE balance_due > 0;
+>```
+>     Esto acelera:
+>        Consultas de cartera
+>        Ventas pendientes
+>
 >El campo customer_employee_id, debe permitir valores nulos, debido a que no todos los clientes tienen empleados, y la mayoría son personas naturales
 >```SQL
 >  customer_employee_id INTEGER NULL
@@ -775,6 +805,12 @@
 | created_at               | fecha_creacion           | Fecha de creación <br> *Creation date*                                                                   |
 | updated_by               | actualizado_por          | Usuario que actualizó <br> *User who updated the record*                                                 |
 | updated_at               | fecha_actualizacion      | Fecha de actualización <br> *Last update date*                                                           |
+
+>[!Note]
+>El campo *total_amount* (total_venta_detalle) debe cumplir que sea mayor a 0
+>```SQL
+>  CHECK (total_amount >= 0)
+>```
 
 ## Sale_returns | Devolucion_venta
 
