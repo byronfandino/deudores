@@ -807,9 +807,12 @@
 | updated_at               | fecha_actualizacion      | Fecha de actualización <br> *Last update date*                                                           |
 
 >[!Note]
->El campo *total_amount* (total_venta_detalle) debe cumplir que sea mayor a 0
+>Es necesario garantizar los campos que deben ser mayor a 0
 >```SQL
->  CHECK (total_amount >= 0)
+>   CHECK (quantity > 0)
+>   CHECK (unit_price >= 0)
+>   CHECK (discount_amount >= 0)
+>   CHECK (total_amount >= 0)
 >```
 >**INDICES**
 >a. Índice por venta
@@ -852,7 +855,7 @@
 | ------------------------ | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
 | id                       | id_devolucion_venta            | Identificador de la devolución <br> *Sale return identifier*                                                                            |
 | sale_detail_id           | fk_venta_detalle               | Referencia al detalle de la venta <br> *Reference to the sale detail*                                                                   |
-| return_date              | fecha_hora_devolucion_venta    | Fecha de la devolución <br> *Return date*                                                                                               |
+| returned_at              | fecha_hora_devolucion_venta    | Fecha de la devolución <br> *Return date*                                                                                               |
 | quantity                 | cant_devolucion_venta          | Cantidad devuelta del producto <br> *Returned quantity*                                                                                 |
 | is_money_refund          | devolucion_dinero              | Indica si la devolución incluye reembolso de dinero (1) o no (0). *Indicates whether the return includes a money refund (1) or not (0)* |
 | notes                    | observaciones_devolucion_venta | Justificación de la devolución <br> *Reason for the return*                                                                             |
@@ -861,15 +864,52 @@
 | updated_by               | actualizado_por                | Usuario que actualizó <br> *User who updated the record*                                                                                |
 | updated_at               | fecha_actualizacion            | Fecha de actualización <br> *Last update date*                                                                                          |
 
-
-
-| Campo | Descripción |
-|-------|-------------|
-| id_devolucion_venta | Identificador de la devolución |
-| fk_venta_detalle | Llave foránea de la factura Venta Detalle para obtener datos no solo del producto, si no datos adicionales de la venta master
-| fecha_hora_devolucion_venta | Fecha de la devolución |
-| cant_devolucion_venta | Cantidad devuelta del producto |
-| observaciones_devolucion_venta | Justificación de la devolución |
+>[!NOTE]
+>Regla obligatoria a nivel lógico:
+>```
+>   SUM(quantity devuelta) <= quantity vendida
+>```
+>
+>En caso de devolución del dinero se debe involucrar la tabla abono ventas.
+>
+>Relación del inventario: Entrada de inventario (si aplica) y Movimiento tipo: DC (Devolución Cliente)
+>
+>**Indices**
+>- *Índice principal*
+>```SQL
+>   CREATE INDEX idx_sale_returns_sale_detail
+>   ON sale_returns (sale_detail_id);
+>```
+>  Objetivo:
+>   - Consultar devoluciones por producto vendido
+>   - Auditoría
+>- *Índice por fecha*
+>```SQL
+>   CREATE INDEX idx_sale_returns_date
+>   ON sale_returns (return_date);
+>```
+>  Objetivo:
+>   - Reportes
+>   - Filtrar devoluciones por rango de fechas
+>
+> *Índice por usuario*
+>```SQL
+>   CREATE INDEX idx_sale_returns_created_by
+>   ON sale_returns (created_by);
+>```
+>  Objetivo:
+>   - Auditoría por usuario
+>
+> Validaciones recomendadas
+>```SQL
+>  CHECK (quantity >= 0)
+>```
+>
+> Integridad lógica
+>``` 
+> quantity_devuelta > 0
+> quantity_devuelta <= cantidad_original
+>```
 
 ## Abono_venta
 **Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado un cliente a la misma factura 
