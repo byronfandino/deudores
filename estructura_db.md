@@ -911,6 +911,109 @@
 > quantity_devuelta <= cantidad_original
 >```
 
+## cash_registers (cajas / turnos de caja)
+
+**Descripcion:** Representa la apertura de caja de un usuario (no necesariamente diario)
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo                        | Valores                 |
+| ------------------------ | ------------------------- | ----------------------------------------- | ----------------------- |
+| id                       | id_caja                   | Identificador único                       | SERIAL / AUTO INCREMENT |
+| user_id                  | fk_usuario                | Usuario que abre la caja                  | FK → users.id           |
+| opening_amount           | monto_apertura            | Dinero inicial con el que se abre la caja | NUMERIC ≥ 0             |
+| opened_at                | fecha_apertura            | Fecha y hora de apertura                  | TIMESTAMP               |
+| closed_at                | fecha_cierre              | Fecha y hora de cierre                    | TIMESTAMP NULL          |
+| status                   | estado_caja               | Estado actual de la caja                  | ENUM('OPEN','CLOSED')   |
+| created_at               | fecha_creacion            | Fecha de creación del registro            | TIMESTAMP               |
+
+>[!NOTE]
+> *Regla clave:* Solo una caja abierta por usuario:
+>```SQL
+>  UNIQUE (user_id) WHERE status = 'OPEN'
+>```
+
+## cash_movements (movimientos de caja)
+
+**Descripcion:** Aquí se registra TODO el dinero (es la tabla más importante)
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo                         | Valores                |
+| ------------------------ | ------------------------- | ------------------------------------------ | ---------------------- |
+| id                       | id_movimiento_caja        | Identificador único                        | SERIAL                 |
+| cash_register_id         | fk_caja                   | Relación con la caja abierta               | FK → cash_registers.id |
+| type                     | tipo_movimiento           | Tipo de movimiento de dinero               | ENUM (ver abajo)       |
+| amount                   | monto                     | Valor del movimiento                       | NUMERIC > 0            |
+| reference_id             | id_referencia             | ID del registro origen (venta, pago, etc.) | INTEGER                |
+| reference_type           | tipo_referencia           | Tabla origen del movimiento                | VARCHAR                |
+| description              | descripcion               | Motivo o detalle del movimiento            | TEXT                   |
+| created_at               | fecha_creacion            | Fecha del movimiento                       | TIMESTAMP              |
+
+>[!NOTE]
+>No puede existir movimiento sin caja abierta.
+>*Valores del campo type:*
+>  | Valor        | Significado                |
+>  | ------------ | -------------------------- |
+>  | SALE_CASH    | Venta pagada en efectivo   |
+>  | PAYMENT_CASH | Abono en efectivo          |
+>  | REFUND_CASH  | Devolución de dinero       |
+>  | EXPENSE      | Gasto de caja              |
+>  | INCOME       | Ingreso manual             |
+>  | ADJUSTMENT   | Ajuste (faltante/sobrante) |
+
+## cash_closings (cierres de caja)
+
+**Descripcion:** Resume el cierre de una caja
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo               | Valores                      |
+| ------------------------ | ------------------------- | -------------------------------- | ---------------------------- |
+| id                       | id_cierre_caja            | Identificador del cierre         | SERIAL                       |
+| cash_register_id         | fk_caja                   | Caja que se está cerrando        | FK → cash_registers.id       |
+| expected_amount          | monto_esperado            | Dinero esperado según sistema    | NUMERIC ≥ 0                  |
+| actual_amount            | monto_real                | Dinero contado físicamente       | NUMERIC ≥ 0                  |
+| difference               | diferencia                | Diferencia entre esperado y real | NUMERIC (puede ser negativo) |
+| notes                    | observaciones             | Justificación del cierre         | TEXT                         |
+| closed_by                | cerrado_por               | Usuario que realiza el cierre    | FK → users.id                |
+| created_at               | fecha_creacion            | Fecha del cierre                 | TIMESTAMP                    |
+
+>[!NOTE]
+>Lógica de las cajas:
+> **Ingresos (entra dinero):**
+>  - SALE_CASH (venta en efectivo)
+>  - PAYMENT_CASH (abono)
+>  - INCOME (ingreso manual)
+> **Egresos (sale dinero):**
+>  - REFUND_CASH (devolución)
+>  - EXPENSE (gasto)
+>
+>Cálculo de diferencia: difference = actual_amount - expected_amount
+>
+>**Integración con otras tablas**
+> 1. Desde abono_venta (pagos de venta)
+>    Si el método de pago es EFECTIVO, se crea:
+>    | Campo          | Valor           |
+>    | -------------- | --------------- |
+>    | type           | PAYMENT_CASH    |
+>    | reference_type | 'sale_payments' |
+>    | reference_id   | id del pago     |
+>    
+> 2. Desde sale_returns (devoluciones)
+>    Si is_money_refund = true
+>    Se crea:
+>    | Campo          | Valor          |
+>    | -------------- | -------------- |
+>    | type           | REFUND_CASH    |
+>    | reference_type | 'sale_returns' |
+>    | reference_id   | id devolución  |
+>    
+> 3. Desde ventas directas
+>    Si el pago es inmediato en efectivo:
+>    | Campo          | Valor     |
+>    | -------------- | --------- |
+>    | type           | SALE_CASH |
+>    | reference_type | 'sales'   |
+>    | reference_id   | id venta  |
+
+>[!NOTE]
+>Falta incorporar una tabla llamada gastos
+
 ## Abono_venta
 **Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado un cliente a la misma factura 
 
