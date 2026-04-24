@@ -1011,8 +1011,37 @@
 >    | reference_type | 'sales'   |
 >    | reference_id   | id venta  |
 
+## expenses (gastos)
+
+**Descripción:** Representa dinero que sale de caja por operaciones del negocio
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo                   | Valores                |
+| ------------------------ | ------------------------- | ------------------------------------ | ---------------------- |
+| id                       | id_gasto                  | Identificador del gasto              | SERIAL                 |
+| cash_register_id         | fk_caja                   | Caja desde donde se realiza el gasto | FK → cash_registers.id |
+| expense_category_id      | fk_categoria_gasto        | Clasificación del gasto              | FK                     |
+| amount                   | monto_gasto               | Valor del gasto                      | NUMERIC > 0            |
+| description              | descripcion               | Motivo del gasto                     | TEXT                   |
+| expense_date             | fecha_gasto               | Fecha del gasto                      | TIMESTAMP              |
+| created_by               | creado_por                | Usuario que registra                 | FK → users.id          |
+| created_at               | fecha_creacion            | Fecha de creación                    | TIMESTAMP              |
+
+## expense_categories (categorias_gasto)
+**Descripción:** Para organización y reportes
+
+| Campo      | Nombre original    | Objetivo         | Valores   |
+| ---------- | ------------------ | ---------------- | --------- |
+| id         | id_categoria_gasto | Identificador    | SERIAL    |
+| name       | nombre_categoria   | Nombre del gasto | VARCHAR   |
+| is_active  | estado             | Activo o no      | BOOLEAN   |
+| created_at | fecha_creacion     | Fecha            | TIMESTAMP |
+
 >[!NOTE]
->Falta incorporar una tabla llamada gastos
+>*Ejemplos:*
+> - Energía eléctrica
+> - Agua
+> - Internet
+> - Gas
 
 ## Abono_venta
 **Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado un cliente a la misma factura 
