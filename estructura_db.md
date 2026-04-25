@@ -1114,7 +1114,22 @@
 >**Falta hacer el mapa de su integración con otras tablas**
 
 ## Movimiento_inventario
-**Descripción:** Se realizarán los 3 inventarios LIFO FIFO Y PONDERADO
+**Descripción:** Se realizarán los inventarios FIFO Y PONDERADO
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo              | Valores            |
+| ------------------------ | ------------------------- | ------------------------------- | ------------------ |
+| id                       | id_inventario             | Identificador del movimiento    | SERIAL             |
+| product_id               | fk_producto               | Producto afectado               | FK → products.id   |
+| movement_type            | tipo_inventario           | Tipo de movimiento              | ENUM (ver abajo)   |
+| quantity                 | cant_inventario           | Cantidad del movimiento         | NUMERIC > 0        |
+| unit_cost                | valor_unit_inventario     | Costo unitario (solo entradas), para salidas se utilia NULL, ya que se calcula de acuerdo al tipo de inv  | NUMERIC ≥ 0 / NULL |
+| movement_date            | fecha_hora_inventario     | Fecha del movimiento            | TIMESTAMP          |
+| purchase_detail_id       | fk_compra_detalle         | Referencia detalle compra       | FK NULL            |
+| sale_detail_id           | fk_venta_detalle          | Referencia detalle venta        | FK NULL            |
+| location_id              | fk_ubicacion              | Ubicación del inventario        | FK                 |
+| movement_group_id        | id_grupo_movimiento       | Agrupa movimientos relacionados | INTEGER NULL       |
+| notes                    | observaciones             | Motivo del movimiento           | TEXT               |
+| created_at               | fecha_creacion            | Fecha de creación               | TIMESTAMP          |
 
 | Campo | Descripción |
 |-------|-------------|
