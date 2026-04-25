@@ -1113,7 +1113,7 @@
 >
 >**Falta hacer el mapa de su integración con otras tablas**
 
-## Movimiento_inventario
+## inventory_movements | Movimiento_inventario
 **Descripción:** Se realizarán los inventarios FIFO Y PONDERADO
 
 | Campo (Laravel / Inglés) | Nombre original (Español) |                                                     Objetivo del campo                                                     |      Valores       |
@@ -1216,8 +1216,21 @@
 >   ON inventory_movements (purchase_detail_id);
 >```
 
-## Inventario_capas
+## inventory_layers | Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo             | Valores                     |
+| ------------------------ | ------------------------- | ------------------------------ | --------------------------- |
+| id                       | id_capa                   | Identificador de la capa       | SERIAL                      |
+| product_id               | fk_producto               | Producto asociado              | FK → products.id            |
+| inventory_movement_id    | fk_movimiento_inventario  | Movimiento que originó la capa | FK → inventory_movements.id |
+| initial_quantity         | cant_inicial              | Cantidad inicial ingresada     | NUMERIC > 0                 |
+| remaining_quantity       | cant_restante             | Cantidad disponible actual     | NUMERIC ≥ 0                 |
+| unit_cost                | costo_unitario            | Costo unitario de la capa      | NUMERIC ≥ 0                 |
+| layer_date               | fecha_capa                | Fecha de creación de la capa   | TIMESTAMP                   |
+| status                   | estado_capa               | Estado de la capa              | ENUM('ACTIVE','CLOSED')     |
+| created_at               | fecha_creacion            | Fecha de creación              | TIMESTAMP                   |
+
 
 | Campo | Descripción |
 |-------|-------------|
