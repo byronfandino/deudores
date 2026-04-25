@@ -1219,51 +1219,131 @@
 ## inventory_layers | Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
 
-| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo             | Valores                     |
-| ------------------------ | ------------------------- | ------------------------------ | --------------------------- |
-| id                       | id_capa                   | Identificador de la capa       | SERIAL                      |
-| product_id               | fk_producto               | Llave foránea del producto              | FK → products.id            |
-| inventory_movement_id    | fk_movimiento_inventario  | Llave foránea del Movimiento_inventario | FK → inventory_movements.id |
+| Campo (Laravel / Inglés) | Nombre original (Español) |                                       Objetivo del campo                                       | Valores                     |
+|--------------------------|---------------------------|:----------------------------------------------------------------------------------------------:|-----------------------------|
+| id                       | id_capa                   | Identificador de la capa                                                                       | SERIAL                      |
+| product_id               | fk_producto               | Llave foránea del producto                                                                     | FK → products.id            |
+| inventory_movement_id    | fk_movimiento_inventario  | Llave foránea del Movimiento_inventario                                                        | FK → inventory_movements.id |
 | initial_quantity         | cant_inicial              | Total de productos ingresados al momento de la entrada ya sea Inventario Inicial o Compras     | NUMERIC > 0                 |
-| remaining_quantity       | cant_restante             | Inicialmente inicia con el mismo valor que la cant_inicial y se irá restando (actualizando el registro) por cada salida que se presente| NUMERIC ≥ 0                 |
-| unit_cost                | costo_unitario            | Costo unitario de la capa de la compra o inventario inicial      | NUMERIC ≥ 0                 |
-| layer_date               | fecha_capa                | Fecha de creación de la capa   | TIMESTAMP                   |
-| status                   | estado_capa               | Solo contendrá dos valores A=Activa o C=Cerrada, solo se cerrará cuando cant_restante sea igual a 0, para realizar filtros y operaciones más rápidas | ENUM('ACTIVE','CLOSED')     |
-| created_at               | fecha_creacion            | Fecha de creación              | TIMESTAMP                   |
+| remaining_quantity       | cant_restante             | Inicia con el mismo valor que cant_inicial y se irá restando (actualizando) con cada salida    | NUMERIC ≥ 0                 |
+| unit_cost                | costo_unitario            | Costo unitario de la capa de la compra o inventario inicial                                    | NUMERIC ≥ 0                 |
+| layer_date               | fecha_capa                | Fecha de creación de la capa                                                                   | TIMESTAMP                   |
+| status                   | estado_capa               | Contendrá dos valores A=Activa o C=Cerrada. solo se cerrará cuando cant_restante sea igual a 0 | ENUM('ACTIVE','CLOSED')     |
+| created_at               | fecha_creacion            | Fecha de creación                                                                              | TIMESTAMP                   |
 
-| Campo | Descripción |
-|-------|-------------|
-| id_capa | Identificador del movimiento |
-| fk_producto | Llave foránea del producto |
-| fk_movimiento_inventario | Llave foránea del Movimiento_inventario |
-| cant_inicial | Total de productos ingresados al momento de la entrada ya sea Inventario Inicial o Compras |
-| cant_restante | Inicialmente inicia con el mismo valor que la cant_inicial y se irá restando (actualizando el registro) por cada salida que se presente |
-| costo_unitario | costo de la compra |
-| fecha_capa | Fecha de la entrada |
-| status_capa | Solo contendrá dos valores A=Activa o C=Cerrada, solo se cerrará cuando cant_restante sea igual a 0, para realizar filtros y operaciones más rápidas |
+>[!NOTE]
+>**Reglas importantes:**
+>*Entradas que crean la capa:* 
+>| Tipo | Acción    |
+>| ---- | --------- |
+>| C    | crea capa |
+>| IN   | crea capa |
+>| DC   | crea capa |
+>
+>*Entradas que actualizan la capa:* 
+>| Tipo | Acción        |
+>| ---- | ------------- |
+>| V    | consume capas |
+>| DP   | consume capas |
+>| AN   | consume capas |
+>
+>**Índices (MUY IMPORTANTES para FIFO)**
+>*Producto*
+>```SQL
+>  CREATE INDEX idx_layers_product
+>  ON inventory_layers (product_id);
+>```
+>
+>*Estado + fecha (clave para FIFO)*
+>```SQL
+>  CREATE INDEX idx_layers_fifo
+>  ON inventory_layers (product_id, status, layer_date);
+>```
+>Esto permite:
+>```SQL
+>  ORDER BY layer_date ASC
+>```
 
 ## Inventario_salida_detalle
-**Descripción:** Registra el detalle del consumo de inventario por capas para cada venta, 
-permitiendo identificar el costo real de los productos vendidos según el método de costeo (FIFO, o Ponderado).
-| Campo | Descripción |
-|-------|-------------|
-| id_salida_detalle | Identificador de la salida|
-| fk_venta_detalle  | Llave foránea de la venta_detalle |
-| fk_capa           | Llave foránea de la inventario_capas |
-| fk_producto       | Llave foránea de la producto (para agilizar consultas) |
-| cantidad_salida   | cantidad vendida |
-| costo_unitario    | costo unitario proveniente de la capa |
-| subtotal_costo    | multiplicación de la cantidad_salida x costo_unitario |
-| fecha_registro    | Tipo de dato: TIMESTAMP DEFAULT CURRENT_TIMESTAMP |
+
+**Descripción:** Registra el detalle del consumo de inventario por capas para cada venta, permitiendo identificar el costo real de los productos vendidos según el método de costeo (FIFO, o Ponderado).
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo                                     | Valores                  |
+|--------------------------|---------------------------|--------------------------------------------------------|--------------------------|
+| id                       | id_salida_detalle         | Identificador                                          | SERIAL                   |
+| sale_detail_id           | fk_venta_detalle          | Llave foránea Venta_detalle                            | FK → sale_details.id     |
+| inventory_layer_id       | fk_capa                   | Llave foránea inventario_capas                         | FK → inventory_layers.id |
+| product_id               | fk_producto               | Llave foránea de la producto (para agilizar consultas) | FK → products.id         |
+| quantity                 | cantidad_salida           | Cantidad vendida tomada de la capa                     | NUMERIC > 0              |
+| unit_cost                | costo_unitario            | Costo unitario de la capa                              | NUMERIC ≥ 0              |
+| total_cost               | subtotal_costo            | Costo total (cantidad_salida x costo_unitario)         | NUMERIC ≥ 0              |
+| created_at               | fecha_registro            | Fecha de registro                                      | TIMESTAMP                |
 
 >[!NOTE]
 >APLICAR LAS SIGUIENTES REGLAS DE INTEGRIDAD
 >```SQL
->CHECK (cantidad_salida > 0),
->CHECK (costo_unitario >= 0),
->CHECK (subtotal_costo = cantidad_salida * costo_unitario)
+>   CHECK (cantidad_salida > 0),
+>   CHECK (costo_unitario >= 0),
+>   CHECK (subtotal_costo = cantidad_salida * costo_unitario)
 >```
 >
+>**Reglas críticas:**
+>*Integridad matemática*
+>```SQL
+>  CHECK (quantity > 0)
+>  CHECK (unit_cost >= 0)
+>  CHECK (total_cost = quantity * unit_cost)
+>```
+>
+>**Relación con capas:**
+>*Debe cumplirse:*
+>```
+>   SUM(quantity usada en capas) = cantidad vendida
+>```
+>
+>**NO SE PUEDE consumir más de lo disponible:**
+>```
+>   quantity <= remaining_quantity (en la capa)
+>```
+>
+>>**¿Para qué sirve realmente? (nivel negocio)**
+>1. Calcular costo de venta (COGS)
+>```
+>   costo_total_venta = SUM(total_cost)
+>```
+>
+>2. Calcular utilidad
+>```
+>   utilidad = venta - costo
+>```
+>
+>3. Auditoría
+>Se puede conocer:
+> - ¿de qué compra salió este producto?
+> - ¿cuánto costó realmente?
+> - ¿qué capas se consumieron?
+>
+>4. Kardex real
+>Esto alimenta:
+> - FIFO
+> - reportes contables
+> - Trazabilidad
+>
+>>**Índices recomendados:**
+>```SQL
+>CREATE INDEX idx_out_sale_detail
+>ON inventory_out_details (sale_detail_id);
+>```
+>
+>```SQL
+>CREATE INDEX idx_out_layer
+>ON inventory_out_details (inventory_layer_id);
+>```
+>
+>```SQL
+>CREATE INDEX idx_out_product
+>ON inventory_out_details (product_id);
+>```
 
 ## Kardex_fifo
 **Descripción:** Mantiene actualizado el inventario FIFO
