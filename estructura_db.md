@@ -1116,36 +1116,32 @@
 ## Movimiento_inventario
 **Descripción:** Se realizarán los inventarios FIFO Y PONDERADO
 
-| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo              | Valores            |
-| ------------------------ | ------------------------- | ------------------------------- | ------------------ |
-| id                       | id_inventario             | Identificador del movimiento    | SERIAL             |
-| product_id               | fk_producto               | Producto afectado               | FK → products.id   |
-| movement_type            | tipo_inventario           | Tipo de movimiento              | ENUM (ver abajo)   |
-| quantity                 | cant_inventario           | Cantidad del movimiento         | NUMERIC > 0        |
-| unit_cost                | valor_unit_inventario     | Costo unitario (solo entradas), para salidas se utilia NULL, ya que se calcula de acuerdo al tipo de inv  | NUMERIC ≥ 0 / NULL |
-| movement_date            | fecha_hora_inventario     | Fecha del movimiento            | TIMESTAMP          |
-| purchase_detail_id       | fk_compra_detalle         | Referencia detalle compra       | FK NULL            |
-| sale_detail_id           | fk_venta_detalle          | Referencia detalle venta        | FK NULL            |
-| location_id              | fk_ubicacion              | Ubicación del inventario        | FK                 |
-| movement_group_id        | id_grupo_movimiento       | Agrupa movimientos relacionados | INTEGER NULL       |
-| notes                    | observaciones             | Motivo del movimiento           | TEXT               |
-| created_at               | fecha_creacion            | Fecha de creación               | TIMESTAMP          |
-
-| Campo | Descripción |
-|-------|-------------|
-| id_inventario | Identificador del movimiento |
-| fk_producto | Referencia al producto |
-| tipo_inventario | será de tipo enum (COMPRA (C), VENTA (V), DEVOLUCION_CLIENTE (DC), DEVOLUCION_PROVEEDOR (DP), AJUSTE_POSITIVO (AP), AJUSTE_NEGATIVO (AN), INVENTARIO_INICIAL (IN)) |
-| cant_inventario | Cantidad del movimiento |
-| valor_unit_inventario | Valor unitario (solo para entradas) para salidas se utiliza null, ya que se calcula de acuerdo al tipo de inv|
-| fecha_hora_inventario | Fecha y hora del movimiento |
-| fk_compra_detalle | Referencia al detalle de compra, debe permitir valores null|
-| fk_venta_detalle | Referencia al detalle de venta, debe permitir valores null|
-| fk_ubicacion | Referencia a la ubicación|
-| id_grupo_movimiento | Se usa para agrupar movimientos que pertenecen a una misma operación (compra distribuida, venta, traslado, ajuste, etc.) |
-| observaciones | En caso de haber devoluciones, ajustes, traslados, se debe especificar la razón por la que se dió este movimiento|
+| Campo (Laravel / Inglés) | Nombre original (Español) |                                                     Objetivo del campo                                                     |      Valores       |
+|:------------------------:|:-------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|--------------------|
+| id                       | id_inventario             | Identificador del movimiento                                                                                               | SERIAL             |
+| product_id               | fk_producto               | Producto afectado                                                                                                          | FK → products.id   |
+| movement_type            | tipo_inventario           | Tipo de movimiento                                                                                                         | ENUM (ver abajo)   |
+| quantity                 | cant_inventario           | Cantidad del movimiento                                                                                                    | NUMERIC > 0        |
+| unit_cost                | valor_unit_inventario     | Costo unitario (solo entradas), para salidas se utilia NULL, ya que se calcula de acuerdo al tipo de inv                   | NUMERIC ≥ 0 / NULL |
+| movement_date            | fecha_hora_inventario     | Fecha del movimiento                                                                                                       | TIMESTAMP          |
+| purchase_detail_id       | fk_compra_detalle         | Referencia detalle compra                                                                                                  | FK NULL            |
+| sale_detail_id           | fk_venta_detalle          | Referencia detalle venta                                                                                                   | FK NULL            |
+| location_id              | fk_ubicacion              | Referencia a la Ubicación                                                                                                  | FK                 |
+| movement_group_id        | id_grupo_movimiento       | Se usa para agrupar movimientos que pertenecen a una misma operación   (compra distribuida, venta, traslado, ajuste, etc.) | INTEGER NULL       |
+| notes                    | observaciones             | En caso de haber devoluciones, ajustes, traslados, se debe especificar la razón por la que se dió este movimiento          | TEXT               |
+| created_at               | fecha_creacion            | Fecha de creación                                                                                                          | TIMESTAMP          |
 
 >[!NOTE]
+>**Valores de movement_type (tipo_inventario)**
+>| Código | Significado          |
+>| ------ | -------------------- |
+>| IN     | Inventario inicial   |
+>| C      | Compra               |
+>| V      | Venta                |
+>| DC     | Devolución cliente   |
+>| DP     | Devolución proveedor |
+>| AP     | Ajuste positivo      |
+>| AN     | Ajuste negativo      |
 >
 >No se relaciona la llave foránea del usuario ya que es una que se alimenta automáticamente de otras tablas que estaría diligenciando el usuario final, sin embargo es el corazón del software.
 >
@@ -1187,6 +1183,38 @@
 >  (tipo_inventario IN ('DC','DP','AP','AN','IN'))
 >)
 >Si es una compra (C), debe venir de compra_detalle, pero si es una venta (V), debe venir de venta_detalle
+>
+>*INDICES*
+>Producto:
+>```SQL
+>   CREATE INDEX idx_inventory_product
+>   ON inventory_movements (product_id);
+>```
+>
+>Ubicación:
+>```SQL
+>   CREATE INDEX idx_inventory_location
+>   ON inventory_movements (location_id);
+>```
+>Fecha:
+>```SQL
+>   CREATE INDEX idx_inventory_date
+>   ON inventory_movements (movement_date);
+>```
+>Tipo:
+>```SQL
+>   CREATE INDEX idx_inventory_type
+>   ON inventory_movements (movement_type);
+>```
+>Relaciones:
+>```SQL
+>   CREATE INDEX idx_inventory_sale
+>   ON inventory_movements (sale_detail_id);
+>```
+>```SQL
+>   CREATE INDEX idx_inventory_purchase
+>   ON inventory_movements (purchase_detail_id);
+>```
 
 ## Inventario_capas
 **Descripción:** Tiene como objetivo controlar las salidas de cada capa, ya que el costo puede variar con el tiempo, y es necesaria para determinar el valor real del inventario de cada producto.
