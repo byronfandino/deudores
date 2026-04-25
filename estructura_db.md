@@ -708,6 +708,78 @@
 >  is_default BOOLEAN NOT NULL DEFAULT false
 >```
 
+## expenses (gastos)
+
+**Descripción:** Representa dinero que sale de caja por operaciones del negocio
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo                   | Valores                |
+| ------------------------ | ------------------------- | ------------------------------------ | ---------------------- |
+| id                       | id_gasto                  | Identificador del gasto              | SERIAL                 |
+| cash_register_id         | fk_caja                   | Caja desde donde se realiza el gasto | FK → cash_registers.id |
+| expense_category_id      | fk_categoria_gasto        | Clasificación del gasto              | FK                     |
+| amount                   | monto_gasto               | Valor del gasto                      | NUMERIC > 0            |
+| description              | descripcion               | Motivo del gasto                     | TEXT                   |
+| expense_date             | fecha_gasto               | Fecha del gasto                      | TIMESTAMP              |
+| created_by               | creado_por                | Usuario que registra                 | FK → users.id          |
+| created_at               | fecha_creacion            | Fecha de creación                    | TIMESTAMP              |
+
+>[!NOTE]
+>índices recomendados:
+>```SQL
+>  INDEX (cash_register_id)
+>  INDEX (expense_category_id)
+>  INDEX (expense_date)
+>```
+
+## expense_categories (categorias_gasto)
+**Descripción:** Para organización y reportes
+
+| Campo      | Nombre original    | Objetivo         | Valores   |
+| ---------- | ------------------ | ---------------- | --------- |
+| id         | id_categoria_gasto | Identificador    | SERIAL    |
+| name       | nombre_categoria   | Nombre del gasto | VARCHAR   |
+| is_active  | estado             | Activo o no      | BOOLEAN   |
+| created_at | fecha_creacion     | Fecha            | TIMESTAMP |
+
+>[!NOTE]
+>*Ejemplos:*
+> - Energía eléctrica
+> - Agua
+> - Internet
+> - Gas
+
+## other_income (otros_ingresos)
+
+**Descripción:** Representa dinero que entra a caja pero NO viene de ventas
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo         | Valores     |
+| ------------------------ | ------------------------- | -------------------------- | ----------- |
+| id                       | id_ingreso                | Identificador              | SERIAL      |
+| cash_register_id         | fk_caja                   | Caja donde entra el dinero | FK          |
+| income_category_id       | fk_categoria_ingreso      | Tipo de ingreso            | FK          |
+| amount                   | monto_ingreso             | Valor recibido             | NUMERIC > 0 |
+| description              | descripcion               | Motivo                     | TEXT        |
+| income_date              | fecha_ingreso             | Fecha                      | TIMESTAMP   |
+| created_by               | creado_por                | Usuario                    | FK          |
+| created_at               | fecha_creacion            | Fecha                      | TIMESTAMP   |
+
+>[!NOTE]
+>*índices recomendados:*
+>```SQL
+>   INDEX (cash_register_id)
+>   INDEX (income_category_id)
+>   INDEX (income_date)
+>```
+
+## income_categories (categorias_ingreso)
+
+| Campo      | Nombre original      | Objetivo           | Valores   |
+| ---------- | -------------------- | ------------------ | --------- |
+| id         | id_categoria_ingreso | Identificador      | SERIAL    |
+| name       | nombre_categoria     | Nombre del ingreso | VARCHAR   |
+| is_active  | estado               | Activo             | BOOLEAN   |
+| created_at | fecha_creacion       | Fecha              | TIMESTAMP |
+
 ## Sales | Venta_master
 
 **Descripción:** Al igual que la *Compra_master*, almacena los datos generales de la Venta
@@ -1011,40 +1083,26 @@
 >    | reference_type | 'sales'   |
 >    | reference_id   | id venta  |
 
-## expenses (gastos)
-
-**Descripción:** Representa dinero que sale de caja por operaciones del negocio
-
-| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo                   | Valores                |
-| ------------------------ | ------------------------- | ------------------------------------ | ---------------------- |
-| id                       | id_gasto                  | Identificador del gasto              | SERIAL                 |
-| cash_register_id         | fk_caja                   | Caja desde donde se realiza el gasto | FK → cash_registers.id |
-| expense_category_id      | fk_categoria_gasto        | Clasificación del gasto              | FK                     |
-| amount                   | monto_gasto               | Valor del gasto                      | NUMERIC > 0            |
-| description              | descripcion               | Motivo del gasto                     | TEXT                   |
-| expense_date             | fecha_gasto               | Fecha del gasto                      | TIMESTAMP              |
-| created_by               | creado_por                | Usuario que registra                 | FK → users.id          |
-| created_at               | fecha_creacion            | Fecha de creación                    | TIMESTAMP              |
-
-## expense_categories (categorias_gasto)
-**Descripción:** Para organización y reportes
-
-| Campo      | Nombre original    | Objetivo         | Valores   |
-| ---------- | ------------------ | ---------------- | --------- |
-| id         | id_categoria_gasto | Identificador    | SERIAL    |
-| name       | nombre_categoria   | Nombre del gasto | VARCHAR   |
-| is_active  | estado             | Activo o no      | BOOLEAN   |
-| created_at | fecha_creacion     | Fecha            | TIMESTAMP |
-
->[!NOTE]
->*Ejemplos:*
-> - Energía eléctrica
-> - Agua
-> - Internet
-> - Gas
-
-## Abono_venta
+## sale_payments | Abono_venta
 **Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado un cliente a la misma factura 
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo            | Valores                 |
+| ------------------------ | ------------------------- | ----------------------------- | ----------------------- |
+| id                       | id_abono_venta            | Identificador del pago        | SERIAL                  |
+| sale_id                  | fk_venta_master           | Relación con la venta         | FK → sales.id           |
+| payment_method_id        | fk_metodo_pago            | Método de pago utilizado      | FK → payment_methods.id |
+| transaction_type         | tipo_movimiento           | Tipo de operación             | ENUM (ver abajo)        |
+| received_amount          | valor_recibido            | Dinero recibido del cliente   | NUMERIC > 0             |
+| applied_amount           | valor_aplicado            | Valor aplicado a la deuda     | NUMERIC ≥ 0             |
+| change_amount            | valor_cambio              | Dinero devuelto al cliente    | NUMERIC ≥ 0             |
+| payment_date             | fecha_hora_abono_venta    | Fecha y hora del pago         | TIMESTAMP               |
+| reference_number         | numero_referencia         | Número de comprobante externo | VARCHAR NULL            |
+| receipt_file             | comprobante_abono_venta   | Archivo del comprobante       | VARCHAR NULL            |
+| notes                    | observaciones_abono_venta | Observaciones                 | TEXT                    |
+| created_by               | creado_por                | Usuario que registra          | FK → users.id           |
+| created_at               | fecha_creacion            | Fecha de creación             | TIMESTAMP               |
+| updated_at               | fecha_actualizacion       | Fecha de actualización        | TIMESTAMP               |
+
 
 | Campo | Descripción |
 |-------|-------------|
