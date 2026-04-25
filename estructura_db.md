@@ -14,11 +14,11 @@
 | updated_at               | fecha_actualizacion | Fecha en la que se actualizó el registro  <br> *Date when the record was last updated*                                        |
 | is_active                | estado / activo     | Indica si la marca está Activo (1) o Inactivo (0)  <br> *Indicates whether the brand is Active (1) or Inactive (0)* |
 
-## Categories | Categorías
-
 **Descripción:** Contiene las categorías generales para clasificar las subcategorias.  
 **Ejemplo:** Tecnología, Belleza, Papeleria...
 
+
+## Categories | Categorías
 | Campo                    | Traducción          | Descripción                                                                                                                         |
 | ------------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | id                       | id                  | Identificador único de la categoría <br> *Unique identifier of the category*                                                        |
@@ -983,6 +983,59 @@
 > quantity_devuelta <= cantidad_original
 >```
 
+## sale_payments | Abono_venta
+**Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado un cliente a la misma factura. 
+
+| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo               | Valores                 |
+| ------------------------ | ------------------------- | -------------------------------- | ----------------------- |
+| id                       | id_abono_venta            | Identificador del pago           | SERIAL                  |
+| sale_id                  | fk_venta_master           | Relación con la venta            | FK → sales.id           |
+| payment_method_id        | fk_metodo_pago            | Método de pago utilizado         | FK → payment_methods.id |
+| transaction_type         | tipo_movimiento           | Tipo de operación                | ENUM (Pago, Devolución) |
+| received_amount          | valor_recibido            | Dinero recibido del cliente      | NUMERIC > 0             |
+| applied_amount           | valor_aplicado            | Valor aplicado a la deuda        | NUMERIC ≥ 0             |
+| change_amount            | valor_cambio              | Dinero devuelto al cliente       | NUMERIC ≥ 0             |
+| payment_date             | fecha_hora_abono_venta    | Fecha y hora del pago            | TIMESTAMP               |
+| receipt_file             | comprobante_abono_venta   | Nombre comprobante (.jpg o .pdf) | VARCHAR NULL            |
+| notes                    | observaciones_abono_venta | Observaciones                    | TEXT                    |
+| created_by               | creado_por                | Usuario que registra             | FK → users.id           |
+| created_at               | fecha_creacion            | Fecha de creación                | TIMESTAMP               |
+| updated_at               | fecha_actualizacion       | Fecha de actualización           | TIMESTAMP               |
+
+>[!NOTE]
+>Es necesario aclarar que esta tabla interpreta el ingreso del dinero de dos maneras, la primera el pago por parte del cliente sin importar el medio, y la segunda la devolución de un producto por parte del cliente 
+> Valores de *transaction_type* (tipo_movimiento):
+>  | Valor   | Significado          |
+>  | ------- | -------------------- |
+>  | PAYMENT | Pago normal          |
+>  | REFUND  | Devolución de dinero |
+>
+>Validaciones a implementar:
+>```SQL
+>   CHECK (received_amount > 0)
+>   CHECK (applied_amount >= 0)
+>   CHECK (change_amount >= 0)
+>```
+>**SOLO afecta caja** si *payment_method = EFECTIVO*
+>
+>**Indices**
+>```SQL
+>   CREATE INDEX idx_sale_payments_sale
+>   ON sale_payments (sale_id);
+>```
+>```SQL
+>   CREATE INDEX idx_sale_payments_method
+>   ON sale_payments (payment_method_id);
+>```
+>```SQL
+>   CREATE INDEX idx_sale_payments_date
+>   ON sale_payments (payment_date);
+>```
+>```SQL
+>   CREATE INDEX idx_sale_payments_user
+>   ON sale_payments (created_by);
+>```
+
 ## cash_registers (cajas / turnos de caja)
 
 **Descripcion:** Representa la apertura de caja de un usuario (no necesariamente diario)
@@ -1057,65 +1110,7 @@
 >
 >Cálculo de diferencia: difference = actual_amount - expected_amount
 >
->**Integración con otras tablas**
-> 1. Desde abono_venta (pagos de venta)
->    Si el método de pago es EFECTIVO, se crea:
->    | Campo          | Valor           |
->    | -------------- | --------------- |
->    | type           | PAYMENT_CASH    |
->    | reference_type | 'sale_payments' |
->    | reference_id   | id del pago     |
->    
-> 2. Desde sale_returns (devoluciones)
->    Si is_money_refund = true
->    Se crea:
->    | Campo          | Valor          |
->    | -------------- | -------------- |
->    | type           | REFUND_CASH    |
->    | reference_type | 'sale_returns' |
->    | reference_id   | id devolución  |
->    
-> 3. Desde ventas directas
->    Si el pago es inmediato en efectivo:
->    | Campo          | Valor     |
->    | -------------- | --------- |
->    | type           | SALE_CASH |
->    | reference_type | 'sales'   |
->    | reference_id   | id venta  |
-
-## sale_payments | Abono_venta
-**Descripción:** Esta almacena los diferentes nombres de los archivos adjuntos que son comprobantes de abonos realizados o pago total. Según esta se puede saber la cantidad de veces que ha abonado un cliente a la misma factura 
-
-| Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo            | Valores                 |
-| ------------------------ | ------------------------- | ----------------------------- | ----------------------- |
-| id                       | id_abono_venta            | Identificador del pago        | SERIAL                  |
-| sale_id                  | fk_venta_master           | Relación con la venta         | FK → sales.id           |
-| payment_method_id        | fk_metodo_pago            | Método de pago utilizado      | FK → payment_methods.id |
-| transaction_type         | tipo_movimiento           | Tipo de operación             | ENUM (ver abajo)        |
-| received_amount          | valor_recibido            | Dinero recibido del cliente   | NUMERIC > 0             |
-| applied_amount           | valor_aplicado            | Valor aplicado a la deuda     | NUMERIC ≥ 0             |
-| change_amount            | valor_cambio              | Dinero devuelto al cliente    | NUMERIC ≥ 0             |
-| payment_date             | fecha_hora_abono_venta    | Fecha y hora del pago         | TIMESTAMP               |
-| reference_number         | numero_referencia         | Número de comprobante externo | VARCHAR NULL            |
-| receipt_file             | comprobante_abono_venta   | Archivo del comprobante       | VARCHAR NULL            |
-| notes                    | observaciones_abono_venta | Observaciones                 | TEXT                    |
-| created_by               | creado_por                | Usuario que registra          | FK → users.id           |
-| created_at               | fecha_creacion            | Fecha de creación             | TIMESTAMP               |
-| updated_at               | fecha_actualizacion       | Fecha de actualización        | TIMESTAMP               |
-
-
-| Campo | Descripción |
-|-------|-------------|
-| id_abono_venta | Identificador del pago |
-| movimiento_abono_venta | ENUM('PAGO','DEVOLUCION') La Devolución implica cuando el cliente devuelve el producto y se devuelve el pago o abono realizado|
-| valor_recibido | Dinero recibido por parte del cliente |
-| valor_aplicado | puede ser tanto el valor recibido si es menor o igual al saldo de la venta total, o el valor del saldo restante cuando el valor recibido es mayor a al saldo |
-| valor_cambio | Dinero entregado al cliente |
-| comprobante_abono_venta | Nombre del comprobante de pago (.jpg o .pdf)|
-| fecha_hora_abono_venta | Fecha y hora del pago |
-| fk_metodo_pago | Referencia al método de pago |
-| fk_venta_master | Referencia a la venta master |
-| observaciones_abono_venta | Observaciones del pago |
+>** Falta hacer el mapa de su integración con otras tablas**
 
 ## Movimiento_inventario
 **Descripción:** Se realizarán los 3 inventarios LIFO FIFO Y PONDERADO
