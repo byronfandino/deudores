@@ -1003,7 +1003,7 @@
 | updated_at               | fecha_actualizacion       | Fecha de actualización           | TIMESTAMP               |
 
 >[!NOTE]
->Es necesario aclarar que esta tabla interpreta el ingreso del dinero de dos maneras, la primera el pago por parte del cliente sin importar el medio, y la segunda la devolución de un producto por parte del cliente 
+>Es necesario aclarar que esta tabla interpreta el ingreso del dinero de dos maneras, la primera el pago por parte del cliente sin importar el medio, y la segunda la devolución de un producto por parte del cliente.<br> 
 > Valores de *transaction_type* (tipo_movimiento):
 >  | Valor   | Significado          |
 >  | ------- | -------------------- |
