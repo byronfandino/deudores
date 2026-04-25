@@ -1099,11 +1099,11 @@
 | created_at               | fecha_creacion            | Fecha del cierre                 | TIMESTAMP                    |
 
 >[!NOTE]
->Lógica de las cajas:
+>Lógica de las cajas:<br>
 > **Ingresos (entra dinero):**
 >  - SALE_CASH (venta en efectivo)
 >  - PAYMENT_CASH (abono)
->  - INCOME (ingreso manual)
+>  - INCOME (ingreso manual)<br>
 > **Egresos (sale dinero):**
 >  - REFUND_CASH (devolución)
 >  - EXPENSE (gasto)
