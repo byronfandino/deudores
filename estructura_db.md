@@ -1103,7 +1103,8 @@
 > **Ingresos (entra dinero):**
 >  - SALE_CASH (venta en efectivo)
 >  - PAYMENT_CASH (abono)
->  - INCOME (ingreso manual)<br>
+>  - INCOME (ingreso manual)
+>
 > **Egresos (sale dinero):**
 >  - REFUND_CASH (devolución)
 >  - EXPENSE (gasto)
