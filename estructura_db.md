@@ -1111,7 +1111,7 @@
 >
 >Cálculo de diferencia: difference = actual_amount - expected_amount
 >
->** Falta hacer el mapa de su integración con otras tablas**
+>**Falta hacer el mapa de su integración con otras tablas**
 
 ## Movimiento_inventario
 **Descripción:** Se realizarán los 3 inventarios LIFO FIFO Y PONDERADO
