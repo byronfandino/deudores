@@ -1222,15 +1222,14 @@
 | Campo (Laravel / Inglés) | Nombre original (Español) | Objetivo del campo             | Valores                     |
 | ------------------------ | ------------------------- | ------------------------------ | --------------------------- |
 | id                       | id_capa                   | Identificador de la capa       | SERIAL                      |
-| product_id               | fk_producto               | Producto asociado              | FK → products.id            |
-| inventory_movement_id    | fk_movimiento_inventario  | Movimiento que originó la capa | FK → inventory_movements.id |
-| initial_quantity         | cant_inicial              | Cantidad inicial ingresada     | NUMERIC > 0                 |
-| remaining_quantity       | cant_restante             | Cantidad disponible actual     | NUMERIC ≥ 0                 |
-| unit_cost                | costo_unitario            | Costo unitario de la capa      | NUMERIC ≥ 0                 |
+| product_id               | fk_producto               | Llave foránea del producto              | FK → products.id            |
+| inventory_movement_id    | fk_movimiento_inventario  | Llave foránea del Movimiento_inventario | FK → inventory_movements.id |
+| initial_quantity         | cant_inicial              | Total de productos ingresados al momento de la entrada ya sea Inventario Inicial o Compras     | NUMERIC > 0                 |
+| remaining_quantity       | cant_restante             | Inicialmente inicia con el mismo valor que la cant_inicial y se irá restando (actualizando el registro) por cada salida que se presente| NUMERIC ≥ 0                 |
+| unit_cost                | costo_unitario            | Costo unitario de la capa de la compra o inventario inicial      | NUMERIC ≥ 0                 |
 | layer_date               | fecha_capa                | Fecha de creación de la capa   | TIMESTAMP                   |
-| status                   | estado_capa               | Estado de la capa              | ENUM('ACTIVE','CLOSED')     |
+| status                   | estado_capa               | Solo contendrá dos valores A=Activa o C=Cerrada, solo se cerrará cuando cant_restante sea igual a 0, para realizar filtros y operaciones más rápidas | ENUM('ACTIVE','CLOSED')     |
 | created_at               | fecha_creacion            | Fecha de creación              | TIMESTAMP                   |
-
 
 | Campo | Descripción |
 |-------|-------------|
