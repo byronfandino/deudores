@@ -1495,63 +1495,69 @@
 >UNIQUE (product_id)
 >```
 
-## Cotizacion_master
+## Cotizacion_master | Cotización (encabezado)
 
 **Descripción:** Al igual que la *Compra_master*, almacena los datos generales de la Cotización
 
-| Campo | Descripción |
-|-------|-------------|
-| id_cotizacion_master | Identificador de la cotización |
-| numero_cotizacion | Número consecutivo de la cotización |
-| fk_cliente | Referencia al cliente |
-| fecha_hora | Fecha de la factura |
-| subtotal | Suma total de los registros vendidos |
-| total_descuento | Suma total de descuentos |
-| total_cotizacion | Valor total después del descuento |
-| observaciones | Observaciones de la venta |
-| estado_cotizacion | ENUM('BORRADOR','APROBADA','RECHAZADA','VENCIDA') |
-| creado_por | Usuario que actualizó el registro |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro |
-| fecha_actualizacion | Fecha de actualización del registro |
+| Campo (Laravel / Inglés) | Tu campo original    |                                      Descripción                                      |
+|--------------------------|----------------------|:-------------------------------------------------------------------------------------:|
+| id                       | id_cotizacion_master | Identificador de la cotización   *Quotation identifier*                               |
+| quotation_number         | numero_cotizacion    | Número de la cotización   *Quotation number*                                          |
+| customer_id              | fk_cliente           | Cliente al que se le realiza la cotización   *Customer reference*                     |
+| quotation_date           | fecha_cotizacion     | Fecha de la cotización   *Quotation date*                                             |
+| expiration_date          | fecha_vencimiento    | Fecha de vencimiento de la cotización   *Quotation expiration date*                   |
+| subtotal                 | subtotal_cotizacion  | Subtotal antes de descuentos e impuestos   *Subtotal before discounts and taxes*      |
+| discount_amount          | total_descuento      | Valor total de descuentos   *Total discount amount*                                   |
+| tax_amount               | total_impuesto       | Valor total de impuestos   *Total tax amount*                                         |
+| total_amount             | total_cotizacion     | Valor total de la cotización   *Total quotation amount*                               |
+| status                   | estado_cotizacion    | Estado de la cotización (ver las opciones en las notas de abajo)   *Quotation status* |
+| notes                    | observaciones        | Observaciones generales   *General notes*                                             |
+| created_by               | creado_por           | Usuario que creó la cotización   *User who created the quotation*                     |
+| created_at               | fecha_creacion       | Fecha de creación   *Creation date*                                                   |
+| updated_by               | actualizado_por      | Usuario que actualizó la cotización   *User who updated the quotation*                |
+| updated_at               | fecha_actualizacion  | Fecha de actualización   *Last update date*                                           |
 
 >[!NOTE]
->NOTAS SQL
+>Estado de la cotización (*status*)
+>
+>| Estado    | Significado        |
+>| --------- | ------------------ |
+>| DRAFT     | Borrador           |
+>| SENT      | Enviada            |
+>| APPROVED  | Aprobada           |
+>| REJECTED  | Rechazada          |
+>| EXPIRED   | Vencida            |
+>| CONVERTED | Convertida a venta |
+>
+>**Validaciones**
 >```SQL
-> CREATE TABLE cotizacion_master (
->    id_cotizacion_master SERIAL PRIMARY KEY,
->    numero_cotizacion VARCHAR(50) NOT NULL UNIQUE,
->
->    fk_cliente INT NOT NULL,
->
->    fecha_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
->
->    subtotal NUMERIC(14,2) NOT NULL DEFAULT 0,
->    total_descuento NUMERIC(14,2) NOT NULL DEFAULT 0,
->    total_cotizacion NUMERIC(14,2) NOT NULL DEFAULT 0,
->
->    observaciones TEXT,
->
->    creado_por INT,
->    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
->    actualizado_por INT,
->    fecha_actualizacion TIMESTAMP,
->
->    -- 🔗 Relaciones
->    CONSTRAINT fk_cotizacion_cliente 
->        FOREIGN KEY (fk_cliente) REFERENCES cliente(id_cliente),
->
->    CONSTRAINT fk_cotizacion_creado_por 
->        FOREIGN KEY (creado_por) REFERENCES usuario(id_usuario_sistema),
->
->    CONSTRAINT fk_cotizacion_actualizado_por 
->        FOREIGN KEY (actualizado_por) REFERENCES usuario(id_usuario_sistema),
->
->    -- 🔒 Validaciones
 >    CHECK (subtotal >= 0),
 >    CHECK (total_descuento >= 0),
 >    CHECK (total_cotizacion >= 0)
-> );
+>```
+>
+>**Índices recomendados**
+>```SQL
+>CREATE UNIQUE INDEX idx_quotation_number
+>ON quotation_master (quotation_number);
+>```
+>```SQL
+>CREATE INDEX idx_quotation_customer
+>ON quotation_master (customer_id);
+>```
+>```SQL
+>CREATE INDEX idx_quotation_date
+>ON quotation_master (quotation_date);
+>```
+>
+>**Reglas importantes**
+>Coherencia
+>```
+>total_amount = subtotal - discount + tax
+>```
+>Fecha de vencimiento
+>```
+>expiration_date >= quotation_date
 >```
 
 ## Cotizacion_Detalle
