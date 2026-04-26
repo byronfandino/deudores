@@ -1306,7 +1306,7 @@
 >   quantity <= remaining_quantity (en la capa)
 >```
 >
->>**¿Para qué sirve realmente? (nivel negocio)**
+>**¿Para qué sirve realmente? (nivel negocio)**
 >1. Calcular costo de venta (COGS)
 >```
 >   costo_total_venta = SUM(total_cost)
@@ -1329,7 +1329,7 @@
 > - reportes contables
 > - Trazabilidad
 >
->>**Índices recomendados:**
+>**Índices recomendados:**
 >```SQL
 >CREATE INDEX idx_out_sale_detail
 >ON inventory_out_details (sale_detail_id);
