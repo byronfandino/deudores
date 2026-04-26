@@ -1452,16 +1452,48 @@
 | fifo_cost                | costo_fifo_snapshot      | Costo total del inventario bajo método FIFO (ojo al nombre original) <br> *Total inventory cost using FIFO method* |
 | weighted_cost            | costo_ponderado_snapshot | Costo total bajo promedio ponderado <br> *Total inventory cost using weighted average method*                      |
 
+>[!NOTE]
+>Índices:
+>```SQL
+>   CREATE UNIQUE INDEX unique_snapshot
+>   ON inventory_snapshots (product_id, snapshot_date);
+>```
+>```SQL
+>   CREATE INDEX idx_snapshot_product
+>   ON inventory_snapshots (product_id);
+>```
+>```SQL
+>   CREATE INDEX idx_snapshot_date
+>   ON inventory_snapshots (snapshot_date);
+>```
 
-
-## Stock_actual
+## Stock_actual | Stock actual
 **Descripción:** Se basa en la cantidad del stock actual de cada producto basado en la llamada Movimiento_inventario, con el fin de obtener el saldo de cada producto en tiempo real
 
-| Campo | Descripción |
-|-------|-------------|
-| id_stock | Identificador del registro |
-| fk_producto | Referencia al producto |
-| cant_stock | Cantidad actual del producto |
+| Campo (Laravel / Inglés) | Tu campo original | Descripción                                                                     |
+| ------------------------ | ----------------- | ------------------------------------------------------------------------------- |
+| id                       | id_stock          | Identificador del registro de stock <br> *Stock record identifier*              |
+| product_id               | fk_producto       | Referencia al producto <br> *Reference to the product*                          |
+| quantity                 | cant_stock        | Cantidad actual disponible del producto <br> *Current available stock quantity* |
+
+>[!NOTE]
+>Esta tabla tiene dos enfoques dependiendo de la fase
+>
+>*FASE 1 (Tabla de verdad)*
+>```
+>   stock_actual = fuente de verdad del inventario
+>```
+>
+>*FASE 2 (cuando se implemente inventario real)*
+>```
+>   inventory_movements = fuente de verdad
+>   stock_actual = cache optimizado
+>```
+>
+>*Índice:*
+>```SQL
+>UNIQUE (product_id)
+>```
 
 ## Cotizacion_master
 
