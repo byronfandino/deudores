@@ -1280,13 +1280,6 @@
 | created_at               | fecha_registro            | Fecha de registro                                      | TIMESTAMP                |
 
 >[!NOTE]
->APLICAR LAS SIGUIENTES REGLAS DE INTEGRIDAD
->```SQL
->   CHECK (cantidad_salida > 0),
->   CHECK (costo_unitario >= 0),
->   CHECK (subtotal_costo = cantidad_salida * costo_unitario)
->```
->
 >**Reglas críticas:**
 >*Integridad matemática*
 >```SQL
@@ -1345,18 +1338,55 @@
 >ON inventory_out_details (product_id);
 >```
 
-## Kardex_fifo
-**Descripción:** Mantiene actualizado el inventario FIFO
+## Kardex_fifo | Kardex_fifo
+**Descripción:** Mantiene actualizado el inventario FIFO. Mantiene el histórico acumulado del inventario. Debido a que se manejan ubicaciones, se tendrán registro donde se relacione el total de productos por ubicación.
+*Ejemplo:*
+ - Producto A - Bodega 1
+ - Producto A - Bodega 2
 
-| Campo | Descripción |
-|-------|-------------|
-| id_kardex_fifo | id de la |
-| fk_inventario | Referencia al id del inventario para obtener datos de las otras entidades como producto, compra_detalle, venta_detalle |
-| cant_entrada | Cantidad que ingresa |
-| cant_salida | Cantidad que egresa |
-| cant_saldo | Cantidad restante |
-| valor_saldo | Valor actual del inventario |
-| fecha_movimiento | Fecha del movimiento |
+| Campo (Laravel / Inglés) | Tu campo original | Descripción                                                                                   |
+| ------------------------ | ----------------- | --------------------------------------------------------------------------------------------- |
+| id                       | id_kardex_fifo    | Identificador del registro del kardex <br> *Kardex record identifier*                         |
+| inventory_movement_id    | fk_inventario     | Referencia al id del movimiento de inventario <br> *Reference to the inventory movement*      |
+| product_id               | fk_producto       | Referencia al producto para agilizar consultas                                                |
+| location_id              | fk_location       | Referencia a la ubicación para agilizar consultas                                             |
+| quantity_in              | cant_entrada      | Cantidad que ingresa al inventario <br> *Incoming quantity*                                   |
+| quantity_out             | cant_salida       | Cantidad que sale del inventario <br> *Outgoing quantity*                                     |
+| balance_quantity         | cant_saldo        | Cantidad restante después del movimiento <br> *Remaining quantity balance*                    |
+| balance_value            | valor_saldo       | Valor total del inventario después del movimiento <br> *Inventory total value after movement* |
+| movement_date            | fecha_movimiento  | Fecha del movimiento <br> *Movement date*                                                     |
+
+>[!NOTE]
+>*Diferencia con otras tablas*
+>| Tabla                 | Función                      |
+>º| --------------------- | ---------------------------- |
+>| inventory_movements   | eventos (qué pasó)           |
+>| inventory_layers      | costo por capas              |
+>| inventory_out_details | consumo exacto               |
+>| kardex_fifo           | estado acumulado paso a paso |
+>
+>*Observaciones importantes (arquitectura)*
+>1. Esta tabla es DERIVADA
+>Todo lo que tiene se puede calcular desde:
+>```
+>  inventory_movements
+>  inventory_layers
+>```
+>2. Entonces… ¿por qué existe?
+>Por rendimiento y reportes:
+> - Reportes rápidos
+> - Historial claro
+> - Evitar cálculos complejos
+>
+>*Índices recomendados*
+>```SQL
+>CREATE INDEX idx_kardex_movement
+>ON kardex_fifo (inventory_movement_id);
+>```
+>```SQL
+>CREATE INDEX idx_kardex_date
+>ON kardex_fifo (movement_date);
+>```
 
 ## Kardex_ponderado
 **Descripción:** Mantiene actualizado el inventario PONDERADO
