@@ -1351,7 +1351,7 @@
 | id                       | id_kardex_fifo    | Identificador del registro del kardex <br> *Kardex record identifier*                         |
 | inventory_movement_id    | fk_inventario     | Referencia al id del movimiento de inventario <br> *Reference to the inventory movement*      |
 | product_id               | fk_producto       | Referencia al producto para agilizar consultas                                                |
-| location_id              | fk_location       | Referencia a la ubicación para agilizar consultas                                             |
+| location_id              | fk_ubicacion      | Referencia a la ubicación para agilizar consultas                                             |
 | quantity_in              | cant_entrada      | Cantidad que ingresa al inventario <br> *Incoming quantity*                                   |
 | quantity_out             | cant_salida       | Cantidad que sale del inventario <br> *Outgoing quantity*                                     |
 | balance_quantity         | cant_saldo        | Cantidad restante después del movimiento <br> *Remaining quantity balance*                    |
@@ -1390,18 +1390,55 @@
 >ON kardex_fifo (movement_date);
 >```
 
-## Kardex_ponderado
-**Descripción:** Mantiene actualizado el inventario PONDERADO
+## Kardex_ponderado | Kardex Promedio Ponderado
+**Descripción:** Mantiene actualizado el inventario PONDERADO por cada una de las ubicaciones
 
-| Campo | Descripción |
-|-------|-------------|
-| id_kardex_ponderado | id de la |
-| fk_inventario | Referencia al id del inventario para obtener datos de las otras entidades como producto, compra_detalle, venta_detalle |
-| cant_entrada | Cantidad que ingresa |
-| cant_salida | Cantidad que egresa |
-| cant_saldo | Cantidad restante |
-| valor_saldo | Valor actual del inventario |
-| fecha_movimiento | Fecha del movimiento |
+| Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                       |
+| ------------------------ | ------------------- | --------------------------------------------------------------------------------- |
+| id                       | id_kardex_ponderado | Identificador del registro <br> *Kardex weighted record identifier*               |
+| inventory_movement_id    | fk_inventario       | Referencia al movimiento de inventario <br> *Reference to the inventory movement* |
+| product_id               | fk_producto         | Referencia al producto <br> *Reference to the product table*                      |
+| location_id              | fk_ubicacion        | Referencia a la ubicación <br> *Reference to the location table*                  |
+| quantity_in              | cant_entrada        | Cantidad que ingresa <br> *Incoming quantity*                                     |
+| quantity_out             | cant_salida         | Cantidad que sale <br> *Outgoing quantity*                                        |
+| balance_quantity         | cant_saldo          | Cantidad restante después del movimiento <br> *Remaining quantity balance*        |
+| balance_value            | valor_saldo         | Valor total del inventario <br> *Total inventory value*                           |
+| movement_date            | fecha_movimiento    | Fecha del movimiento <br> *Movement date*                                         |
+
+>[!NOTE]
+>1. Diferencia con FIFO
+>| Método    | Cómo calcula costo       |
+>| --------- | ------------------------ |
+>| FIFO      | capas (inventory_layers) |
+>| Ponderado | promedio acumulado       |
+>
+>2. Índices recomendados
+>```SQL
+>CREATE INDEX idx_kardex_weighted_product
+>ON kardex_ponderado (product_id);
+>```
+>```SQL
+>CREATE INDEX idx_kardex_weighted_date
+>ON kardex_ponderado (movement_date);
+>```
+>```SQL
+>CREATE INDEX idx_kardex_weighted_movement
+>ON kardex_ponderado (inventory_movement_id);
+>```
+>
+>3. Regla clave del ponderado.
+>Fórmula base
+>```
+>nuevo_promedio = 
+>   (total_valor_actual + nueva_compra) 
+>------------------------------------------- 
+>(total_cantidad_actual + nueva_cantidad)
+>```
+>
+>4. Importante
+>El promedio:
+> - Solo cambia en entradas
+> - NO cambia en salidas
 
 ## Snapshot_inventario
 **Descripción:** Registra el corte mensual de cada uno de los inventarios de los productos para evitar consultas lentas en la *Inventario_Movimiento*
