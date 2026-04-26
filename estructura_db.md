@@ -1440,17 +1440,19 @@
 > - Solo cambia en entradas
 > - NO cambia en salidas
 
-## Snapshot_inventario
-**Descripción:** Registra el corte mensual de cada uno de los inventarios de los productos para evitar consultas lentas en la *Inventario_Movimiento*
+## Snapshot_inventario | Corte de inventario
+**Descripción:** Registra el corte mensual de cada uno de los inventarios de los productos para evitar consultas lentas en la *Inventario_Movimiento*. Estos cortes se deben realizar cada final de mes de manera automática.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_snapshot | Identificador del corte del inventario |
-| fecha_corte_snapshot | Fecha del corte es la misma fecha de creación |
-| fk_producto_snapshot | Referencia del producto |
-| cant_final_snapshot | cantidad final del producto |
-| costo_lifo_snapshot | Costo final del inventario LIFO |
-| costo_ponderado_snapshot | Costo final del inventario Ponderado |
+| Campo (Laravel / Inglés) | Tu campo original        | Descripción                                                                                                        |
+| ------------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| id                       | id_snapshot              | Identificador del corte de inventario <br> *Inventory snapshot identifier*                                         |
+| product_id               | fk_producto_snapshot     | Referencia al producto <br> *Reference to the product*                                                             |
+| snapshot_date            | fecha_corte_snapshot     | Fecha del corte del inventario <br> *Inventory snapshot date*                                                      |
+| final_quantity           | cant_final_snapshot      | Cantidad final del producto en la fecha de corte <br> *Final product quantity at snapshot date*                    |
+| fifo_cost                | costo_fifo_snapshot      | Costo total del inventario bajo método FIFO (ojo al nombre original) <br> *Total inventory cost using FIFO method* |
+| weighted_cost            | costo_ponderado_snapshot | Costo total bajo promedio ponderado <br> *Total inventory cost using weighted average method*                      |
+
+
 
 ## Stock_actual
 **Descripción:** Se basa en la cantidad del stock actual de cada producto basado en la llamada Movimiento_inventario, con el fin de obtener el saldo de cada producto en tiempo real
