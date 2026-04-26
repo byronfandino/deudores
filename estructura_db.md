@@ -1339,7 +1339,9 @@
 >```
 
 ## Kardex_fifo | Kardex_fifo
+
 **Descripción:** Mantiene actualizado el inventario FIFO. Mantiene el histórico acumulado del inventario. Debido a que se manejan ubicaciones, se tendrán registro donde se relacione el total de productos por ubicación.
+
 *Ejemplo:*
  - Producto A - Bodega 1
  - Producto A - Bodega 2
@@ -1359,7 +1361,7 @@
 >[!NOTE]
 >*Diferencia con otras tablas*
 >| Tabla                 | Función                      |
->º| --------------------- | ---------------------------- |
+>| --------------------- | ---------------------------- |
 >| inventory_movements   | eventos (qué pasó)           |
 >| inventory_layers      | costo por capas              |
 >| inventory_out_details | consumo exacto               |
