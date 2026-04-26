@@ -1407,6 +1407,7 @@
 
 >[!NOTE]
 >1. Diferencia con FIFO
+>
 >| Método    | Cómo calcula costo       |
 >| --------- | ------------------------ |
 >| FIFO      | capas (inventory_layers) |
@@ -1429,10 +1430,9 @@
 >3. Regla clave del ponderado.
 >Fórmula base
 >```
->nuevo_promedio = 
->   (total_valor_actual + nueva_compra) 
->------------------------------------------- 
->(total_cantidad_actual + nueva_cantidad)
+>                     (total_valor_actual + nueva_compra) 
+>  nuevo_promedio = ---------------------------------------- 
+>                     (total_cantidad_actual + nueva_cantidad)
 >```
 >
 >4. Importante
