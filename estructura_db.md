@@ -1564,19 +1564,20 @@
 
 **Descripción:** Se relaciona el detalle de cada producto cotizado al cliente.
 
-| Campo | Descripción |
-|-------|-------------|
-| id_cotizacion_detalle | Identificador del detalle de la cotización |
-| fk_cotizacion_master | Referencia a la cotizacion_master |
-| fk_producto | Referencia al producto vendido |
-| fk_producto_presentacion | Referencia de la presentacion del producto |
-| cant_cotizacion_detalle | Cantidad cotizada |
-| valor_unit_cotizacion_detalle | Valor unitario cotizado |
-| total_cotizacion_detalle | Total del detalle |
-| creado_por | Usuario que creó el registro |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro |
-| fecha_actualizacion | Fecha de actualización del registro |
+| Campo (Laravel / Inglés) | Tu campo original             | Descripción                                                                  |
+|--------------------------|-------------------------------|------------------------------------------------------------------------------|
+| id                       | id_cotizacion_detalle         | Identificador del detalle   *Quotation detail identifier*                    |
+| quotation_id             | fk_cotizacion_master          | Relación con la cotización master   *Reference to the quotation*             |
+| product_presentation_id  | fk_producto_presentation      | Presentación del producto cotizada   *Reference to the product presentation* |
+| quantity                 | cant_cotizacion_detalle       | Cantidad cotizada   *Quoted quantity*                                        |
+| unit_price               | valor_unit_cotizacion_detalle | Precio unitario   *Unit price*                                               |
+| discount_percentage      | xje_descuento                 | Porcentaje de descuento   *Discount percentage*                              |
+| discount_amount          | valor_descuento               | Valor del descuento   *Discount amount*                                      |
+| total_amount             | total_cotizacion_detalle      | Total del ítem   *Line total amount*                                         |
+| created_by               | creado_por                    | Usuario que creó la cotización   *User who created the quotation*            |
+| created_at               | fecha_creacion                | Fecha de creación   *Creation date*                                          |
+| updated_by               | actualizado_por               | Usuario que actualizó la cotización   *User who updated the quotation*       |
+| updated_at               | fecha_actualizacion           | Fecha de actualización   *Last update date*                                  |
 
 >[!NOTE]
 >Notas SQL
