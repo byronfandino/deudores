@@ -1615,29 +1615,94 @@
 | id_modulo | Identificador del módulo |
 | nombre_modulo | Nombre del módulo |
 
+| Campo (Laravel / Inglés) |  Tu campo original  |                                 Descripción                                |
+|:------------------------:|:-------------------:|:--------------------------------------------------------------------------:|
+| id                       | id_modulo           | Identificador del módulo   *Module identifier*                             |
+| code                     | codigo_modulo       | identificador técnico                                                      |
+| name                     | nombre_modulo       | Nombre del módulo   *Module name*                                          |
+| icon                     | icono               | UI                                                                         |
+| is_active                | estado_modulo       | Indica si el módulo está activo   *Indicates whether the module is active* |
+| route                    | ruta                | ruta del frontend/backend                                                  |
+| order                    | orden               | orden en menú                                                              |
+| created_by               | creado_por          | Usuario que creó la cotización   *User who created the quotation*          |
+| created_at               | fecha_creacion      | Fecha de creación   *Creation date*                                        |
+| updated_by               | actualizado_por     | Usuario que actualizó la cotización   *User who updated the quotation*     |
+| updated_at               | fecha_actualizacion | Fecha de actualización   *Last update date*                                |
+
+>[!NOTE]
+>*Índices:*
+>```SQL
+>CREATE UNIQUE INDEX idx_module_name
+>ON modules (name);
+>```
+>```SQL
+>CREATE INDEX idx_module_active
+>ON modules (is_active);
+>```
+
 ## Permisos_Usuario_Modulo
 **Descripción:** Almacena la relación de los permisos de tiene cada usuario con respecto a cada uno de los módulos visible en el software web
 
-| Campo | Descripción |
-|-------|-------------|
-| id_permiso | Identificador del registro |
-| fk_usuario | Referencia al usuario |
-| fk_modulo | Referencia a al módulo |
-| lectura_registro | Permiso para leer registros |
-| crear_registro | Permiso para crear registros |
-| actualizar_registro | Permiso para actualizar registros |
-| eliminar_registro | Permiso para eliminar registros |
+| Campo (Laravel / Inglés) | Tu campo original         | Descripción                                                         |
+| ------------------------ | ------------------------- | ------------------------------------------------------------------- |
+| id                       | id_permiso_usuario_modulo | Identificador del permiso <br> *User-module permission identifier*  |
+| user_id                  | fk_usuario                | Usuario al que se le asigna el permiso <br> *Reference to the user* |
+| module_id                | fk_modulo                 | Módulo al que aplica el permiso <br> *Reference to the module*      |
+| can_create               | crear                     | Permite crear registros <br> *Allows creating records*              |
+| can_read                 | leer                      | Permite ver información <br> *Allows reading data*                  |
+| can_update               | actualizar                | Permite editar registros <br> *Allows updating records*             |
+| can_delete               | eliminar                  | Permite eliminar registros <br> *Allows deleting records*           |
+| created_by               | creado_por          | Usuario que creó la cotización   *User who created the quotation*          |
+| created_at               | fecha_creacion      | Fecha de creación   *Creation date*                                        |
+| updated_by               | actualizado_por     | Usuario que actualizó la cotización   *User who updated the quotation*     |
+| updated_at               | fecha_actualizacion | Fecha de actualización   *Last update date*                                |
+
+>[!NOTE]
+>*Índices*
+>```SQL
+>   CREATE INDEX idx_permission_user
+>   ON user_module_permissions (user_id);
+>```
+>```SQL
+>   CREATE INDEX idx_permission_module
+>   ON user_module_permissions (module_id);
+>```
+>
+>*Índice único*
+>```SQL
+>   CREATE UNIQUE INDEX unique_user_module
+>   ON user_module_permissions (user_id, module_id);
+>```
 
 ## Datos_empresa
 **Descripción:** Almacena los datos de la empresa que hace uso del software para mostrarlo en los reportes.
 
+| Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                                                                              |
+| ------------------------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| id                       | id_de               | Identificador del registro <br> *Company data identifier*                                                                                |
+| business_name            | razon_social_de     | Razón social de la empresa <br> *Company legal name*                                                                                     |
+| slogan                   | slogan              | Frase utilizada por la empresa para conectar con los clientes <br> *Company slogan used for branding*                                    |
+| tax_id                   | nit_de              | NIT de la empresa <br> *Company tax identification number*                                                                               |
+| tax_regime               | tipo_regimen        | Tipo de régimen (simplificado o común) <br> *Tax regime type (simplified or general)*                                                    |
+| address                  | direccion_de        | Dirección de la empresa <br> *Company address*                                                                                           |
+| phone                    | tel_de              | Teléfono de la empresa <br> *Company phone number*                                                                                       |
+| whatsapp                 | whatsapp_de         | Número de WhatsApp de la empresa <br> *Company WhatsApp number*                                                                          |
+| email                    | email_de            | Correo electrónico de la empresa <br> *Company email address*                                                                            |
+| logo                     | logo_de             | Nombre o ruta de la imagen del logo <br> *Company logo file name or path*                                                                |
+| sale_percentage          | xje_venta_de        | Porcentaje de venta utilizado para calcular precios automáticamente <br> *Default sales percentage used for automatic price calculation* |
+| user_id                  | fk_usuario          | Usuario relacionado al registro <br> *Reference to the user*                                                                             |
+| created_by               | creado_por          | Usuario que creó el registro <br> *User who created the record*                                                                          |
+| created_at               | fecha_creacion      | Fecha de creación <br> *Creation date*                                                                                                   |
+| updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*                                                                     |
+| updated_at               | fecha_actualizacion | Fecha de actualización <br> *Last update date*                                                                                           |
+
 | Campo | Descripción |
 |-------|-------------|
 | id_de | Identificador del registro |
-| nit_de | Nit de la empresa |
 | razon_social_de | Razón social de la empresa |
-| slogan_de | Frase utilizada por la empresa para conectar con los clientes |
-| regimen_de | Tipo de régimen |
+| slogan | slogan_empresa | Frase utilizada por la empresa para conectar con los clientes |
+| nit_de | Nit de la empresa |
+| tipo_regimen | Simplificado o común |
 | direccion_de | Dirección |
 | tel_de | Teléfono de la empresa |
 | whatsapp_de | Whatsapp de la empresa |
