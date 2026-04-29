@@ -1580,49 +1580,32 @@
 | updated_at               | fecha_actualizacion           | Fecha de actualización   *Last update date*                                  |
 
 >[!NOTE]
->Notas SQL
+>*Validaciones:*
 >```SQL
->CREATE TABLE cotizacion_detalle (
->    id_cotizacion_detalle SERIAL PRIMARY KEY,
->    
->    fk_cotizacion_master INT NOT NULL,
->    fk_producto INT NOT NULL,
->    fk_producto_presentacion INT NOT NULL,
->    
->    cant_cotizacion_detalle NUMERIC(14,2) NOT NULL,
->    valor_unit_cotizacion_detalle NUMERIC(14,2) NOT NULL,
->    total_cotizacion_detalle NUMERIC(14,2) NOT NULL,
->    
->    creado_por INT,
->    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
->    actualizado_por INT,
->    fecha_actualizacion TIMESTAMP,
->    
->    -- 🔗 Relaciones
->    CONSTRAINT fk_detalle_cotizacion 
->        FOREIGN KEY (fk_cotizacion_master) 
->        REFERENCES cotizacion_master(id_cotizacion_master)
->        ON DELETE CASCADE,
+>  CHECK (quantity > 0)
+>  CHECK (unit_price >= 0)
+>  CHECK (discount_amount >= 0)
+>```
 >
->    CONSTRAINT fk_detalle_producto 
->        FOREIGN KEY (fk_producto) 
->        REFERENCES producto(id_producto),
+>*Índices:*
+>```SQL
+>  CREATE INDEX idx_quotation_detail_master
+>  ON quotation_details (quotation_id);
+>```
+>```SQL
+>  CREATE INDEX idx_quotation_detail_product
+>  ON quotation_details (product_presentation_id);
+>```
 >
->    CONSTRAINT fk_detalle_producto_presentacion 
->        FOREIGN KEY (fk_producto_presentacion) 
->        REFERENCES producto_presentacion(id_producto_presentacion),
+>Índice compuesto
+>```SQL
+>  CREATE INDEX idx_quotation_product
+>  ON quotation_details (quotation_id, product_presentation_id);
+>```
 >
->    CONSTRAINT fk_detalle_creado_por 
->        FOREIGN KEY (creado_por) REFERENCES usuario(id_usuario_sistema),
->
->    CONSTRAINT fk_detalle_actualizado_por 
->        FOREIGN KEY (actualizado_por) REFERENCES usuario(id_usuario_sistema),
->
->    -- 🔒 Validaciones
->    CHECK (cant_cotizacion_detalle > 0),
->    CHECK (valor_unit_cotizacion_detalle >= 0),
->    CHECK (total_cotizacion_detalle = cant_cotizacion_detalle * valor_unit_cotizacion_detalle)
->);
+>Evitar duplicados
+>```SQL
+>  UNIQUE (quotation_id, product_presentation_id)
 >```
 
 ## Modulo
