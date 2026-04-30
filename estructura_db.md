@@ -1683,7 +1683,7 @@
 | business_name            | razon_social_de     | Razón social de la empresa <br> *Company legal name*                                                                                     |
 | slogan                   | slogan              | Frase utilizada por la empresa para conectar con los clientes <br> *Company slogan used for branding*                                    |
 | tax_id                   | nit_de              | NIT de la empresa <br> *Company tax identification number*                                                                               |
-| tax_regime               | tipo_regimen        | Tipo de régimen (simplificado o común) <br> *Tax regime type (simplified or general)*                                                    |
+| tax_regime               | tipo_regimen        | Tipo de régimen ENUM (simplificado o común) <br> *Tax regime type (simplified or general)*                                               |
 | address                  | direccion_de        | Dirección de la empresa <br> *Company address*                                                                                           |
 | phone                    | tel_de              | Teléfono de la empresa <br> *Company phone number*                                                                                       |
 | whatsapp                 | whatsapp_de         | Número de WhatsApp de la empresa <br> *Company WhatsApp number*                                                                          |
@@ -1696,24 +1696,6 @@
 | updated_by               | actualizado_por     | Usuario que actualizó el registro <br> *User who updated the record*                                                                     |
 | updated_at               | fecha_actualizacion | Fecha de actualización <br> *Last update date*                                                                                           |
 
-| Campo | Descripción |
-|-------|-------------|
-| id_de | Identificador del registro |
-| razon_social_de | Razón social de la empresa |
-| slogan | slogan_empresa | Frase utilizada por la empresa para conectar con los clientes |
-| nit_de | Nit de la empresa |
-| tipo_regimen | Simplificado o común |
-| direccion_de | Dirección |
-| tel_de | Teléfono de la empresa |
-| whatsapp_de | Whatsapp de la empresa |
-| email_de | Email de la empresa |
-| logo_de | Nombre de la imagen de la empresa que carga en los informes |
-| xje_venta_de | Indica cual es el porcentaje de venta para que el sistema calcule de forma autormática al momento de realizar una compra |
-| fk_usuario | Referencia al usuario |
-| creado_por | Usuario que creó el registro |
-| fecha_creacion | Fecha de creación del registro |
-| actualizado_por | Usuario que actualizó el registro |
-| fecha_actualizacion | Fecha de actualización del registro |
 
 # Recomendaciones para crear la base de datos:
 * Creación de índices propuestos:
