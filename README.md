@@ -93,8 +93,9 @@ Aquí puedes ver la [estructura de la base de datos](estructura_db.md).
 
 Aquí puedes ver la clasificación de directorios en views [organización en views](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
 
-## Ver HTML de catálogos
-
+### Ver HTML de marcas
 Marcas [catalog-brands](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
+
+### Ver HTML de categorias
 Categorías [catalog-categories](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
 
