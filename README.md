@@ -88,3 +88,7 @@ sacinv/
 ## Ver estructura de la base de datos
 
 Aquí puedes ver la [estructura de la base de datos](estructura_db.md).
+
+## Ver la clasificación de directorios
+
+Aquí puedes ver la clasificación de directorios en views [organización en views](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
