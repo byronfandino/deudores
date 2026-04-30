@@ -92,3 +92,9 @@ Aquí puedes ver la [estructura de la base de datos](estructura_db.md).
 ## Ver la clasificación de directorios
 
 Aquí puedes ver la clasificación de directorios en views [organización en views](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
+
+## Ver HTML de catálogos
+
+Aquí puedes ver el HTML de catálogos [organización en views](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
+
+<script src="https://gist.github.com/byronfandino/610d24397d72ca6bd8d4a4096d9b0f90.js"></script>
