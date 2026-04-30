@@ -95,6 +95,6 @@ Aquí puedes ver la clasificación de directorios en views [organización en vie
 
 ## Ver HTML de catálogos
 
-Aquí puedes ver el HTML de catálogos [organización en views](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
+Marcas [catalog-brands](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
+Categorías [catalog-categories](https://gist.github.com/byronfandino/6bf82c92eee9eeff17e895d923d55077).
 
-<script src="https://gist.github.com/byronfandino/610d24397d72ca6bd8d4a4096d9b0f90.js"></script>
