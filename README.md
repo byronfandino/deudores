@@ -99,3 +99,6 @@ Marcas [catalog-brands](https://gist.github.com/byronfandino/6d712542b393c9d9200
 ### Ver HTML de categorias
 Categorías [catalog-categories](https://gist.github.com/byronfandino/610d24397d72ca6bd8d4a4096d9b0f90).
 
+### Ver HTML de tags
+Tags [catalog-categories](https://gist.github.com/byronfandino/f74b3eff15b3ba3844222c4f8b0d9b0e).
+
