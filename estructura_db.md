@@ -196,6 +196,7 @@
 | adjustment_type          | tipo_ajuste_global   | `DESCUENTO`, `RECARGO`                                                           |
 | adjustment_mode          | modo_ajuste_global   | `PORCENTAJE`, `VALOR`                                                            |
 | adjustment_value         | valor_ajuste_global  | Número ≥ 0                                                                       |
+| is_active                | estado_registro      | Es activo (boolean)                                                              |
 | created_by               | creado_por           | Usuario que creó el registro <br> *User who created the record*                  |
 | updated_by               | actualizado_por      | Usuario que actualizó el registro <br> *User who updated the record*             |
 | created_at               | fecha_creacion       | Fecha de creación del registro <br> *Date when the record was created*           |
