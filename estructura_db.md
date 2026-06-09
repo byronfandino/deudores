@@ -774,6 +774,8 @@
 
 ## income_categories (categorias_ingreso)
 
+**Descripción:**  Esta tabla se crea para registrar las categorias de los ingresos que ingresan a la caja y que no provienen de las ventas.
+
 | Campo      | Nombre original      | Objetivo           | Valores   |
 | ---------- | -------------------- | ------------------ | --------- |
 | id         | id_categoria_ingreso | Identificador      | SERIAL    |
