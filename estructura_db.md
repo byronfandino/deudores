@@ -646,15 +646,16 @@
 ## DocumentTypes | Tipos de documento
 **Descripción:** Almacena los tipos de documento tanto corporativos como particulares
 
-| Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                   |
-|--------------------------|---------------------|-------------------------------------------------------------------------------|
-| id                       | id_tipo_documento   | Identificador del cliente   *Customer identifier*                             |
-| name                     | nombre              | Nombre del documento   *Document name*                                        |
-| is_active                | activo              | Guarda Verdadero o Falso   *It stores True or False, but default is true*     |
-| created_by               | creado_por          | Usuario que creó el registro   *User who created the record*                  |
-| created_at               | fecha_creacion      | Fecha de creación del registro   *Date when the record was created*           |
-| updated_by               | actualizado_por     | Usuario que actualizó el registro   *User who updated the record*             |
-| updated_at               | fecha_actualizacion | Fecha de actualización del registro   *Date when the record was last updated* |
+| Campo (Laravel / Inglés) | Tu campo original   | Descripción                                                                              |
+|--------------------------|---------------------|------------------------------------------------------------------------------------------|
+| id                       | id_tipo_documento   | Identificador del cliente   *Customer identifier*                                        |
+| code                     | código              | Código o Abreviatura del tipo de documento   *Code or Abbreviation of the document type* |
+| name                     | nombre              | Nombre del documento   *Document name*                                                   |
+| is_active                | activo              | Guarda Verdadero o Falso   *It stores True or False, but default is true*                |
+| created_by               | creado_por          | Usuario que creó el registro   *User who created the record*                             |
+| created_at               | fecha_creacion      | Fecha de creación del registro   *Date when the record was created*                      |
+| updated_by               | actualizado_por     | Usuario que actualizó el registro   *User who updated the record*                        |
+| updated_at               | fecha_actualizacion | Fecha de actualización del registro   *Date when the record was last updated*            |
 
 ## Customers | Cliente
 **Descripción:** Almacena clientes tanto corporativos como particulares
