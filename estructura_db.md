@@ -461,23 +461,26 @@
 >  CHECK (document_type IN ('NIT','CC','CE'))
 >```
 
-## Supplier_phones | Telefono_proveedor
+## Supplier_contacts | Contactos_proveedor
 
 **Descripción:** Por lo general un proveedor tiene varios teléfonos y es necesario guardarlos todos
 
-| Campo (Laravel / Inglés) | Tu campo original      | Descripción                                                                                                                                    |
-| ------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| id                       | id_tel_proveedor       | Identificador del teléfono <br> *Phone record identifier*                                                                                      |
-| phone                    | numero_tel_proveedor   | Número de teléfono <br> *Phone number*                                                                                                         |
-| is_whatsapp              | whatsapp_tel_proveedor | Indica si el número está registrado en WhatsApp (1) o no (0) <br> *Indicates whether the number is registered on WhatsApp (1) or not (0)*      |
-| is_telegram              | —                      | Indica si el número está registrado en Telegram (1) o no (0) <br> *Indicates whether the number is registered on Telegram (1) or not (0)*      |
-| is_signal                | —                      | Indica si el número está registrado en Signal (1) o no (0) <br> *Indicates whether the number is registered on Signal (1) or not (0)*          |
-| supplier_id              | fk_proveedor           | Referencia al proveedor <br> *Reference to the supplier*                                                                                       |
-| is_active                | status_tel_proveedor   | Indica si el número telefónico está habilitado (1) o deshabilitado (0) <br> *Indicates whether the phone number is active (1) or inactive (0)* |
-| created_by               | fk_usuario             | Usuario quien creó el registro <br> *User who created the record*                                                                              |
-| created_at               | fecha_creacion         | Fecha de creación del registro <br> *Date when the record was created*                                                                         |
-| updated_by               | fk_usuario             | Usuario quien actualizó el registro <br> *DUser who created the record*                                                                        |
-| updated_at               | fecha_actualizacion    | Fecha de actualización del registro <br> *Date when the record was last updated*                                                               |
+| **Campo inglés** |   **Campo Español**   |                                    **Descripción**                                   |
+|:----------------:|:---------------------:|:------------------------------------------------------------------------------------:|
+| id               | id_contacto_proveedor | llave primaria                                                                       |
+| contact_name     | nombre_contacto       | nombre del empleado                                                                  |
+| phone            | Telefono              | número de teléfono                                                                   |
+| is_whatsapp      | tiene_whatsapp        | valor booleano para saber si el número tiene whatsapp, por defecto el valor es false |
+| is_telegram      | tiene_telegram        | valor booleano para saber si el número tiene telegram, por defecto el valor es false |
+| is_signal        | tiene_signal          | valor booleano para saber si el número tiene signal, por defecto el valor es false   |
+| email            | correo_electronico    | Correo electrónico del area del proveedor                                            |
+| is_default       | item_seleccionado     | Registro seleccionado por defecto                                                    |
+| supplier_id      | fk_proveedor          | llave foránea del proveedor                                                          |
+| is_active        | estado_registro       | estado del registro                                                                  |
+| created_by       | creado_por            | llave foránea del usuario                                                            |
+| created_at       | fecha_creacion        | fecha de creación del registro                                                       |
+| updated_by       | actualizado_por       | llave foránea del usuario                                                            |
+| updated_at       | fecha_actualizacion   | fecha de actualización del registro                                                  |
 
 >[!NOTE]
 >Evitar el mismo número repetido para el mismo proveedor:
