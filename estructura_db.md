@@ -468,7 +468,7 @@
 | **Campo inglés** |   **Campo Español**   |                                    **Descripción**                                   |
 |:----------------:|:---------------------:|:------------------------------------------------------------------------------------:|
 | id               | id_contacto_proveedor | llave primaria                                                                       |
-| contact_name     | nombre_contacto       | nombre del empleado                                                                  |
+| contact_name     | nombre_contacto       | nombre del contacto                                                                  |
 | phone            | Telefono              | número de teléfono                                                                   |
 | is_whatsapp      | tiene_whatsapp        | valor booleano para saber si el número tiene whatsapp, por defecto el valor es false |
 | is_telegram      | tiene_telegram        | valor booleano para saber si el número tiene telegram, por defecto el valor es false |
